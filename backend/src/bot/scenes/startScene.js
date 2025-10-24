@@ -14,6 +14,7 @@ scene.enter(async (ctx) => handleStart(ctx));
 
 scene.on(message('text'), async (ctx) => {
     console.log(`Start Scene text: ${ctx.message.text}`);
+    if (ctx.message.text === '/start') return ctx.scene.enter('START_SCENE_ID');
     const sourceFilmTitle = ctx.message.text;
     ctx.reply(`Шукаю фільми схожі на "${sourceFilmTitle}"...`);
 

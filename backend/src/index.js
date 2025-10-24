@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import express from 'express';
 import bot from './bot/index.js'; // головна логіка бота
 
 dotenv.config();
@@ -29,7 +30,21 @@ try {
     process.exit(1);
 }
 
-// === 4. Graceful shutdown ===
+// === 4. Запуск бекенда ===
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Простий health-check для Render
+app.get('/', (req, res) => {
+    res.send('🟢 Filmory bot is alive');
+});
+
+// Запускаємо веб-сервер
+app.listen(PORT, () => {
+    console.log(`🌐 Web server is running on port ${PORT}`);
+});
+
+// === 5. Graceful shutdown ===
 process.once('SIGINT', async () => {
     console.log('🛑 Зупиняю Filmory...');
     await bot.stop('SIGINT');

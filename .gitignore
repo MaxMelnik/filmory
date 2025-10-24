@@ -1,0 +1,36 @@
+.DS_Store
+node_modules/
+backup/db/
+private/
+db/db.json
+db/callback.json
+/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist.zip
+ecosystem.config.js
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# test script
+test.js
+ignoreme.js
+
+# user file
+newuser
+
+#secure config
+backend/.env
+
+#logs
+logs/
+
+#front build
+frontend/public

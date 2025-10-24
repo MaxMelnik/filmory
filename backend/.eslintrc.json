@@ -1,0 +1,30 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true
+  },
+  "extends": "google",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "ignorePatterns": [
+    "vue-frontend/",
+    "source/public"
+  ],
+  "rules": {
+    "max-len": [
+      "error",
+      145
+    ],
+    "indent": [
+      "error",
+      4
+    ],
+    "new-cap": "off",
+    "linebreak-style": "off",
+    "require-jsdoc": "off",
+    "valid-jsdoc": "off"
+  }
+}

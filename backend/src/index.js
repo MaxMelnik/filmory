@@ -5,7 +5,7 @@ import bot from './bot/index.js';
 
 dotenv.config();
 
-const { MONGODB_CONNECT } = process.env;
+const {MONGODB_CONNECT} = process.env;
 if (!MONGODB_CONNECT) {
     console.error('❌ MONGO_URI відсутній у .env');
     process.exit(1);
@@ -32,15 +32,13 @@ app.listen(PORT, async () => {
 
     // === 3. Тепер запускаємо бота ===
     try {
-        await bot.telegram.getMe().then(info => {
+        await bot.telegram.getMe().then((info) => {
             console.log(`🤖 Filmory запущений як @${info.username}`);
         });
         bot.launch();
     } catch (err) {
         console.error('❌ Не вдалося отримати інформацію про бота:', err);
     }
-
-
 });
 
 // === 4. Graceful shutdown ===

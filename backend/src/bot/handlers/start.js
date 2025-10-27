@@ -1,20 +1,19 @@
-// backend/src/bot/handlers/start.js
-// import User from '../../models/User.js';
+import {User} from '../../models/index.js';
 
 export async function handleStart(ctx) {
     try {
-        // const telegramId = String(ctx.from.id);
-        // let user = await User.findOne({telegramId});
-        //
-        // if (!user) {
-        //     user = await User.create({
-        //         telegramId,
-        //         username: ctx.from.username,
-        //         firstName: ctx.from.first_name,
-        //         lastName: ctx.from.last_name,
-        //     });
-        //     console.log(`[NEW USER] ${user.username || user.telegramId}`);
-        // }
+        const telegramId = String(ctx.from.id);
+        let user = await User.findOne({telegramId});
+
+        if (!user) {
+            user = await User.create({
+                telegramId,
+                username: ctx.from.username,
+                firstName: ctx.from.first_name,
+                lastName: ctx.from.last_name,
+            });
+            console.log(`[NEW USER] ${user.username || user.telegramId}`);
+        }
 
         const text = `
 🎬 *Вітаємо у Filmory\\!*

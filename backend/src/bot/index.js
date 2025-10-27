@@ -1,4 +1,4 @@
-import { Scenes, session } from 'telegraf';
+import {Scenes, session} from 'telegraf';
 import getBotInstance from './getBotInstance.js';
 
 // === Scenes ===

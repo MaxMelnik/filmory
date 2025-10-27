@@ -7,7 +7,7 @@ let botInstance = null;
 
 function getBotInstance() {
     if (!botInstance) {
-        console.log(process.env.BOT_TOKEN)
+        console.log(process.env.BOT_TOKEN);
         botInstance = new Telegraf(process.env.BOT_TOKEN);
     }
     return botInstance;

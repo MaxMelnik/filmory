@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import pkg from 'mongoose-sequence';
-
-const AutoIncrement = pkg(mongoose);
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const userSchema = new mongoose.Schema(
     {
@@ -29,18 +29,18 @@ const userSchema = new mongoose.Schema(
         favoriteGenres: [String],
         watchedFilms: [
             {
-                filmId: {type: Number, ref: 'Film'},
+                filmId: {type: Number, ref: () => 'Film',},
                 addedAt: {type: Date, default: Date.now},
             },
         ],
         watchLater: [
             {
-                filmId: {type: Number, ref: 'Film'},
+                filmId: {type: Number, ref: () => 'Film',},
                 addedAt: {type: Date, default: Date.now},
             },
         ],
     },
-    {timestamps: true},
+    {timestamps: true, _id: false },
 );
 
 userSchema.plugin(AutoIncrement, {id: 'User'});

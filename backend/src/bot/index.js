@@ -1,10 +1,10 @@
 import {Scenes, session} from 'telegraf';
 import getBotInstance from './getBotInstance.js';
+import {Film} from '../models/index.js';
 
 // === Scenes ===
 import startScene from './scenes/startScene.js';
-// у майбутньому додаш:
-// import addFilmScene from './scenes/addFilmScene.js';
+import addFilmScene from './scenes/addFilmScene.js';
 // import rateFilmScene from './scenes/rateFilmScene.js';
 // import recommendationScene from './scenes/recommendationScene.js';
 
@@ -14,7 +14,7 @@ const bot = getBotInstance();
 // === Конфігурація сцен ===
 const stage = new Scenes.Stage([
     startScene,
-    // addFilmScene,
+    addFilmScene,
     // rateFilmScene,
     // recommendationScene,
 ]);
@@ -57,12 +57,17 @@ bot.catch(async (err, ctx) => {
 // Коли користувач вводить /start → потрапляє в сцену
 bot.start((ctx) => ctx.scene.enter('START_SCENE_ID'));
 
-// У майбутньому можна буде додати inline-кнопки:
-// bot.action('ADD_FILM', (ctx) => ctx.scene.enter('ADD_FILM_SCENE'));
-// bot.action('RATE_FILM', (ctx) => ctx.scene.enter('RATE_FILM_SCENE'));
+bot.action('ADD_FILM', (ctx) => ctx.scene.enter('ADD_FILM_SCENE_ID'));
+// bot.action('RATE_FILM', (ctx) => ctx.scene.enter('RATE_FILM_SCENE_ID'));
 // bot.action('GET_RECOMMENDATIONS', (ctx) =>
-//     ctx.scene.enter('RECOMMENDATION_SCENE')
+//     ctx.scene.enter('RECOMMENDATION_SCENE_ID')
 // );
+
+bot.command('test', async (ctx) => {
+    const f1 = await Film.create({ title: 'Test Movie 1' });
+    const f2 = await Film.create({ title: 'Test Movie 2' });
+    console.log(f1._id, f2._id); // 1 2
+});
 
 // === Експорт інстансу ===
 export default bot;

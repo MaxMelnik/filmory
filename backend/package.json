@@ -2,7 +2,6 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "src/index.js",
-  "type": "module",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
@@ -15,10 +14,13 @@
   "description": "",
   "dependencies": {
     "@google/genai": "^1.27.0",
+    "axios": "^1.13.1",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mongoose": "^8.19.2",
+    "mongoose-auto-increment-plugin": "^1.0.2",
     "mongoose-sequence": "^6.0.1",
+    "mongoose-sequence-plugin": "^1.0.5",
     "telegraf": "^4.16.3"
   },
   "devDependencies": {

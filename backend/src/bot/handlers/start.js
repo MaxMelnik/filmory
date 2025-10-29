@@ -27,9 +27,9 @@ export async function handleStart(ctx) {
         await ctx.replyWithMarkdownV2(text, {
             reply_markup: {
                 inline_keyboard: [
-                    [{text: '➕ Додати фільм', callback_data: 'add_film'}],
-                    [{text: '📋 Мій список', callback_data: 'show_list'}],
-                    [{text: '⭐ Рекомендації', callback_data: 'get_recs'}],
+                    [{text: '➕ Додати фільм', callback_data: 'ADD_FILM'}],
+                    [{text: '📋 Мій список', callback_data: 'SHOW_LIST'}],
+                    [{text: '⭐ Рекомендації', callback_data: 'GET_RECS'}],
                 ],
             },
         });

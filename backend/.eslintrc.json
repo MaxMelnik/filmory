@@ -7,7 +7,6 @@
   "extends": "google",
   "parserOptions": {
     "ecmaVersion": "latest",
-    "sourceType": "module"
   },
   "ignorePatterns": [
     "vue-frontend/",

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import pkg from 'mongoose-sequence';
-
-const AutoIncrement = pkg(mongoose);
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const filmSchema = new mongoose.Schema(
     {
@@ -12,6 +12,9 @@ const filmSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        altTitles: [{
+            type: String,
+        }],
         year: {
             type: Number,
         },
@@ -24,7 +27,7 @@ const filmSchema = new mongoose.Schema(
             type: String,
         },
         tmdbId: {
-            type: String,
+            type: Number,
         },
         description: {
             type: String,
@@ -33,7 +36,7 @@ const filmSchema = new mongoose.Schema(
             type: String,
         },
     },
-    {timestamps: true},
+    {timestamps: true, _id: false },
 );
 
 filmSchema.plugin(AutoIncrement, {id: 'Film'});

@@ -1,7 +1,8 @@
 import {Scenes, Markup} from 'telegraf';
 import {message} from 'telegraf/filters';
 import {handleAddFilm, handleFilmTitleInput} from '../handlers/addFilm.js';
-import {LibraryItem} from '../../models/index.js';
+import {FilmService} from '../../services/FilmService.js';
+import {UserService} from '../../services/UserService.js';
 
 const addFilmScene = new Scenes.BaseScene('ADD_FILM_SCENE_ID');
 
@@ -20,11 +21,8 @@ addFilmScene.action('ADD_WATCH_LATER', async (ctx) => {
     const film = ctx.scene.state.film;
     if (!film) return ctx.answerCbQuery('⚠️ Не знайдено фільм у контексті.');
 
-    await LibraryItem.updateOne(
-        {user: ctx.from.id, film: film._id},
-        {$set: {status: 'watch_later'}},
-        {upsert: true},
-    );
+    const user = await UserService.getByTelegramId(ctx.from.id);
+    await FilmService.addToLibrary(user._id, film._id, 'watch_later');
 
     await ctx.answerCbQuery();
     await ctx.editMessageReplyMarkup();
@@ -71,11 +69,8 @@ for (let i = 1; i <= 10; i++) {
         const film = ctx.scene.state.film;
         if (!film) return ctx.answerCbQuery('⚠️ Не знайдено фільм у контексті.');
 
-        await LibraryItem.updateOne(
-            {user: ctx.from.id, film: film._id},
-            {$set: {status: 'watched', rating: i}},
-            {upsert: true},
-        );
+        const user = await UserService.getByTelegramId(ctx.from.id);
+        await FilmService.addToLibrary(user._id, film._id, 'watched', i);
 
         await ctx.answerCbQuery();
         await ctx.editMessageReplyMarkup();
@@ -91,7 +86,6 @@ for (let i = 1; i <= 10; i++) {
 addFilmScene.action('GO_BACK', async (ctx) => {
     await ctx.answerCbQuery();
     await ctx.editMessageReplyMarkup();
-    await ctx.reply('⬅ Повертаюсь назад...');
     await ctx.scene.enter('START_SCENE_ID');
 });
 

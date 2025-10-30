@@ -8,12 +8,12 @@ const libraryItemSchema = new mongoose.Schema(
         _id: {
             type: Number,
         },
-        user: {
+        userId: {
             type: Number,
             ref: () => 'User',
             required: true,
         },
-        film: {
+        filmId: {
             type: Number,
             ref: () => 'Film',
             required: true,

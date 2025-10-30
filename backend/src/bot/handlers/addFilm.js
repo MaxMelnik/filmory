@@ -1,6 +1,6 @@
-import {Film} from '../../models/index.js';
 import {searchFilm} from '../../services/tmdbClient.js';
 import {Markup} from 'telegraf';
+import {FilmService} from '../../services/FilmService.js';
 
 export async function handleAddFilm(ctx) {
     const keyboard = Markup.inlineKeyboard([
@@ -23,15 +23,7 @@ export async function handleFilmTitleInput(ctx) {
 
     console.log(found);
 
-    const film = await Film.findOneAndUpdate(
-        {tmdbId: found.tmdbId},
-        {
-            title: found.title,
-            year: found.year,
-            posterUrl: found.posterUrl,
-        },
-        {upsert: true, new: true},
-    );
+    const film = await FilmService.upsertFromTmdb(found);
 
     console.log(film);
 

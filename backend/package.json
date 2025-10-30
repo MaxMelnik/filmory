@@ -19,9 +19,7 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mongoose": "^8.19.2",
-    "mongoose-auto-increment-plugin": "^1.0.2",
     "mongoose-sequence": "^6.0.1",
-    "mongoose-sequence-plugin": "^1.0.5",
     "telegraf": "^4.16.3"
   },
   "devDependencies": {

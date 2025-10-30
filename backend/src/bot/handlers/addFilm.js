@@ -17,22 +17,25 @@ export async function handleFilmTitleInput(ctx) {
 
     const title = ctx.message.text.trim();
     ctx.session.awaitingFilmTitle = false;
+    ctx.session.title = title;
+    console.log(title);
 
     const found = await searchFilm(title);
-    if (!found) return ctx.reply('Не знайшов такого фільму 😢');
-
-    console.log(found);
+    if (!found) {
+        const keyboard = Markup.inlineKeyboard([
+            [Markup.button.callback(`❌ Зберегти як "${title}"`, `SAVE_MANUAL`)],
+            [Markup.button.callback('⬅ Назад', 'GO_BACK')],
+        ]);
+        return ctx.reply('Не знайшов такого фільму 😢', keyboard);
+    }
 
     const film = await FilmService.upsertFromTmdb(found);
-
-    console.log(film);
-
-    // Зберігаємо фільм у контекст сцени
     ctx.scene.state.film = film;
 
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('🎞 Подивитись пізніше', 'ADD_WATCH_LATER')],
         [Markup.button.callback('✅ Вже переглянуто', 'ADD_WATCHED')],
+        [Markup.button.callback(`❌ Зберегти як "${title}"`, `SAVE_MANUAL`)],
         [Markup.button.callback('⬅ Назад', 'GO_BACK')],
     ]);
 

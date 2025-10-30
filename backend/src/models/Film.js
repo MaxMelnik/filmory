@@ -35,6 +35,7 @@ const filmSchema = new mongoose.Schema(
         posterUrl: {
             type: String,
         },
+
     },
     {timestamps: true, _id: false },
 );

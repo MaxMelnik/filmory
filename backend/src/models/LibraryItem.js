@@ -24,6 +24,11 @@ const libraryItemSchema = new mongoose.Schema(
             required: true,
             default: 'watch_later',
         },
+        source: {
+            type: String,
+            enum: ['tmdb', 'manual'],
+            default: 'tmdb',
+        },
         rating: {type: Number, min: 0, max: 10},
         comment: {type: String, trim: true},
         addedAt: {type: Date, default: Date.now},
@@ -31,7 +36,7 @@ const libraryItemSchema = new mongoose.Schema(
     {timestamps: true, _id: false},
 );
 
-libraryItemSchema.index({user: 1, film: 1}, {unique: true});
+libraryItemSchema.index({userId: 1, filmId: 1}, {unique: true});
 libraryItemSchema.plugin(AutoIncrement, {id: 'LibraryItem'});
 
 

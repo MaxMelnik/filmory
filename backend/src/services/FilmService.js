@@ -32,7 +32,7 @@ export class FilmService {
             Object.assign(film, data);
         }
 
-        return await film.save();
+        return film.save();
     }
 
     /**
@@ -49,10 +49,10 @@ export class FilmService {
                 description: null,
                 posterUrl: null,
             });
-            return film;
+            return film.save();
         }
 
-        return await film.save();
+        return film.save();
     }
 
     /**

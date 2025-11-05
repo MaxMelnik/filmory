@@ -22,6 +22,7 @@ scene.action('ADD_WATCH_LATER', async (ctx) => {
     if (!film) return ctx.answerCbQuery('⚠️ Не знайдено фільм у контексті.');
 
     const user = await UserService.getByTelegramId(ctx.from.id);
+    console.log(film);
     await FilmService.addToLibrary(user._id, film._id, 'watch_later');
 
     await ctx.answerCbQuery();
@@ -80,9 +81,7 @@ for (let i = 1; i <= 10; i++) {
         await ctx.scene.leave();
     });
 }
-// scene.action(/^SAVE_MANUAL-\d+$/, async (ctx) => {
-//     const title = ctx.update.callback_query.data.split('-')[1];
-// Save title provided by user
+
 scene.action('SAVE_MANUAL', async (ctx) => {
     const title = ctx.session.title;
     ctx.session.title = null;

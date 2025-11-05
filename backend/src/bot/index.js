@@ -5,6 +5,7 @@ import {Film} from '../models/index.js';
 // === Scenes ===
 import startScene from './scenes/startScene.js';
 import addFilmScene from './scenes/addFilmScene.js';
+import libraryScene from './scenes/libraryScene.js';
 // import rateFilmScene from './scenes/rateFilmScene.js';
 // import recommendationScene from './scenes/recommendationScene.js';
 
@@ -15,6 +16,7 @@ const bot = getBotInstance();
 const stage = new Scenes.Stage([
     startScene,
     addFilmScene,
+    libraryScene,
     // rateFilmScene,
     // recommendationScene,
 ]);
@@ -57,11 +59,15 @@ bot.catch(async (err, ctx) => {
 // Коли користувач вводить /start → потрапляє в сцену
 bot.start((ctx) => ctx.scene.enter('START_SCENE_ID'));
 
+bot.command('add', (ctx) => ctx.scene.enter('ADD_FILM_SCENE_ID'));
+
+bot.command('my_films', (ctx) => ctx.scene.enter('LIBRARY_SCENE_ID'));
+
 bot.action('ADD_FILM', (ctx) => ctx.scene.enter('ADD_FILM_SCENE_ID'));
+
+bot.action('SHOW_LIST', (ctx) => ctx.scene.enter('LIBRARY_SCENE_ID'));
+
 // bot.action('RATE_FILM', (ctx) => ctx.scene.enter('RATE_FILM_SCENE_ID'));
-// bot.action('GET_RECOMMENDATIONS', (ctx) =>
-//     ctx.scene.enter('RECOMMENDATION_SCENE_ID')
-// );
 
 bot.command('test', async (ctx) => {
     const f1 = await Film.create({ title: 'Test Movie 1' });

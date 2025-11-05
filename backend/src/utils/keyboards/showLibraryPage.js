@@ -1,0 +1,68 @@
+import { Markup } from 'telegraf';
+import { LibraryService } from '../../services/LibraryService.js';
+
+async function showLibraryPage(ctx) {
+    const { view = 'watchLater', page = 1 } = ctx.session;
+    const limit = 5;
+
+    const { films, totalPages, totalCount } =
+        await LibraryService.getUserFilmsPaginated(ctx.from.id, view, page, limit);
+
+    // --- Якщо список порожній ---
+    if (!films.length) {
+        const emptyText =
+            view === 'watchLater'
+                ? '📭 Список “подивитись пізніше” порожній.'
+                : '👁 Ти ще не додав переглянуті фільми.';
+
+        await ctx
+            .editMessageText?.(emptyText, buildKeyboard(view, page, totalPages))
+            .catch(async () => {
+                await ctx.reply(emptyText, buildKeyboard(view, page, totalPages));
+            });
+        return;
+    }
+
+    // --- Формуємо список як інлайн-клавіатуру ---
+    const filmButtons = films.map((f) =>
+        [Markup.button.callback(
+            `${f.title}${f.year ? ` (${f.year})` : ''}`,
+            `OPEN_FILM_${f._id}`
+        )]
+    );
+
+    const switchButtons = [
+        Markup.button.callback(
+            view === 'watchLater' ? '📺 Подивитись пізніше ✅' : '📺 Подивитись пізніше',
+            'SWITCH_WATCH_LATER'
+        ),
+        Markup.button.callback(
+            view === 'watched' ? '👁 Переглянуті ✅' : '👁 Переглянуті',
+            'SWITCH_WATCHED'
+        ),
+    ];
+
+    const navButtons = [];
+    if (page > 1) navButtons.push(Markup.button.callback('⬅', 'PREV_PAGE'));
+    if (page < totalPages) navButtons.push(Markup.button.callback('➡', 'NEXT_PAGE'));
+
+    const keyboard = Markup.inlineKeyboard([
+        switchButtons,
+        ...filmButtons,
+        navButtons,
+    ]);
+
+    const header =
+        view === 'watchLater'
+            ? '📺 *Подивитись пізніше:*'
+            : '👁 *Переглянуті фільми:*';
+
+    const text = `${header}\n\n📄 Сторінка ${page} з ${totalPages} (${totalCount} фільмів)`;
+
+    await ctx
+        .editMessageText?.(text, { parse_mode: 'Markdown', ...keyboard })
+        .catch(async () => {
+            await ctx.reply(text, { parse_mode: 'Markdown', ...keyboard });
+        });
+}
+export { showLibraryPage };

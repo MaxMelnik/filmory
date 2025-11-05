@@ -4,20 +4,20 @@ import {handleAddFilm, handleFilmTitleInput} from '../handlers/addFilm.js';
 import {FilmService} from '../../services/FilmService.js';
 import {UserService} from '../../services/UserService.js';
 
-const addFilmScene = new Scenes.BaseScene('ADD_FILM_SCENE_ID');
+const scene = new Scenes.BaseScene('ADD_FILM_SCENE_ID');
 
 // === Вхід у сцену ===
-addFilmScene.enter(async (ctx) => {
+scene.enter(async (ctx) => {
     await handleAddFilm(ctx);
 });
 
 // === Обробка тексту (назва фільму) ===
-addFilmScene.on(message('text'), async (ctx) => {
+scene.on(message('text'), async (ctx) => {
     await handleFilmTitleInput(ctx);
 });
 
 // === Додати у "Подивитись пізніше" ===
-addFilmScene.action('ADD_WATCH_LATER', async (ctx) => {
+scene.action('ADD_WATCH_LATER', async (ctx) => {
     const film = ctx.scene.state.film;
     if (!film) return ctx.answerCbQuery('⚠️ Не знайдено фільм у контексті.');
 
@@ -33,7 +33,7 @@ addFilmScene.action('ADD_WATCH_LATER', async (ctx) => {
 });
 
 // === Вже переглянуто → показати оцінку ===
-addFilmScene.action('ADD_WATCHED', async (ctx) => {
+scene.action('ADD_WATCHED', async (ctx) => {
     const film = ctx.scene.state.film;
     if (!film) return ctx.answerCbQuery('⚠️ Не знайдено фільм у контексті.');
 
@@ -65,7 +65,7 @@ addFilmScene.action('ADD_WATCHED', async (ctx) => {
 
 // === Обробка вибору рейтингу ===
 for (let i = 1; i <= 10; i++) {
-    addFilmScene.action(`RATE_${i}`, async (ctx) => {
+    scene.action(`RATE_${i}`, async (ctx) => {
         const film = ctx.scene.state.film;
         if (!film) return ctx.answerCbQuery('⚠️ Не знайдено фільм у контексті.');
         const user = await UserService.getByTelegramId(ctx.from.id);
@@ -80,10 +80,10 @@ for (let i = 1; i <= 10; i++) {
         await ctx.scene.leave();
     });
 }
-// addFilmScene.action(/^SAVE_MANUAL-\d+$/, async (ctx) => {
+// scene.action(/^SAVE_MANUAL-\d+$/, async (ctx) => {
 //     const title = ctx.update.callback_query.data.split('-')[1];
 // Save title provided by user
-addFilmScene.action('SAVE_MANUAL', async (ctx) => {
+scene.action('SAVE_MANUAL', async (ctx) => {
     const title = ctx.session.title;
     ctx.session.title = null;
     ctx.scene.state.film = await FilmService.createManual(title);
@@ -110,15 +110,15 @@ addFilmScene.action('SAVE_MANUAL', async (ctx) => {
 });
 
 // === "Back" button ===
-addFilmScene.action('GO_BACK', async (ctx) => {
+scene.action('GO_BACK', async (ctx) => {
     await ctx.answerCbQuery();
     await ctx.editMessageReplyMarkup();
     await ctx.scene.enter('START_SCENE_ID');
 });
 
 // === Вихід зі сцени ===
-addFilmScene.leave(async (ctx) => {
+scene.leave(async (ctx) => {
     if (ctx.session) ctx.session.awaitingFilmTitle = false;
 });
 
-export default addFilmScene;
+export default scene;

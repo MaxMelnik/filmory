@@ -16,10 +16,12 @@
   "dependencies": {
     "@google/genai": "^1.27.0",
     "axios": "^1.13.1",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mongoose": "^8.19.2",
     "mongoose-sequence": "^6.0.1",
+    "os": "^0.1.2",
     "telegraf": "^4.16.3"
   },
   "devDependencies": {

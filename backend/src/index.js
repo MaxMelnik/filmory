@@ -1,57 +1,41 @@
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import express from 'express';
 import bot from './bot/index.js';
+import {startServer} from './server.js';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
-const {MONGODB_CONNECT} = process.env;
-if (!MONGODB_CONNECT) {
-    console.error('❌ MONGO_URI відсутній у .env');
-    process.exit(1);
-}
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Health-check endpoint
-app.get('/', (req, res) => res.send('🟢 Filmory bot is alive'));
-
-// === 1. Запускаємо веб-сервер спочатку ===
-app.listen(PORT, async () => {
-    console.log(`🌐 Web server is running on port ${PORT}`);
-
-    // === 2. Після цього підключаємось до Mongo ===
+(async () => {
     try {
-        await mongoose.connect(MONGODB_CONNECT);
-        console.log('✅ Підключено до MongoDB');
+        // 1️⃣ Запускаємо веб-сервер
+        const app = await startServer();
+
+        // 2️⃣ Перевіряємо Mongo перед запуском бота
+        if (mongoose.connection.readyState !== 1) {
+            throw new Error('MongoDB не підключено, бот не може стартувати');
+        }
+
+        // 3️⃣ Запускаємо бота
+        const info = await bot.telegram.getMe();
+        console.log(`🤖 Filmory бот запущений як @${info.username}`);
+        await bot.launch();
+
+        // 4️⃣ Graceful shutdown
+        process.once('SIGINT', async () => {
+            console.log('🛑 Зупиняю Filmory...');
+            await bot.stop('SIGINT');
+            await mongoose.connection.close();
+            process.exit(0);
+        });
+
+        process.once('SIGTERM', async () => {
+            console.log('🛑 Зупиняю Filmory...');
+            await bot.stop('SIGTERM');
+            await mongoose.connection.close();
+            process.exit(0);
+        });
     } catch (err) {
-        console.error('❌ Помилка підключення MongoDB:', err);
+        console.error('❌ Помилка запуску Filmory:', err);
         process.exit(1);
     }
-
-    // === 3. Тепер запускаємо бота ===
-    try {
-        await bot.telegram.getMe().then((info) => {
-            console.log(`🤖 Filmory запущений як @${info.username}`);
-        });
-        bot.launch();
-    } catch (err) {
-        console.error('❌ Не вдалося отримати інформацію про бота:', err);
-    }
-});
-
-// === 4. Graceful shutdown ===
-process.once('SIGINT', async () => {
-    console.log('🛑 Зупиняю Filmory...');
-    await bot.stop('SIGINT');
-    await mongoose.connection.close();
-    process.exit(0);
-});
-
-process.once('SIGTERM', async () => {
-    console.log('🛑 Зупиняю Filmory...');
-    await bot.stop('SIGTERM');
-    await mongoose.connection.close();
-    process.exit(0);
-});
+})();

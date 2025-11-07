@@ -39,19 +39,20 @@ export class HealthService {
         }
 
         // Gemini
-        try {
-            const resp = await ai.models.generateContent({
-                model: 'gemini-2.0-flash',
-                contents: 'ping',
-            });
-            const text = resp?.text?.trim()?.toLowerCase() || '';
-            result.services.gemini = {
-                status: text.includes('ping') || text ? 'ok' : 'degraded',
-                latencyMs: Date.now() - start,
-            };
-        } catch (err) {
-            result.services.gemini = {status: 'error', message: err.message};
-        }
+        // try {
+        //     const resp = await ai.models.generateContent({
+        //         model: 'gemini-2.0-flash',
+        //         contents: 'ping',
+        //     });
+        //     const text = resp?.text?.trim()?.toLowerCase() || '';
+        //     result.services.gemini = {
+        //         status: text.includes('ping') || text ? 'ok' : 'degraded',
+        //     };
+        // } catch (err) {
+        //     result.services.gemini = {status: 'error', message: err.message};
+        // }
+
+        result.latencyMs = Date.now() - start;
 
         return result;
     }

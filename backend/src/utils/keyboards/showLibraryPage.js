@@ -1,12 +1,14 @@
-import { Markup } from 'telegraf';
-import { LibraryService } from '../../services/LibraryService.js';
+import {Markup} from 'telegraf';
+import {LibraryService} from '../../services/LibraryService.js';
 
 async function showLibraryPage(ctx) {
-    const { view = 'watchLater', page = 1 } = ctx.session;
+    const {view = 'watchLater', page = 1} = ctx.session;
     const limit = 5;
 
-    const { films, totalPages, totalCount } =
+    const {films, totalPages, totalCount} =
         await LibraryService.getUserFilmsPaginated(ctx.from.id, view, page, limit);
+
+    ctx.session.totalPages = totalPages;
 
     // --- Якщо список порожній ---
     if (!films.length) {
@@ -16,9 +18,9 @@ async function showLibraryPage(ctx) {
                 : '👁 Ти ще не додав переглянуті фільми.';
 
         await ctx
-            .editMessageText?.(emptyText, buildKeyboard(view, page, totalPages))
+            .editMessageText?.(emptyText)
             .catch(async () => {
-                await ctx.reply(emptyText, buildKeyboard(view, page, totalPages));
+                await ctx.reply(emptyText);
             });
         return;
     }
@@ -27,24 +29,26 @@ async function showLibraryPage(ctx) {
     const filmButtons = films.map((f) =>
         [Markup.button.callback(
             `${f.title}${f.year ? ` (${f.year})` : ''}`,
-            `OPEN_FILM_${f._id}`
-        )]
+            `OPEN_FILM_${f._id}`,
+        )],
     );
 
     const switchButtons = [
         Markup.button.callback(
-            view === 'watchLater' ? '📺 Подивитись пізніше ✅' : '📺 Подивитись пізніше',
-            'SWITCH_WATCH_LATER'
+            view === 'watchLater' ? '📺 На потім ✅' : '📺 На потім',
+            'SWITCH_WATCH_LATER',
         ),
         Markup.button.callback(
             view === 'watched' ? '👁 Переглянуті ✅' : '👁 Переглянуті',
-            'SWITCH_WATCHED'
+            'SWITCH_WATCHED',
         ),
     ];
 
-    const navButtons = [];
-    if (page > 1) navButtons.push(Markup.button.callback('⬅', 'PREV_PAGE'));
-    if (page < totalPages) navButtons.push(Markup.button.callback('➡', 'NEXT_PAGE'));
+    const navButtons = (totalPages > 1) ? [
+        Markup.button.callback('⬅', 'PREV_PAGE'),
+        Markup.button.callback(`📄 ${page}/${totalPages}`, 'FAKE_BUTTON'),
+        Markup.button.callback('➡', 'NEXT_PAGE'),
+    ] : [];
 
     const keyboard = Markup.inlineKeyboard([
         switchButtons,
@@ -60,9 +64,10 @@ async function showLibraryPage(ctx) {
     const text = `${header}\n\n📄 Сторінка ${page} з ${totalPages} (${totalCount} фільмів)`;
 
     await ctx
-        .editMessageText?.(text, { parse_mode: 'Markdown', ...keyboard })
+        .editMessageText?.(text, {parse_mode: 'Markdown', ...keyboard})
         .catch(async () => {
-            await ctx.reply(text, { parse_mode: 'Markdown', ...keyboard });
+            await ctx.reply(text, {parse_mode: 'Markdown', ...keyboard});
         });
 }
-export { showLibraryPage };
+
+export {showLibraryPage};

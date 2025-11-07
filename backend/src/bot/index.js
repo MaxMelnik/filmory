@@ -6,6 +6,9 @@ import {Film} from '../models/index.js';
 import startScene from './scenes/startScene.js';
 import addFilmScene from './scenes/addFilmScene.js';
 import libraryScene from './scenes/libraryScene.js';
+import {LibraryService} from '../services/LibraryService.js';
+import {showLibraryPage} from '../utils/keyboards/showLibraryPage.js';
+import scene from './scenes/libraryScene.js';
 // import rateFilmScene from './scenes/rateFilmScene.js';
 // import recommendationScene from './scenes/recommendationScene.js';
 
@@ -67,7 +70,9 @@ bot.action('ADD_FILM', (ctx) => ctx.scene.enter('ADD_FILM_SCENE_ID'));
 
 bot.action('SHOW_LIST', (ctx) => ctx.scene.enter('LIBRARY_SCENE_ID'));
 
-// bot.action('RATE_FILM', (ctx) => ctx.scene.enter('RATE_FILM_SCENE_ID'));
+bot.action('FAKE_BUTTON', async (ctx) => {
+    ctx.answerCbQuery();
+});
 
 bot.command('test', async (ctx) => {
     const f1 = await Film.create({ title: 'Test Movie 1' });

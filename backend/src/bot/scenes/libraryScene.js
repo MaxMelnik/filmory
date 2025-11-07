@@ -3,6 +3,7 @@ import {Film} from '../../models/index.js';
 import {showLibraryPage} from '../../utils/keyboards/showLibraryPage.js';
 import {showWaiter} from '../../utils/animatedWaiter.js';
 import {getFilmRecommendations} from '../../services/geminiService.js';
+import {LibraryService} from '../../services/LibraryService.js';
 
 const scene = new Scenes.BaseScene('LIBRARY_SCENE_ID');
 
@@ -10,6 +11,7 @@ const scene = new Scenes.BaseScene('LIBRARY_SCENE_ID');
 scene.enter(async (ctx) => {
     ctx.session.view = 'watchLater';
     ctx.session.page = 1;
+    ctx.session.totalPages = null;
     await showLibraryPage(ctx);
 });
 
@@ -29,12 +31,14 @@ scene.action('SWITCH_WATCHED', async (ctx) => {
 
 scene.action('NEXT_PAGE', async (ctx) => {
     ctx.session.page++;
+    if (ctx.session.page > ctx.session.totalPages) ctx.session.page = 1;
     await ctx.answerCbQuery();
     await showLibraryPage(ctx);
 });
 
 scene.action('PREV_PAGE', async (ctx) => {
     ctx.session.page--;
+    if (ctx.session.page < 1) ctx.session.page = ctx.session.totalPages;
     await ctx.answerCbQuery();
     await showLibraryPage(ctx);
 });

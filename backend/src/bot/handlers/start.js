@@ -1,9 +1,9 @@
-import {User} from '../../models/index.js';
+import { User } from '../../models/index.js';
 
 export async function handleStart(ctx) {
     try {
         const telegramId = String(ctx.from.id);
-        let user = await User.findOne({telegramId});
+        let user = await User.findOne({ telegramId });
 
         if (!user) {
             user = await User.create({
@@ -27,9 +27,9 @@ export async function handleStart(ctx) {
         await ctx.replyWithMarkdownV2(text, {
             reply_markup: {
                 inline_keyboard: [
-                    [{text: '➕ Додати фільм', callback_data: 'ADD_FILM'}],
-                    [{text: '📋 Мій список', callback_data: 'SHOW_LIST'}],
-                    [{text: '⭐ Рекомендації', callback_data: 'GET_RECS'}],
+                    [{ text: '➕ Додати фільм', callback_data: 'ADD_FILM' }],
+                    [{ text: '📋 Мій список', callback_data: 'SHOW_LIST' }],
+                    [{ text: '⭐ Рекомендації', callback_data: 'GET_RECS' }],
                 ],
             },
         });

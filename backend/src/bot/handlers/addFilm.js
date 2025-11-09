@@ -1,6 +1,6 @@
-import {searchFilm} from '../../services/tmdbClient.js';
-import {Markup} from 'telegraf';
-import {FilmService} from '../../services/FilmService.js';
+import { searchFilm } from '../../services/integrations/tmdbClient.js';
+import { Markup } from 'telegraf';
+import { FilmService } from '../../services/FilmService.js';
 
 export async function handleAddFilm(ctx) {
     const keyboard = Markup.inlineKeyboard([
@@ -23,10 +23,10 @@ export async function handleFilmTitleInput(ctx) {
     const found = await searchFilm(title);
     if (!found) {
         const keyboard = Markup.inlineKeyboard([
-            [Markup.button.callback(`❌ Зберегти як "${title}"`, `SAVE_MANUAL`)],
+            [Markup.button.callback(`📝 Зберегти як "${title}"`, `SAVE_MANUAL`)],
             [Markup.button.callback('⬅ Назад', 'GO_BACK')],
         ]);
-        return ctx.reply('Не знайшов такого фільму 😢', keyboard);
+        return ctx.reply('Не знайшов такого фільму на TMDB 😢', keyboard);
     }
 
     const film = await FilmService.upsertFromTmdb(found);
@@ -35,7 +35,7 @@ export async function handleFilmTitleInput(ctx) {
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('🎞 Подивитись пізніше', 'ADD_WATCH_LATER')],
         [Markup.button.callback('✅ Вже переглянуто', 'ADD_WATCHED')],
-        [Markup.button.callback(`❌ Зберегти як "${title}"`, `SAVE_MANUAL`)],
+        [Markup.button.callback(`📝 Зберегти як "${title}"`, `SAVE_MANUAL`)],
         [Markup.button.callback('⬅ Назад', 'GO_BACK')],
     ]);
 
@@ -48,6 +48,6 @@ export async function handleFilmTitleInput(ctx) {
             ...keyboard,
         });
     } else {
-        await ctx.reply(caption, {parse_mode: 'HTML', ...keyboard});
+        await ctx.reply(caption, { parse_mode: 'HTML', ...keyboard });
     }
 }

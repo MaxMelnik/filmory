@@ -66,9 +66,9 @@ export async function showWaiter(ctx, {
         clearInterval(interval);
 
         // ✅ Оновлюємо повідомлення після завершення
-        const finalText = typeof onDone === 'function'
-            ? onDone(result)
-            : `✅ Завершено:\n\n${result}`;
+        const finalText = typeof onDone === 'function' ?
+            onDone(result) :
+            `✅ Завершено:\n\n${result}`;
 
         await ctx.telegram.editMessageText(
             ctx.chat.id,

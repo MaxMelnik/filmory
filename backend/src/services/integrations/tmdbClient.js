@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const {TMDB_API_KEY, TMDB_BASE_URL} = process.env;
+const { TMDB_API_KEY, TMDB_BASE_URL } = process.env;
 
 if (!TMDB_API_KEY) {
     console.error('❌ TMDB_API_KEY не знайдено у .env');
@@ -34,9 +34,9 @@ export async function searchFilm(title) {
             title: first.title || first.original_title,
             year: first.release_date ? first.release_date.slice(0, 4) : null,
             overview: first.overview,
-            posterUrl: first.poster_path
-                ? `https://image.tmdb.org/t/p/w500${first.poster_path}`
-                : null,
+            posterUrl: first.poster_path ?
+                `https://image.tmdb.org/t/p/w500${first.poster_path}` :
+                null,
         };
     } catch (error) {
         console.error('❌ Помилка TMDB search:', error.message);
@@ -67,9 +67,9 @@ export async function getMovieDetails(id) {
             year: movie.release_date?.slice(0, 4) || null,
             genres: movie.genres?.map((g) => g.name) || [],
             description: movie.overview,
-            posterUrl: movie.poster_path
-                ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                : null,
+            posterUrl: movie.poster_path ?
+                `https://image.tmdb.org/t/p/w500${movie.poster_path}` :
+                null,
         };
     } catch (error) {
         console.error('❌ Помилка TMDB details:', error.message);
@@ -95,9 +95,9 @@ export async function getRecommendations(id) {
             tmdbId: m.id,
             title: m.title,
             year: m.release_date ? m.release_date.slice(0, 4) : null,
-            posterUrl: m.poster_path
-                ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
-                : null,
+            posterUrl: m.poster_path ?
+                `https://image.tmdb.org/t/p/w500${m.poster_path}` :
+                null,
         }));
     } catch (error) {
         console.error('❌ Помилка TMDB recommendations:', error.message);

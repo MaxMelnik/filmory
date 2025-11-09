@@ -1,8 +1,8 @@
-import {Markup, Scenes} from 'telegraf';
-import {message} from 'telegraf/filters';
-import {handleAddFilm, handleFilmTitleInput} from '../handlers/addFilm.js';
-import {FilmService} from '../../services/FilmService.js';
-import {UserService} from '../../services/UserService.js';
+import { Markup, Scenes } from 'telegraf';
+import { message } from 'telegraf/filters';
+import { handleAddFilm, handleFilmTitleInput } from '../handlers/addFilm.js';
+import { FilmService } from '../../services/FilmService.js';
+import { UserService } from '../../services/UserService.js';
 
 const scene = new Scenes.BaseScene('ADD_FILM_SCENE_ID');
 
@@ -60,7 +60,7 @@ scene.action('ADD_WATCHED', async (ctx) => {
 
     await ctx.reply(
         `✅ Позначив <b>${film.title}</b> як переглянутий!\n\nОціни його від 1 до 10:`,
-        {parse_mode: 'HTML', ...ratingKeyboard},
+        { parse_mode: 'HTML', ...ratingKeyboard },
     );
 });
 
@@ -76,7 +76,7 @@ for (let i = 1; i <= 10; i++) {
         await ctx.editMessageReplyMarkup();
         await ctx.reply(
             `⭐ Оцінив <b>${film.title}</b> на ${i}/10. Гарний вибір!`,
-            {parse_mode: 'HTML'},
+            { parse_mode: 'HTML' },
         );
         await ctx.scene.leave();
     });

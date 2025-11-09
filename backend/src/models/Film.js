@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { createRequire } from 'module';
+
 const require = createRequire(import.meta.url);
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
@@ -37,8 +38,8 @@ const filmSchema = new mongoose.Schema(
         },
 
     },
-    {timestamps: true, _id: false },
+    { timestamps: true, _id: false },
 );
 
-filmSchema.plugin(AutoIncrement, {id: 'Film'});
+filmSchema.plugin(AutoIncrement, { id: 'Film' });
 export const Film = mongoose.model('Film', filmSchema);

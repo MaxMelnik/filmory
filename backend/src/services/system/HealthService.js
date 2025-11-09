@@ -1,9 +1,9 @@
 import os from 'os';
 import mongoose from 'mongoose';
 import getBotInstance from '../../bot/getBotInstance.js';
-import {GoogleGenAI} from '@google/genai';
+// import {GoogleGenAI} from '@google/genai';
 
-const ai = new GoogleGenAI({apiKey: process.env.GOOGLE_API_KEY});
+// const ai = new GoogleGenAI({apiKey: process.env.GOOGLE_API_KEY});
 
 export class HealthService {
     static async getFullHealth() {
@@ -25,17 +25,17 @@ export class HealthService {
 
         // Mongo
         result.services.mongo =
-            mongoose.connection.readyState === 1
-                ? {status: 'ok'}
-                : {status: 'error', message: 'Mongo disconnected'};
+            mongoose.connection.readyState === 1 ?
+                { status: 'ok' } :
+                { status: 'error', message: 'Mongo disconnected' };
 
         // Telegram
         try {
             const bot = getBotInstance();
             const me = await bot.telegram.getMe();
-            result.services.telegram = {status: 'ok', username: me.username};
+            result.services.telegram = { status: 'ok', username: me.username };
         } catch (err) {
-            result.services.telegram = {status: 'error', message: err.message};
+            result.services.telegram = { status: 'error', message: err.message };
         }
 
         // Gemini

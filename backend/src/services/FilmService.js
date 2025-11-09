@@ -1,4 +1,4 @@
-import {Film, LibraryItem} from '../models/index.js';
+import { Film, LibraryItem } from '../models/index.js';
 
 /**
  * FilmService — відповідає за роботу з фільмами у базі даних.
@@ -9,7 +9,7 @@ export class FilmService {
      * Знайти фільм за TMDB ID
      */
     static async getByTmdbId(tmdbId) {
-        return Film.findOne({tmdbId});
+        return Film.findOne({ tmdbId });
     }
 
     /**
@@ -25,7 +25,7 @@ export class FilmService {
             genres: found.genre_names || [],
         };
 
-        let film = await Film.findOne({tmdbId: data.tmdbId});
+        let film = await Film.findOne({ tmdbId: data.tmdbId });
         if (!film) {
             film = new Film(data);
         } else {
@@ -39,7 +39,7 @@ export class FilmService {
      * Створити фільм вручну (якщо користувач не знайшов потрібний у TMDB)
      */
     static async createManual(title) {
-        let film = await Film.findOne({title});
+        let film = await Film.findOne({ title });
         if (!film) {
             film = new Film({
                 title,
@@ -59,7 +59,7 @@ export class FilmService {
      * Додати фільм у список користувача
      */
     static async addToLibrary(userId, filmId, status = 'watch_later', rating = null, source) {
-        let data = {
+        const data = {
             userId,
             filmId,
             status,

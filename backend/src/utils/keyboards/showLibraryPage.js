@@ -1,11 +1,11 @@
-import {Markup} from 'telegraf';
-import {LibraryService} from '../../services/LibraryService.js';
+import { Markup } from 'telegraf';
+import { LibraryService } from '../../services/LibraryService.js';
 
 async function showLibraryPage(ctx) {
-    const {view = 'watchLater', page = 1} = ctx.session;
+    const { view = 'watchLater', page = 1 } = ctx.session;
     const limit = 5;
 
-    const {films, totalPages, totalCount} =
+    const { films, totalPages, totalCount } =
         await LibraryService.getUserFilmsPaginated(ctx.from.id, view, page, limit);
 
     ctx.session.totalPages = totalPages;
@@ -13,9 +13,9 @@ async function showLibraryPage(ctx) {
     // --- Якщо список порожній ---
     if (!films.length) {
         const emptyText =
-            view === 'watchLater'
-                ? '📭 Список “подивитись пізніше” порожній.'
-                : '👁 Ти ще не додав переглянуті фільми.';
+            view === 'watchLater' ?
+                '📭 Список “подивитись пізніше” порожній.' :
+                '👁 Ти ще не додав переглянуті фільми.';
 
         await ctx
             .editMessageText?.(emptyText)
@@ -57,17 +57,17 @@ async function showLibraryPage(ctx) {
     ]);
 
     const header =
-        view === 'watchLater'
-            ? '📺 *Подивитись пізніше:*'
-            : '👁 *Переглянуті фільми:*';
+        view === 'watchLater' ?
+            '📺 *Подивитись пізніше:*' :
+            '👁 *Переглянуті фільми:*';
 
     const text = `${header}\n\n📄 Сторінка ${page} з ${totalPages} (${totalCount} фільмів)`;
 
     await ctx
-        .editMessageText?.(text, {parse_mode: 'Markdown', ...keyboard})
+        .editMessageText?.(text, { parse_mode: 'Markdown', ...keyboard })
         .catch(async () => {
-            await ctx.reply(text, {parse_mode: 'Markdown', ...keyboard});
+            await ctx.reply(text, { parse_mode: 'Markdown', ...keyboard });
         });
 }
 
-export {showLibraryPage};
+export { showLibraryPage };

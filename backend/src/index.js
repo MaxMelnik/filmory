@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import bot from './bot/index.js';
-import {startServer} from './server.js';
+import { startServer } from './server.js';
 import mongoose from 'mongoose';
 
 dotenv.config();
@@ -8,7 +8,7 @@ dotenv.config();
 (async () => {
     try {
         // 1️⃣ Запускаємо веб-сервер
-        const app = await startServer();
+        await startServer();
 
         // 2️⃣ Перевіряємо Mongo перед запуском бота
         if (mongoose.connection.readyState !== 1) {

@@ -1,16 +1,11 @@
-import {Scenes, session} from 'telegraf';
+import { Scenes, session } from 'telegraf';
 import getBotInstance from './getBotInstance.js';
-import {Film} from '../models/index.js';
 
 // === Scenes ===
 import startScene from './scenes/startScene.js';
 import addFilmScene from './scenes/addFilmScene.js';
 import libraryScene from './scenes/libraryScene.js';
-import {LibraryService} from '../services/LibraryService.js';
-import {showLibraryPage} from '../utils/keyboards/showLibraryPage.js';
-import scene from './scenes/libraryScene.js';
-// import rateFilmScene from './scenes/rateFilmScene.js';
-// import recommendationScene from './scenes/recommendationScene.js';
+import recommendationScene from './scenes/recommendationScene.js';
 
 // === Ініціалізація ===
 const bot = getBotInstance();
@@ -20,8 +15,7 @@ const stage = new Scenes.Stage([
     startScene,
     addFilmScene,
     libraryScene,
-    // rateFilmScene,
-    // recommendationScene,
+    recommendationScene,
 ]);
 
 bot.use(session());
@@ -66,18 +60,16 @@ bot.command('add', (ctx) => ctx.scene.enter('ADD_FILM_SCENE_ID'));
 
 bot.command('my_films', (ctx) => ctx.scene.enter('LIBRARY_SCENE_ID'));
 
+bot.command('/recommendation', (ctx) => ctx.scene.enter('RECOMMENDATION_SCENE_ID'));
+
 bot.action('ADD_FILM', (ctx) => ctx.scene.enter('ADD_FILM_SCENE_ID'));
 
 bot.action('SHOW_LIST', (ctx) => ctx.scene.enter('LIBRARY_SCENE_ID'));
 
+bot.action('GET_RECS', (ctx) => ctx.scene.enter('RECOMMENDATION_SCENE_ID'));
+
 bot.action('FAKE_BUTTON', async (ctx) => {
     ctx.answerCbQuery();
-});
-
-bot.command('test', async (ctx) => {
-    const f1 = await Film.create({ title: 'Test Movie 1' });
-    const f2 = await Film.create({ title: 'Test Movie 2' });
-    console.log(f1._id, f2._id); // 1 2
 });
 
 // === Експорт інстансу ===

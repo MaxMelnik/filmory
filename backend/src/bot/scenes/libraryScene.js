@@ -1,9 +1,8 @@
-import {Scenes, Markup} from 'telegraf';
-import {Film} from '../../models/index.js';
-import {showLibraryPage} from '../../utils/keyboards/showLibraryPage.js';
-import {showWaiter} from '../../utils/animatedWaiter.js';
-import {getFilmRecommendations} from '../../services/geminiService.js';
-import {LibraryService} from '../../services/LibraryService.js';
+import { Scenes, Markup } from 'telegraf';
+import { Film } from '../../models/index.js';
+import { showLibraryPage } from '../../utils/keyboards/showLibraryPage.js';
+import { showWaiter } from '../../utils/animatedWaiter.js';
+import { getFilmRecommendations } from '../../services/integrations/geminiService.js';
 
 const scene = new Scenes.BaseScene('LIBRARY_SCENE_ID');
 
@@ -58,10 +57,9 @@ scene.action(/^OPEN_FILM_(\d+)$/, async (ctx) => {
         `${film.description || 'Опис відсутній.'}`;
 
     const statusButtons = (ctx.session.view === 'watched') ? [
-            Markup.button.callback('⭐ Змінити оцінку', `CHANGE_MARK_${filmId}`),
-            Markup.button.callback('⏳ Подивитись пізніше', `MARK_WATCH_LATER_${filmId}`),
-        ]
-        :
+        Markup.button.callback('⭐ Змінити оцінку', `CHANGE_MARK_${filmId}`),
+        Markup.button.callback('⏳ Подивитись пізніше', `MARK_WATCH_LATER_${filmId}`),
+    ] :
         [
             Markup.button.callback('👁 Переглянуто', `MARK_WATCHED_${filmId}`),
         ];
@@ -79,7 +77,7 @@ scene.action(/^OPEN_FILM_(\d+)$/, async (ctx) => {
             ...keyboard,
         });
     } else {
-        await ctx.reply(caption, {parse_mode: 'Markdown', ...keyboard});
+        await ctx.reply(caption, { parse_mode: 'Markdown', ...keyboard });
     }
 });
 

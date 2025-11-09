@@ -12,7 +12,7 @@ export async function startServer() {
     app.use(systemRoutes);
 
     // Mongo connect
-    const {MONGODB_CONNECT} = process.env;
+    const { MONGODB_CONNECT } = process.env;
     if (!MONGODB_CONNECT) throw new Error('❌ MONGO_URI відсутній у .env');
 
     await mongoose.connect(MONGODB_CONNECT);

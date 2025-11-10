@@ -8,6 +8,9 @@ scene.enter(async (ctx) => {
     await showRecommendations(ctx);
 });
 
-scene.action('GO_BACK', (ctx) => ctx.scene.enter('START_SCENE_ID'));
+scene.action('GO_BACK', (ctx) => {
+    ctx.answerCbQuery();
+    ctx.scene.enter('START_SCENE_ID');
+});
 
 export default scene;

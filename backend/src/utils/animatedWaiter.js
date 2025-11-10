@@ -1,3 +1,5 @@
+import { Markup } from 'telegraf';
+
 /**
  * Animated waiter for Telegraf
  *
@@ -70,12 +72,23 @@ export async function showWaiter(ctx, {
             onDone(result) :
             `✅ Завершено:\n\n${result}`;
 
+        const keyboard = Markup.inlineKeyboard([
+            [Markup.button.callback('⬅ Назад', 'GO_BACK')],
+        ]);
+
         await ctx.telegram.editMessageText(
             ctx.chat.id,
             initial.message_id,
             undefined,
             finalText,
-        );
+            {
+                parse_mode: 'Markdown',
+                ...keyboard,
+            },
+        ).catch(async () => {
+            await ctx.reply(finalText, { parse_mode: 'Markdown', ...keyboard });
+        });
+
     } catch (error) {
         clearInterval(interval);
         console.error('❌ Animated waiter failed:', error);

@@ -33,7 +33,7 @@ export async function askGemini({ system, prompt, model = 'gemini-2.0-flash' }) 
         return response.text?.trim() || '⚠️ Порожня відповідь від моделі';
     } catch (err) {
         console.error('❌ Gemini API error:', err);
-        return '⚠️ Помилка під час виклику моделі Gemini.';
+        return '⚠️ Сервіс Gemini тимчасово недоступний. Спробуй, будь ласка, пізніше';
     }
 }
 

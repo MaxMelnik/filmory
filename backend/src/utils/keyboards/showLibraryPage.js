@@ -28,7 +28,7 @@ async function showLibraryPage(ctx) {
     // --- Формуємо список як інлайн-клавіатуру ---
     const filmButtons = films.map((f) =>
         [Markup.button.callback(
-            `${f.title}${f.year ? ` (${f.year})` : ''}`,
+            `${f.mark === 10 ? '⭐️ ' : ''}${f.title}${f.year ? ` (${f.year})` : ''}`,
             `OPEN_FILM_${f._id}`,
         )],
     );
@@ -61,7 +61,7 @@ async function showLibraryPage(ctx) {
             '📺 *Подивитись пізніше:*' :
             '👁 *Переглянуті фільми:*';
 
-    const text = `${header}\n\n📄 Сторінка ${page} з ${totalPages} (${totalCount} фільмів)`;
+    const text = `${header}\n\n📄 Сторінка ${page} з ${totalPages} · ${totalCount} фільмів`;
 
     await ctx
         .editMessageText?.(text, { parse_mode: 'Markdown', ...keyboard })

@@ -72,4 +72,13 @@ export class LibraryService {
         }
         return [];
     }
+
+    static async deleteFilmFromUserLibrary(userId, filmId) {
+        const filter = {
+            userId,
+            filmId,
+        };
+
+        await LibraryItem.deleteOne(filter);
+    }
 }

@@ -22,7 +22,6 @@ scene.action('ADD_WATCH_LATER', async (ctx) => {
     if (!film) return ctx.answerCbQuery('⚠️ Не знайдено фільм у контексті.');
 
     const user = await UserService.getByTelegramId(ctx.from.id);
-    console.log(film);
     await FilmService.addToLibrary(user._id, film._id, 'watch_later');
 
     await ctx.answerCbQuery();

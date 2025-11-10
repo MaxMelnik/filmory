@@ -77,6 +77,6 @@ export class FilmService {
             Object.assign(libraryItem, data);
         }
 
-        return await libraryItem.save();
+        return libraryItem.save();
     }
 }

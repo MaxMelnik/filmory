@@ -60,12 +60,16 @@ export async function getFilmRecommendations(movieTitle) {
 /**
  * 🎬 Отримати рекомендації фільмів за списком фільмів
  * @param {string} includeFilms
+ * @param {string} excludeFilms
  * @returns {Promise<string>}
  */
-    export async function getListOfFilmsRecommendations(includeFilms) {
+export async function getListOfFilmsRecommendations(includeFilms, excludeFilms) {
     const system = 'Ти — розумний кінокритик, який радить фільми користувачам Filmory.';
     const prompt =
-        `Дай 5 фільмів, схожих на "${includeFilms}". Не повторюй текст запиту, не додавай Markdown. ` +
+        `Користувачу сподобались фільми ${includeFilms}. ` +
+        `Користувачу не сподобались фільми ${excludeFilms}. ` +
+        `Дай 5 інших фільмів, які точно сподобаються користувачу. ` +
+        `Не повторюй текст запиту, не додавай Markdown. ` +
         `Формат - простий нумерований список: Назва фільму | короткий опис одним реченням.`;
 
     const responseText = await askGemini({ system, prompt });

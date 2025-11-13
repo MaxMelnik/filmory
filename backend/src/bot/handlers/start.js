@@ -12,7 +12,9 @@ export async function handleStart(ctx) {
                 firstName: ctx.from.first_name,
                 lastName: ctx.from.last_name,
             });
-            console.log(`[NEW USER] ${user.username || user.telegramId}`);
+            console.log(`[NEW USER] @${user.username || user.telegramId}`);
+        } else {
+            console.log(`[START SCENE ENTERED] @${user.username || user.telegramId}`);
         }
 
         const text = `

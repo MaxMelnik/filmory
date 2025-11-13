@@ -3,6 +3,7 @@ import { Markup } from 'telegraf';
 import { FilmService } from '../../services/FilmService.js';
 
 export async function handleAddFilm(ctx) {
+    console.log(`[ADD FILM SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('⬅ Назад', 'GO_BACK')],
     ]);
@@ -18,7 +19,7 @@ export async function handleFilmTitleInput(ctx) {
     const title = ctx.message.text.trim();
     ctx.session.awaitingFilmTitle = false;
     ctx.session.title = title;
-    console.log(title);
+    console.log(`Add Film by @${ctx.from.username}: ${title}`);
 
     const found = await searchFilm(title);
     if (!found) {

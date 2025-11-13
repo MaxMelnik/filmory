@@ -4,21 +4,30 @@ import { LibraryService } from '../../services/LibraryService.js';
 import { UserService } from '../../services/UserService.js';
 
 export async function showRecommendations(ctx) {
+    console.log(`[RECOMMENDATIONS SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
     const user = await UserService.getByTelegramId(ctx.from.id);
     const favouriteMovies = await LibraryService.getUserFavouriteFilms(user._id, 8);
+    const worstMovies = await LibraryService.getUserWorstFilms(user._id, 4);
     const includeFilms = favouriteMovies
         .map(movie => movie.title)
         .filter(Boolean)
         .map(title => `"${title}"`)
         .join(', ');
 
-    console.log(includeFilms);
+    const excludeFilms = worstMovies
+        .map(movie => movie.title)
+        .filter(Boolean)
+        .map(title => `"${title}"`)
+        .join(', ');
+
+    console.log({ includeFilms });
+    console.log({ excludeFilms });
 
     await showWaiter(ctx, {
         message: `Шукаю фільми на основі твоїх вподобань`,
         animation: 'emoji', // "dots", "emoji", "phrases"
         delay: 500,
-        asyncTask: async () => await getListOfFilmsRecommendations(includeFilms),
+        asyncTask: async () => await getListOfFilmsRecommendations(includeFilms, excludeFilms),
         onDone: (response) => `🎬 Я знайшов для тебе фільми, які сподобаються:\n\n${response}`,
     });
 }

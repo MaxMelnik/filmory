@@ -16,9 +16,9 @@ export async function openLibraryFilmCard(ctx) {
         `${film.description || 'Опис відсутній.'}`;
 
     const statusButtons = (ctx.session.view === 'watched') ? [
-            Markup.button.callback('❌ Видалити', `DELETE_FROM_LIB_${filmId}`),
-            Markup.button.callback('📺 На потім', `MARK_WATCH_LATER_${filmId}`),
-        ] :
+        Markup.button.callback('❌ Видалити', `DELETE_FROM_LIB_${filmId}`),
+        Markup.button.callback('📺 На потім', `MARK_WATCH_LATER_${filmId}`),
+    ] :
         [
             Markup.button.callback('❌ Видалити', `DELETE_FROM_LIB_${filmId}`),
             Markup.button.callback('👁 Переглянуто', `MARK_WATCHED_${filmId}`),

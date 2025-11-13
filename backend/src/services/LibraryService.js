@@ -58,7 +58,7 @@ export class LibraryService {
      * Get user favourite films iteratively
      */
     static async getUserFavouriteFilms(userId, minRating = 10, limit = 25) {
-        for (let rating = minRating; rating > 0; rating--) {
+        for (let rating = minRating; rating > 4; rating--) {
             const items = await LibraryItem.find({
                 userId: userId,
                 status: 'watched',
@@ -69,6 +69,23 @@ export class LibraryService {
                 await LibraryItem.populate(items, { path: 'filmId' });
                 return items.map((i) => i.filmId).filter(Boolean);
             }
+        }
+        return [];
+    }
+
+    /**
+     * Get user worst films
+     */
+    static async getUserWorstFilms(userId, maxRating = 1, limit = 25) {
+        const items = await LibraryItem.find({
+            userId: userId,
+            status: 'watched',
+            rating: { $lte: maxRating },
+        }).limit(limit).lean();
+
+        if (items.length > 0) {
+            await LibraryItem.populate(items, { path: 'filmId' });
+            return items.map((i) => i.filmId).filter(Boolean);
         }
         return [];
     }

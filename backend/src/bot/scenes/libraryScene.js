@@ -12,6 +12,7 @@ const scene = new Scenes.BaseScene('LIBRARY_SCENE_ID');
 
 // === Вхід у сцену ===
 scene.enter(async (ctx) => {
+    console.log(`[LIBRARY SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
     ctx.session.view = 'watchLater';
     ctx.session.page = 1;
     ctx.session.totalPages = null;

@@ -1,5 +1,6 @@
 import { Markup } from 'telegraf';
 import { LibraryService } from '../../services/LibraryService.js';
+import { UserService as UsersService } from '../../services/UserService.js';
 
 async function showLibraryPage(ctx) {
     const { view = 'watchLater', page = 1 } = ctx.session;
@@ -7,6 +8,7 @@ async function showLibraryPage(ctx) {
 
     const { films, totalPages, totalCount } =
         await LibraryService.getUserFilmsPaginated(ctx.from.id, view, page, limit);
+    const user = await UsersService.getByTelegramId(ctx.from.id);
 
     ctx.session.totalPages = totalPages;
 
@@ -26,12 +28,15 @@ async function showLibraryPage(ctx) {
     }
 
     // --- Формуємо список як інлайн-клавіатуру ---
-    const filmButtons = films.map((f) =>
-        [Markup.button.callback(
-            `${f.mark === 10 ? '⭐️ ' : ''}${f.title}${f.year ? ` (${f.year})` : ''}`,
-            `OPEN_FILM_${f._id}`,
-        )],
-    );
+    const filmButtons = await Promise.all(
+        films.map(async (f) => {
+            const starred = await LibraryService.isStarred(user._id, f._id) ? '⭐️ ' : '';
+            const disliked = await LibraryService.isDisliked(user._id, f._id) ? '🥀 ' : '';
+            return [Markup.button.callback(
+                `${starred}${disliked}${f.title}${f.year ? ` (${f.year})` : ''}`,
+                `OPEN_FILM_${f._id}`,
+            )];
+        }));
 
     const switchButtons = [
         Markup.button.callback(

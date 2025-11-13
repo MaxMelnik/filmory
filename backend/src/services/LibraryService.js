@@ -90,6 +90,32 @@ export class LibraryService {
         return [];
     }
 
+    /**
+     * Check if film is starred by user
+     */
+    static async isStarred(userId, filmId, status = 'watched') {
+        const item = await LibraryItem.findOne({
+            userId,
+            filmId,
+            status,
+        }).lean();
+
+        return item?.rating === 10;
+    }
+
+    /**
+     * Check if film is disliked by user
+     */
+    static async isDisliked(userId, filmId, status = 'watched') {
+        const item = await LibraryItem.findOne({
+            userId,
+            filmId,
+            status,
+        }).lean();
+
+        return item?.rating <= 4;
+    }
+
     static async deleteFilmFromUserLibrary(userId, filmId) {
         const filter = {
             userId,

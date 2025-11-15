@@ -1,0 +1,43 @@
+G:\project\Filmory
+├── backend
+|  ├── package.json
+|  └── src
+|     ├── api
+|     ├── bot
+|     |  ├── getBotInstance.js
+|     |  ├── handlers
+|     |  ├── index.js
+|     |  ├── middlewares
+|     |  └── scenes
+|     ├── config
+|     ├── index.js
+|     ├── models
+|     |  ├── Film.js
+|     |  ├── index.js
+|     |  ├── LibraryItem.js
+|     |  └── User.js
+|     ├── server
+|     |  ├── controllers
+|     |  └── routes
+|     ├── server.js
+|     ├── services
+|     |  ├── FilmService.js
+|     |  ├── integrations
+|     |  ├── LibraryService.js
+|     |  ├── system
+|     |  └── UserService.js
+|     └── utils
+|        ├── animatedWaiter.js
+|        ├── escapeReservedCharacters.js
+|        ├── keyboards
+|        └── templates
+├── frontend
+├── LICENSE.md
+├── package-lock.json
+├── package.json
+├── README.md
+└── structure.txt
+
+directory: 532 file: 3160 symboliclink: 1
+
+ignored: directory (43)

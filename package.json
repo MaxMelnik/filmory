@@ -8,6 +8,7 @@
   "scripts": {
     "dev:backend": "npm run dev --workspace backend",
     "dev:frontend": "npm run dev --workspace frontend",
-    "start": "npm run start --workspace backend"
+    "start": "npm run start --workspace backend",
+    "structure": "treee --ignore \"node_modules/,dist/, .git/, coverage/, logs/\" -l 4 -o structure.txt"
   }
 }

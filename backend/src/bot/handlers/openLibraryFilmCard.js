@@ -1,8 +1,11 @@
 import { Film } from '../../models/index.js';
 import { Markup } from 'telegraf';
+import { LibraryService } from '../../services/LibraryService.js';
+import { UserService } from '../../services/UserService.js';
 
 export async function openLibraryFilmCard(ctx) {
     await ctx.answerCbQuery();
+    const user = await UserService.getByTelegramId(ctx.from.id);
     const filmId = parseInt(ctx.match[1]);
     const film = await Film.findById(filmId);
 
@@ -11,8 +14,12 @@ export async function openLibraryFilmCard(ctx) {
         return;
     }
 
+    const rating = await LibraryService.getRating(user._id, filmId);
+    const userRating = rating ? `Твоя оцінка: ⭐ ${rating}/10\n\n` : ``;
+
     const caption =
         `🎬 *${film.title}*${film.year ? ` (${film.year})` : ''}\n\n` +
+        userRating +
         `${film.description || 'Опис відсутній.'}`;
 
     const statusButtons = (ctx.session.view === 'watched') ? [

@@ -69,7 +69,7 @@ export async function getListOfFilmsRecommendations(includeFilms, excludeFilms) 
         `Користувачу сподобались фільми ${includeFilms}. ` +
         `Користувачу не сподобались фільми ${excludeFilms}. ` +
         `Дай 5 інших фільмів, які точно сподобаються користувачу. ` +
-        `Не повторюй текст запиту, не додавай Markdown. ` +
+        `Не повторюй текст запиту, не додавай Markdown, не додавай жодної додаткової інформації чи коментарів. ` +
         `Формат - простий нумерований список: Назва фільму | короткий опис одним реченням.`;
 
     const responseText = await askGemini({ system, prompt });

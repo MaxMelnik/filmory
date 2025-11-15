@@ -91,6 +91,18 @@ export class LibraryService {
     }
 
     /**
+     * Get users rating for film
+     */
+    static async getRating(userId, filmId) {
+        const item = await LibraryItem.findOne({
+            userId,
+            filmId,
+        }).lean();
+
+        return item?.rating;
+    }
+
+    /**
      * Check if film is starred by user
      */
     static async isStarred(userId, filmId, status = 'watched') {

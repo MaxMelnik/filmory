@@ -60,7 +60,7 @@ bot.command('add', (ctx) => ctx.scene.enter('ADD_FILM_SCENE_ID'));
 
 bot.command('my_films', (ctx) => ctx.scene.enter('LIBRARY_SCENE_ID'));
 
-bot.command('/recommendation', (ctx) => ctx.scene.enter('RECOMMENDATION_SCENE_ID'));
+bot.command('recommend', (ctx) => ctx.scene.enter('RECOMMENDATION_SCENE_ID'));
 
 bot.action('ADD_FILM', (ctx) => ctx.scene.enter('ADD_FILM_SCENE_ID'));
 

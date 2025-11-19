@@ -57,7 +57,7 @@ export class LibraryService {
     /**
      * Get user favourite films iteratively
      */
-    static async getUserFavouriteFilms(userId, minRating = 10, limit = 25) {
+    static async getUserFavouriteFilms(userId, minRating = 10, limit = 100) {
         for (let rating = minRating; rating > 4; rating--) {
             const items = await LibraryItem.find({
                 userId: userId,

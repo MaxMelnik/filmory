@@ -27,7 +27,7 @@ export async function setRateLibrary(ctx) {
             Markup.button.callback('📺 На потім', `MARK_WATCH_LATER_${filmId}`),
         ],
         [Markup.button.callback('⭐ Змінити оцінку', `CHANGE_MARK_${filmId}`)],
-        [Markup.button.callback('🛰️ Знайти схожі фільми', `RECOMMEND_${filmId}`)],
+        [Markup.button.callback('🤖 Знайти схожі фільми', `RECOMMEND_${filmId}`)],
         [Markup.button.callback('⬅ Назад', 'BACK_TO_LIBRARY')],
     ]);
 

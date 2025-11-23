@@ -217,7 +217,7 @@ environment-based config
 
 ## 📄 License
 
-[MIT License](LiCENSE.md)
+[MIT License](LICENSE.md)
 
 ## ⭐ Want to support Filmory?
 

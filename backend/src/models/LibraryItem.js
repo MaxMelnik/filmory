@@ -39,6 +39,4 @@ const libraryItemSchema = new mongoose.Schema(
 
 libraryItemSchema.index({ userId: 1, filmId: 1 }, { unique: true });
 libraryItemSchema.plugin(AutoIncrement, { id: 'LibraryItem' });
-
-
 export const LibraryItem = mongoose.model('LibraryItem', libraryItemSchema);

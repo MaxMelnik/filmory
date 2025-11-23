@@ -66,9 +66,4 @@ scene.action('BACK_TO_LIBRARY', (ctx) => {
     ctx.scene.enter('LIBRARY_SCENE_ID');
 });
 
-scene.action('GO_BACK', (ctx) => {
-    ctx.answerCbQuery();
-    ctx.scene.enter('START_SCENE_ID');
-});
-
 export default scene;

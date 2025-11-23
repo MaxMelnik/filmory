@@ -1,4 +1,5 @@
 import { Scenes, session } from 'telegraf';
+import { registerPaymentHandlers } from './handlers/payments.js';
 import getBotInstance from './getBotInstance.js';
 
 // === Scenes ===
@@ -6,6 +7,8 @@ import startScene from './scenes/startScene.js';
 import addFilmScene from './scenes/addFilmScene.js';
 import libraryScene from './scenes/libraryScene.js';
 import recommendationScene from './scenes/recommendationScene.js';
+import subscriptionsScene from './scenes/subscriptionsScene.js';
+import { UserService } from '../services/UserService.js';
 
 // === Ініціалізація ===
 const bot = getBotInstance();
@@ -16,10 +19,13 @@ const stage = new Scenes.Stage([
     addFilmScene,
     libraryScene,
     recommendationScene,
+    subscriptionsScene,
 ]);
 
 bot.use(session());
 bot.use(stage.middleware());
+
+registerPaymentHandlers(bot);
 
 // === Обробка помилок ===
 bot.catch(async (err, ctx) => {
@@ -62,15 +68,38 @@ bot.command('my_films', (ctx) => ctx.scene.enter('LIBRARY_SCENE_ID'));
 
 bot.command('recommend', (ctx) => ctx.scene.enter('RECOMMENDATION_SCENE_ID'));
 
-bot.action('ADD_FILM', (ctx) => ctx.scene.enter('ADD_FILM_SCENE_ID'));
+bot.command('plus', (ctx) => ctx.scene.enter('SUBSCRIPTIONS_SCENE_ID'));
 
-bot.action('SHOW_LIST', (ctx) => ctx.scene.enter('LIBRARY_SCENE_ID'));
+// bot.command('test', async (ctx) => ctx.reply(await UserService.isPlus(ctx.from.id)));
 
-bot.action('GET_RECS', (ctx) => ctx.scene.enter('RECOMMENDATION_SCENE_ID'));
-
-bot.action('FAKE_BUTTON', async (ctx) => {
+bot.action('ADD_FILM', (ctx) => {
     ctx.answerCbQuery();
+    ctx.scene.enter('ADD_FILM_SCENE_ID');
 });
+
+bot.action('SHOW_LIST', (ctx) => {
+    ctx.answerCbQuery();
+    ctx.scene.enter('LIBRARY_SCENE_ID');
+});
+
+bot.action('GET_RECS', (ctx) => {
+    ctx.answerCbQuery();
+    ctx.scene.enter('RECOMMENDATION_SCENE_ID');
+});
+
+bot.action('GET_SUBSCRIPTION', (ctx) => {
+    ctx.answerCbQuery();
+    ctx.scene.enter('SUBSCRIPTIONS_SCENE_ID');
+});
+
+
+bot.action('GO_BACK', (ctx) => {
+    ctx.answerCbQuery();
+    ctx.editMessageReplyMarkup();
+    ctx.scene.enter('START_SCENE_ID');
+});
+
+bot.action('FAKE_BUTTON', (ctx) => ctx.answerCbQuery());
 
 // === Експорт інстансу ===
 export default bot;

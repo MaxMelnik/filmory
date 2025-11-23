@@ -27,7 +27,6 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: 'uk',
         },
-        favoriteGenres: [String],
     },
     { timestamps: true, _id: false },
 );

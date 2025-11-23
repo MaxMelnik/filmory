@@ -26,13 +26,17 @@ export async function handleStart(ctx) {
 • Отримувати персональні рекомендації ⭐
     `;
 
+        const keyboard = [
+            [{ text: '➕ Додати фільм', callback_data: 'ADD_FILM' }],
+            [{ text: '📋 Мій список', callback_data: 'SHOW_LIST' }],
+            [{ text: '🤖 Рекомендації', callback_data: 'GET_RECS' }],
+        ];
+
+        keyboard.push([{ text: '⭐ Filmory Plus', callback_data: 'GET_SUBSCRIPTION' }]);
+
         await ctx.replyWithMarkdownV2(text, {
             reply_markup: {
-                inline_keyboard: [
-                    [{ text: '➕ Додати фільм', callback_data: 'ADD_FILM' }],
-                    [{ text: '📋 Мій список', callback_data: 'SHOW_LIST' }],
-                    [{ text: '⭐ Рекомендації', callback_data: 'GET_RECS' }],
-                ],
+                inline_keyboard: keyboard,
             },
         });
     } catch (err) {

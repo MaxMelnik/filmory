@@ -29,13 +29,6 @@ scene.action(/^RATE_(\d+)_(\d+)$/, async (ctx) => setRateAddFilm(ctx));
 
 scene.action('SAVE_MANUAL', async (ctx) => saveManual(ctx));
 
-// === "Back" button ===
-scene.action('GO_BACK', async (ctx) => {
-    await ctx.answerCbQuery();
-    await ctx.editMessageReplyMarkup();
-    await ctx.scene.enter('START_SCENE_ID');
-});
-
 // === Вихід зі сцени ===
 scene.leave(async (ctx) => {
     if (ctx.session) ctx.session.awaitingFilmTitle = false;

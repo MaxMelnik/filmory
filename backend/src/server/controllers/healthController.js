@@ -12,4 +12,13 @@ export const healthController = {
             res.status(500).json({ status: 'error', error: err.message });
         }
     },
+
+    async getFastHealth(req, res) {
+        try {
+            const data = await HealthService.getFastHealth();
+            res.json(data);
+        } catch (err) {
+            res.status(500).json({ status: 'error', error: err.message });
+        }
+    },
 };

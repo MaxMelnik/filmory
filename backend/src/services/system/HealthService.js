@@ -56,4 +56,25 @@ export class HealthService {
 
         return result;
     }
+
+    static async getFastHealth() {
+        const start = Date.now();
+        const result = {
+            status: 'ok',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+            version: process.env.npm_package_version || 'dev',
+            environment: process.env.ENVIRONMENT || 'development',
+            host: os.hostname(),
+            metrics: {
+                memoryMB: Math.round(process.memoryUsage().rss / 1024 / 1024),
+                cpuLoad: os.loadavg()[0],
+                uptimeMinutes: Math.round(process.uptime() / 60),
+            },
+        };
+
+        result.latencyMs = Date.now() - start;
+
+        return result;
+    }
 }

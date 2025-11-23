@@ -5,4 +5,6 @@ const router = Router();
 
 router.get('/healthz', healthController.getHealth);
 
+router.get('/fast-healthz', healthController.getFastHealth);
+
 export default router;

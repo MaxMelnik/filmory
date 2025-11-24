@@ -8,6 +8,8 @@ import addFilmScene from './scenes/addFilmScene.js';
 import libraryScene from './scenes/libraryScene.js';
 import recommendationScene from './scenes/recommendationScene.js';
 import subscriptionsScene from './scenes/subscriptionsScene.js';
+import rootScene from './scenes/rootScene.js';
+import { activityMiddleware } from './middlewares/activityMiddleware.js';
 import { UserService } from '../services/UserService.js';
 
 // === Ініціалізація ===
@@ -20,12 +22,14 @@ const stage = new Scenes.Stage([
     libraryScene,
     recommendationScene,
     subscriptionsScene,
+    rootScene,
 ]);
 
 bot.use(session());
 bot.use(stage.middleware());
 
 registerPaymentHandlers(bot);
+bot.use(activityMiddleware());
 
 // === Обробка помилок ===
 bot.catch(async (err, ctx) => {
@@ -62,6 +66,12 @@ bot.catch(async (err, ctx) => {
 // Коли користувач вводить /start → потрапляє в сцену
 bot.start((ctx) => ctx.scene.enter('START_SCENE_ID'));
 
+// bot.command('test', async (ctx) => ctx.reply(await UserService.isPlus(ctx.from.id)));
+
+bot.command('root', async (ctx) => {
+    if (await UserService.isRoot(ctx.from.id)) ctx.scene.enter('ROOT_SCENE_ID');
+});
+
 bot.command('add', (ctx) => ctx.scene.enter('ADD_FILM_SCENE_ID'));
 
 bot.command('my_films', (ctx) => ctx.scene.enter('LIBRARY_SCENE_ID'));
@@ -69,8 +79,6 @@ bot.command('my_films', (ctx) => ctx.scene.enter('LIBRARY_SCENE_ID'));
 bot.command('recommend', (ctx) => ctx.scene.enter('RECOMMENDATION_SCENE_ID'));
 
 bot.command('plus', (ctx) => ctx.scene.enter('SUBSCRIPTIONS_SCENE_ID'));
-
-// bot.command('test', async (ctx) => ctx.reply(await UserService.isPlus(ctx.from.id)));
 
 bot.action('ADD_FILM', (ctx) => {
     ctx.answerCbQuery();

@@ -1,6 +1,7 @@
-import { Usage } from '../../models/Usage.js';
+import { Usage } from '../../models/index.js';
 import { FREE_DAILY_LIMIT, PLUS_DAILY_LIMIT, MIN_REQUEST_INTERVAL_MS } from '../../config/limits.js';
 import { UserService } from '../UserService.js';
+import { AnalyticsService } from './AnalyticsService.js';
 import { Markup } from 'telegraf';
 
 function getTodayKey() {
@@ -82,7 +83,7 @@ export async function checkAndConsumeQuota(telegramId, plan) {
 export async function isRequestAllowed(ctx, goBackKeyboard = null, getPlusKeyboard = null) {
     const telegramId = ctx.from.id;
     const isPlus = await UserService.isPlus(telegramId);
-    const plan = isPlus ? 'PLUS' : 'FREE';
+    let plan = isPlus ? 'PLUS' : 'FREE';
 
     const quota = await checkAndConsumeQuota(telegramId, plan);
 
@@ -116,5 +117,8 @@ export async function isRequestAllowed(ctx, goBackKeyboard = null, getPlusKeyboa
         );
         return false;
     }
+
+    plan = await UserService.isRoot(telegramId) ? 'ROOT' : plan;
+    AnalyticsService.trackAiRequest(telegramId, plan).catch(console.error);
     return true;
 }

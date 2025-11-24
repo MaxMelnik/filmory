@@ -27,6 +27,16 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: 'uk',
         },
+        firstSeenAt: {
+            type: Date,
+        },
+        lastActiveAt: {
+            type: Date,
+        },
+        aiRequestsTotal: {
+            type: Number,
+            default: 0,
+        },
     },
     { timestamps: true, _id: false },
 );

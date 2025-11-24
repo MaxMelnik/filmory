@@ -46,4 +46,17 @@ export class UserService {
 
         return expiresAtTime > now;
     }
+
+    static async isRoot(telegramId) {
+        if (!telegramId) {
+            return false;
+        }
+
+        const sub = await Subscription.findOne({
+            telegramId,
+            plan: 'ROOT',
+        }).lean();
+
+        return !!sub;
+    }
 }

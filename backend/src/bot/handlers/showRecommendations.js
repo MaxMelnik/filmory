@@ -2,9 +2,13 @@ import { showWaiter } from '../../utils/animatedWaiter.js';
 import { getListOfFilmsRecommendations } from '../../services/integrations/geminiService.js';
 import { LibraryService } from '../../services/LibraryService.js';
 import { UserService } from '../../services/UserService.js';
+import { isRequestAllowed } from '../../services/system/QuotaService.js';
 
 export async function showRecommendations(ctx) {
     console.log(`[RECOMMENDATIONS SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
+
+    if (!await isRequestAllowed(ctx)) return;
+
     const user = await UserService.getByTelegramId(ctx.from.id);
     const favouriteMovies = await LibraryService.getUserFavouriteFilms(user._id, 8);
     const worstMovies = await LibraryService.getUserWorstFilms(user._id, 4);

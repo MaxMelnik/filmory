@@ -1,8 +1,9 @@
 import { User } from '../../models/index.js';
+import { UserService } from '../../services/UserService.js';
 
 export async function handleStart(ctx) {
     try {
-        const telegramId = String(ctx.from.id);
+        const telegramId = ctx.from.id;
         let user = await User.findOne({ telegramId });
 
         if (!user) {
@@ -18,21 +19,24 @@ export async function handleStart(ctx) {
         }
 
         const text = `
-🎬 *Вітаємо у Filmory\\!*
+🎬 *Вітаю у Filmory\\!*
 
 Тут ти можеш:
 • Зберігати фільми, які вже переглянув;
 • Додавати стрічки до “подивитись пізніше”;
-• Отримувати персональні рекомендації ⭐
+• Отримувати особисті рекомендації ⭐
     `;
+
+        const subscriptionButtonLabel = await UserService.isPlus(telegramId) ?
+            '✅ Plus активний' :
+            '⭐ Filmory Plus';
 
         const keyboard = [
             [{ text: '➕ Додати фільм', callback_data: 'ADD_FILM' }],
             [{ text: '📋 Мій список', callback_data: 'SHOW_LIST' }],
             [{ text: '🤖 Рекомендації', callback_data: 'GET_RECS' }],
+            [{ text: subscriptionButtonLabel, callback_data: 'GET_SUBSCRIPTION' }],
         ];
-
-        keyboard.push([{ text: '⭐ Filmory Plus', callback_data: 'GET_SUBSCRIPTION' }]);
 
         await ctx.replyWithMarkdownV2(text, {
             reply_markup: {

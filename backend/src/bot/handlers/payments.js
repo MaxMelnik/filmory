@@ -1,8 +1,10 @@
 import {
-    FILMORY_PLUS_PAYLOAD,
+    FILMORY_PLUS_PAYLOAD, FILMORY_PLUS_PRICE_STARS,
     SUBSCRIPTION_PERIOD_SECONDS,
 } from '../../config/subscription.js';
 import { SubscriptionService } from '../../services/SubscriptionService.js';
+import { UserService } from '../../services/UserService.js';
+import { Markup } from 'telegraf';
 
 export function registerPaymentHandlers(bot) {
     /**
@@ -44,7 +46,7 @@ export function registerPaymentHandlers(bot) {
             sp.subscription_expiration_date ??
             (nowSec + SUBSCRIPTION_PERIOD_SECONDS);
 
-        const starsPaid = sp.total_amount; // має бути 111 для твого тарифу
+        const starsPaid = sp.total_amount; // 111 for Filmory Plus
         const isRecurring = sp.is_recurring ?? true;
         const isFirstRecurring = sp.is_first_recurring ?? false;
 
@@ -62,6 +64,13 @@ export function registerPaymentHandlers(bot) {
             'Дякую за підписку на Filmory Plus! ✨\n' +
             'Підписка активна, Filmory автоматично відкриє додаткові можливості.\n\n' +
             'Автоподовження відбуватиметься раз на 30 днів, доки в тебе є зірки або ти не скасуєш підписку.',
+            Markup.inlineKeyboard([
+                [Markup.button.callback('⬅ Назад', 'GO_BACK')],
+            ]),
         );
+
+        const user = await UserService.getByTelegramId(ctx.from.id);
+        if (!user) return;
+        console.log(`Payment registered: @${user.username || user.telegramId}, ${starsPaid} ⭐`);
     });
 }

@@ -12,6 +12,18 @@ async function showLibraryPage(ctx) {
 
     ctx.session.totalPages = totalPages;
 
+
+    const switchButtons = [
+        Markup.button.callback(
+            view === 'watchLater' ? '📺 На потім ✅' : '📺 На потім',
+            'SWITCH_WATCH_LATER',
+        ),
+        Markup.button.callback(
+            view === 'watched' ? '👁 Переглянуті ✅' : '👁 Переглянуті',
+            'SWITCH_WATCHED',
+        ),
+    ];
+
     // --- Якщо список порожній ---
     if (!films.length) {
         const emptyText =
@@ -19,10 +31,16 @@ async function showLibraryPage(ctx) {
                 '📭 Список “подивитись пізніше” порожній.' :
                 '👁 Ти ще не додав переглянуті фільми.';
 
+        const emptyKeyboard = Markup.inlineKeyboard([
+            switchButtons,
+        ]);
+
+        console.log(emptyKeyboard);
+
         await ctx
-            .editMessageText?.(emptyText)
+            .editMessageText?.(emptyText, { parse_mode: 'Markdown', ...emptyKeyboard })
             .catch(async () => {
-                await ctx.reply(emptyText);
+                await ctx.reply(emptyText, { parse_mode: 'Markdown', ...emptyKeyboard });
             });
         return;
     }
@@ -37,17 +55,6 @@ async function showLibraryPage(ctx) {
                 `OPEN_FILM_${f._id}`,
             )];
         }));
-
-    const switchButtons = [
-        Markup.button.callback(
-            view === 'watchLater' ? '📺 На потім ✅' : '📺 На потім',
-            'SWITCH_WATCH_LATER',
-        ),
-        Markup.button.callback(
-            view === 'watched' ? '👁 Переглянуті ✅' : '👁 Переглянуті',
-            'SWITCH_WATCHED',
-        ),
-    ];
 
     const navButtons = (totalPages > 1) ? [
         Markup.button.callback('⬅', 'PREV_PAGE'),

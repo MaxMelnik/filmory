@@ -1,20 +1,21 @@
 import { Markup } from 'telegraf';
+import { UserService } from '../../services/UserService.js';
+import { LibraryService } from '../../services/LibraryService.js';
 
-export function rateKeyboard(filmId) {
-    return Markup.inlineKeyboard([
-        [
-            Markup.button.callback('1', `RATE_1_${filmId}`),
-            Markup.button.callback('2', `RATE_2_${filmId}`),
-            Markup.button.callback('3', `RATE_3_${filmId}`),
-            Markup.button.callback('4', `RATE_4_${filmId}`),
-            Markup.button.callback('5', `RATE_5_${filmId}`),
-        ],
-        [
-            Markup.button.callback('6', `RATE_6_${filmId}`),
-            Markup.button.callback('7', `RATE_7_${filmId}`),
-            Markup.button.callback('8', `RATE_8_${filmId}`),
-            Markup.button.callback('9', `RATE_9_${filmId}`),
-            Markup.button.callback('10⭐', `RATE_10_${filmId}`),
-        ],
-    ]);
+export async function rateKeyboard(filmId, telegramId) {
+    const user = await UserService.getByTelegramId(telegramId);
+    const rating = await LibraryService.getRating(user._id, filmId); // може бути null
+
+    const buttons = [];
+
+    for (let i = 1; i <= 10; i++) {
+        const label = (rating === i) ? `${i}⭐` : String(i);
+        const callbackData = `RATE_${i}_${filmId}`;
+        buttons.push(Markup.button.callback(label, callbackData));
+    }
+
+    // Розбиваємо по 5 в ряд
+    const rows = [buttons.slice(0, 5), buttons.slice(5, 10)];
+
+    return Markup.inlineKeyboard(rows);
 }

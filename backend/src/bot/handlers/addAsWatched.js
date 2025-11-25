@@ -7,7 +7,7 @@ export async function addAsWatched(ctx) {
     await ctx.answerCbQuery();
     await ctx.editMessageReplyMarkup();
 
-    const ratingKeyboard = rateKeyboard(film._id);
+    const ratingKeyboard = await rateKeyboard(film._id);
 
     await ctx.reply(
         `✅ Позначив <b>${film.title}</b> як переглянутий!\n\nОціни його від 1 до 10:`,

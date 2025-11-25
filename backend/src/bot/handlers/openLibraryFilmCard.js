@@ -23,9 +23,9 @@ export async function openLibraryFilmCard(ctx) {
         `${film.description || 'Опис відсутній.'}`;
 
     const statusButtons = (ctx.session.view === 'watched') ? [
-        Markup.button.callback('❌ Видалити', `DELETE_FROM_LIB_${filmId}`),
-        Markup.button.callback('📺 На потім', `MARK_WATCH_LATER_${filmId}`),
-    ] :
+            Markup.button.callback('❌ Видалити', `DELETE_FROM_LIB_${filmId}`),
+            Markup.button.callback('📺 На потім', `MARK_WATCH_LATER_${filmId}`),
+        ] :
         [
             Markup.button.callback('❌ Видалити', `DELETE_FROM_LIB_${filmId}`),
             Markup.button.callback('👁 Переглянуто', `MARK_WATCHED_${filmId}`),
@@ -33,7 +33,7 @@ export async function openLibraryFilmCard(ctx) {
 
     const keyboard = Markup.inlineKeyboard([
         statusButtons,
-        [Markup.button.callback('⭐ Змінити оцінку', `CHANGE_MARK_${filmId}`)],
+        (ctx.session.view === 'watched') ? [Markup.button.callback('⭐ Змінити оцінку', `CHANGE_MARK_${filmId}`)] : [],
         [Markup.button.callback('🤖 Знайти схожі фільми', `RECOMMEND_${filmId}`)],
         [Markup.button.callback('⬅ Назад', 'BACK_TO_LIBRARY')],
     ]);

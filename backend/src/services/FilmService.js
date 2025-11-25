@@ -59,7 +59,7 @@ export class FilmService {
      * Додати фільм у список користувача
      */
     static async addToLibrary(userId, filmId, status = 'watch_later', rating = null, source) {
-        const data = {
+        const rawData = {
             userId,
             filmId,
             status,
@@ -67,16 +67,22 @@ export class FilmService {
             source,
         };
 
-        let libraryItem = await LibraryItem.findOne({
-            userId,
-            filmId,
-        });
+        // Для апдейту чистимо null/undefined, щоб не перетирати існуючі значення
+        const updateData = Object.fromEntries(
+            Object.entries(rawData).filter(([, value]) => value !== null && value !== undefined),
+        );
+
+        let libraryItem = await LibraryItem.findOne({ userId, filmId });
+
         if (!libraryItem) {
-            libraryItem = new LibraryItem(data);
+            // для нового запису можна зберігати й null'и – це очікувана початкова стейт
+            libraryItem = new LibraryItem(rawData);
         } else {
-            Object.assign(libraryItem, data);
+            // оновлюємо тільки ті поля, які реально прийшли з даними
+            Object.assign(libraryItem, updateData);
         }
 
         return libraryItem.save();
     }
+
 }

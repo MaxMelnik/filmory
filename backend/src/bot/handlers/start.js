@@ -4,7 +4,7 @@ import logger from '../../utils/logger.js';
 export async function handleStart(ctx) {
     try {
         const telegramId = ctx.from.id;
-        let user = await UserService.getOrCreateUserFromCtx(ctx);
+        const user = await UserService.getOrCreateUserFromCtx(ctx);
         logger.info(`[START SCENE ENTERED] @${user.username || user.telegramId}`);
 
         const text = `

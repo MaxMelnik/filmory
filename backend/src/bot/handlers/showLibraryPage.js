@@ -1,7 +1,6 @@
 import { Markup } from 'telegraf';
 import { LibraryService } from '../../services/LibraryService.js';
 import { UserService as UsersService } from '../../services/UserService.js';
-import logger from '../../utils/logger.js';
 
 async function showLibraryPage(ctx) {
     const { view = 'watchLater', page = 1 } = ctx.session;

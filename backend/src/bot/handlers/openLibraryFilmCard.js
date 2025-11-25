@@ -22,7 +22,8 @@ export async function openLibraryFilmCard(ctx) {
         userRating +
         `${film.description || 'Опис відсутній.'}`;
 
-    const statusButtons = (ctx.session.view === 'watched') ? [
+    const statusButtons = (ctx.session.view === 'watched') ?
+        [
             Markup.button.callback('❌ Видалити', `DELETE_FROM_LIB_${filmId}`),
             Markup.button.callback('📺 На потім', `MARK_WATCH_LATER_${filmId}`),
         ] :

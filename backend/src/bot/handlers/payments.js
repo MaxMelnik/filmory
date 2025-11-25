@@ -1,5 +1,5 @@
 import {
-    FILMORY_PLUS_PAYLOAD, FILMORY_PLUS_PRICE_STARS,
+    FILMORY_PLUS_PAYLOAD,
     SUBSCRIPTION_PERIOD_SECONDS,
 } from '../../config/subscription.js';
 import { SubscriptionService } from '../../services/SubscriptionService.js';

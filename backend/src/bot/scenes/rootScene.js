@@ -1,8 +1,8 @@
 import { Markup, Scenes } from 'telegraf';
 import { AnalyticsService } from '../../services/system/AnalyticsService.js';
 import { message } from 'telegraf/filters';
-import { handleFilmTitleInput } from '../handlers/addFilm.js';
 import { UserService } from '../../services/UserService.js';
+import logger from '../../utils/logger.js';
 
 const scene = new Scenes.BaseScene('ROOT_SCENE_ID');
 
@@ -20,8 +20,6 @@ scene.enter(async (ctx) => {
 });
 
 scene.action('GENERAL_STATS', async (ctx) => {
-    const telegramId = ctx.from.id;
-
     const [mau, req30, plusReq30, freeReq30, rootReq30] = await Promise.all([
         AnalyticsService.getMau(30),
         AnalyticsService.getAiRequestsCount({ days: 30 }),

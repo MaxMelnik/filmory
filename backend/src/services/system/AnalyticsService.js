@@ -8,7 +8,7 @@ export class AnalyticsService {
 
         const now = new Date();
 
-        let user = await User.findOne({ telegramId });
+        const user = await User.findOne({ telegramId });
 
         if (!user) return;
 

@@ -16,10 +16,15 @@ export async function handleAddFilm(ctx) {
 }
 
 export async function handleFilmTitleInput(ctx) {
+    const title = ctx.message.text.trim();
+    if (title === '/start') return ctx.scene.enter('START_SCENE_ID');
+    if (title === '/add') return ctx.scene.enter('ADD_FILM_SCENE_ID');
+    if (title === '/my_films') return ctx.scene.enter('LIBRARY_SCENE_ID');
+    if (title === '/recommend') return ctx.scene.enter('RECOMMENDATION_SCENE_ID');
+    if (title === '/plus') return ctx.scene.enter('SUBSCRIPTIONS_SCENE_ID');
+
     if (!ctx.session?.awaitingFilmTitle) return;
 
-    const title = ctx.message.text.trim();
-    ctx.session.awaitingFilmTitle = false;
     ctx.session.title = title;
     console.log(`Add Film by @${ctx.from.username}: ${title}`);
 

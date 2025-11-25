@@ -10,6 +10,8 @@ export class AnalyticsService {
 
         let user = await User.findOne({ telegramId });
 
+        if (!user) return;
+
         user.lastActiveAt = now;
         if (!user.firstSeenAt) {
             user.firstSeenAt = now;

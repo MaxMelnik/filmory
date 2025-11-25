@@ -4,7 +4,7 @@ import { UserService } from '../../services/UserService.js';
 export async function handleStart(ctx) {
     try {
         const telegramId = ctx.from.id;
-        let user = await User.findOne({ telegramId });
+        let user = await UserService.getByTelegramId(telegramId);
 
         if (!user) {
             user = await User.create({

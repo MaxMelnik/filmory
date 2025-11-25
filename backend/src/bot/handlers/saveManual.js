@@ -7,8 +7,6 @@ export async function saveManual(ctx) {
     ctx.scene.state.film = await FilmService.createManual(title);
     await ctx.answerCbQuery();
 
-    console.log(title);
-
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('🎞 Подивитись пізніше', 'ADD_WATCH_LATER')],
         [Markup.button.callback('✅ Вже переглянуто', 'ADD_WATCHED')],
@@ -16,15 +14,15 @@ export async function saveManual(ctx) {
     ]);
 
     try {
+        const caption = `“${title}”\n\nЩо зробимо з цим фільмом?`;
         if (ctx.update.callback_query.message.photo) {
-            const caption = `“${title}”\n\nЩо зробимо з цим фільмом?`;
             const keyboardOptions = {
                 parse_mode: 'Markdown',
                 ...keyboard,
             };
             await ctx.editMessageCaption(caption, keyboardOptions);
         } else {
-            await ctx.editMessageText(`“${title}”\n\nЩо зробимо з цим фільмом?`, keyboard);
+            await ctx.editMessageText(caption, keyboard);
         }
     } catch (e) {
         console.error('⚠️ Не вдалося оновити повідомлення:', e.message);

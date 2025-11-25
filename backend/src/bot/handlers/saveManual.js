@@ -14,7 +14,7 @@ export async function saveManual(ctx) {
     ]);
 
     try {
-        const caption = `“${title}”\n\nЩо зробимо з цим фільмом?`;
+        const caption = `“${title}”\n\nЯк зберегти цей фільм?`;
         if (ctx.update.callback_query.message.photo) {
             const keyboardOptions = {
                 parse_mode: 'Markdown',

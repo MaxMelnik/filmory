@@ -43,11 +43,11 @@ export async function handleFilmTitleInput(ctx) {
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('🎞 Подивитись пізніше', 'ADD_WATCH_LATER')],
         [Markup.button.callback('✅ Вже переглянуто', 'ADD_WATCHED')],
-        [Markup.button.callback(`📝 Зберегти як "${title}"`, `SAVE_MANUAL`)],
+        [Markup.button.callback(`📝 Лише назву "${title}"`, `SAVE_MANUAL`)],
         [Markup.button.callback('⬅ Назад', 'GO_BACK')],
     ]);
 
-    const caption = `<b>${film.title}</b> (${film.year || '?'})\n\nЩо зробимо з цим фільмом?`;
+    const caption = `<b>${film.title}</b> (${film.year || '?'})\n\nЯк зберегти цей фільм?`;
 
     if (film.posterUrl) {
         await ctx.replyWithPhoto(film.posterUrl, {

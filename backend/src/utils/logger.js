@@ -16,11 +16,25 @@ const consoleFormat = combine(
     errors({ stack: true }),
     splat(),
     printf(({ timestamp, level, message, stack, ...meta }) => {
-        const metaStr = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
-        if (stack) {
-            return `${timestamp} ${level}: ${message}\n${stack}${metaStr}`;
+        let msg = message;
+
+        if (typeof msg === 'object') {
+            try {
+                msg = JSON.stringify(msg, null, 2);
+            } catch {
+                msg = String(msg);
+            }
         }
-        return `${timestamp} ${level}: ${message}${metaStr}`;
+
+        // 2) meta теж тримаємо як JSON (як і було)
+        const hasMeta = Object.keys(meta).length > 0;
+        const metaStr = hasMeta ? ` ${JSON.stringify(meta, null, 2)}` : '';
+
+        if (stack) {
+            return `${timestamp} ${level}: ${msg}\n${stack}${metaStr}`;
+        }
+
+        return `${timestamp} ${level}: ${msg}${metaStr}`;
     }),
 );
 
@@ -28,7 +42,7 @@ const fileFormat = combine(
     timestamp(),
     errors({ stack: true }),
     splat(),
-    json(), // файл у JSON-форматі — зручно грепати/аналізувати
+    json(),
 );
 
 const logger = createLogger({

@@ -3,6 +3,7 @@ import { showWaiter } from '../../utils/animatedWaiter.js';
 import { getFilmRecommendations } from '../../services/integrations/geminiService.js';
 import { isRequestAllowed } from '../../services/system/QuotaService.js';
 import { Markup } from 'telegraf';
+import parseRecommendations from '../../utils/parseRecommendations.js';
 import logger from '../../utils/logger.js';
 
 export async function recommendSimilar(ctx) {
@@ -22,6 +23,6 @@ export async function recommendSimilar(ctx) {
         animation: 'emoji', // "dots", "emoji", "phrases"
         delay: 500,
         asyncTask: async () => await getFilmRecommendations(movieName),
-        onDone: (response) => `🎬 Фільми схожі на "${movieName}":\n\n${response}`,
+        onDone: (response) => parseRecommendations(response, `🎬 Фільми схожі на ${movieName}:\n`),
     });
 }

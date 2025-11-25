@@ -11,6 +11,25 @@ export class UserService {
         return User.findOne({ telegramId });
     }
 
+    static async getOrCreateUserFromCtx(ctx) {
+        const telegramId = ctx.from.id;
+
+        let user = await User.findOne({ telegramId });
+
+        if (!user) {
+            user = await User.create({
+                telegramId,
+                username: ctx.from.username,
+                firstName: ctx.from.first_name,
+                lastName: ctx.from.last_name,
+            });
+            console.log(`[NEW USER] @${user.username || user.telegramId}`);
+        }
+
+        return user;
+    }
+
+
     /**
      * Перевіряє, чи має користувач активний доступ до Filmory Plus.
      * @param {number} telegramId - Telegram ID користувача

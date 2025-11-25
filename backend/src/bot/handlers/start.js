@@ -1,22 +1,10 @@
-import { User } from '../../models/index.js';
 import { UserService } from '../../services/UserService.js';
 
 export async function handleStart(ctx) {
     try {
         const telegramId = ctx.from.id;
-        let user = await UserService.getByTelegramId(telegramId);
-
-        if (!user) {
-            user = await User.create({
-                telegramId,
-                username: ctx.from.username,
-                firstName: ctx.from.first_name,
-                lastName: ctx.from.last_name,
-            });
-            console.log(`[NEW USER] @${user.username || user.telegramId}`);
-        } else {
-            console.log(`[START SCENE ENTERED] @${user.username || user.telegramId}`);
-        }
+        let user = await UserService.getOrCreateUserFromCtx(ctx);
+        console.log(`[START SCENE ENTERED] @${user.username || user.telegramId}`);
 
         const text = `
 🎬 *Вітаю у Filmory\\!*

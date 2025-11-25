@@ -7,12 +7,14 @@ import { markWatched } from '../handlers/markWatched.js';
 import { recommendSimilar } from '../handlers/recommendSimilar.js';
 import { changeMark } from '../handlers/changeMark.js';
 import { setRateLibrary } from '../handlers/setRateLibrary.js';
+import { UserService } from '../../services/UserService.js';
 
 const scene = new Scenes.BaseScene('LIBRARY_SCENE_ID');
 
 // === Вхід у сцену ===
 scene.enter(async (ctx) => {
     console.log(`[LIBRARY SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
+    await UserService.getOrCreateUserFromCtx(ctx);
     ctx.session.view = 'watchLater';
     ctx.session.page = 1;
     ctx.session.totalPages = null;

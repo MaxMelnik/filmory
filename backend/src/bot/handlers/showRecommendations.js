@@ -9,7 +9,8 @@ export async function showRecommendations(ctx) {
 
     if (!await isRequestAllowed(ctx)) return;
 
-    const user = await UserService.getByTelegramId(ctx.from.id);
+    let user = await UserService.getOrCreateUserFromCtx(ctx);
+
     const favouriteMovies = await LibraryService.getUserFavouriteFilms(user._id, 8);
     const worstMovies = await LibraryService.getUserWorstFilms(user._id, 4);
     const includeFilms = favouriteMovies

@@ -1,9 +1,11 @@
 import { searchFilm } from '../../services/integrations/tmdbClient.js';
 import { Markup } from 'telegraf';
 import { FilmService } from '../../services/FilmService.js';
+import { UserService } from '../../services/UserService.js';
 
 export async function handleAddFilm(ctx) {
     console.log(`[ADD FILM SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
+    await UserService.getOrCreateUserFromCtx(ctx);
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('⬅ Назад', 'GO_BACK')],
     ]);

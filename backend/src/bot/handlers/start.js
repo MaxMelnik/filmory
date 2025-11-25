@@ -1,10 +1,11 @@
 import { UserService } from '../../services/UserService.js';
+import logger from '../../utils/logger.js';
 
 export async function handleStart(ctx) {
     try {
         const telegramId = ctx.from.id;
         let user = await UserService.getOrCreateUserFromCtx(ctx);
-        console.log(`[START SCENE ENTERED] @${user.username || user.telegramId}`);
+        logger.info(`[START SCENE ENTERED] @${user.username || user.telegramId}`);
 
         const text = `
 🎬 *Вітаю у Filmory\\!*

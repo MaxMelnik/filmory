@@ -2,9 +2,10 @@ import { Markup } from 'telegraf';
 import { FILMORY_PLUS_PRICE_STARS } from '../../config/subscription.js';
 import { createSubscriptionLink } from '../../services/integrations/telegramStarsService.js';
 import { UserService } from '../../services/UserService.js';
+import logger from '../../utils/logger.js';
 
 export async function showSubscriptions(ctx, paymentPlan = 'plus') {
-    console.log(`[SUBSCRIPTION SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
+    logger.info(`[SUBSCRIPTION SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
     await UserService.getOrCreateUserFromCtx(ctx);
     const link = await createSubscriptionLink(ctx, paymentPlan);
     if (!link) {

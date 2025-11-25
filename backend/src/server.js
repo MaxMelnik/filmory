@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import systemRoutes from './server/routes/systemRoutes.js';
+import logger from './utils/logger.js';
 
 export async function startServer() {
     const app = express();
@@ -16,12 +17,12 @@ export async function startServer() {
     if (!MONGODB_CONNECT) throw new Error('❌ MONGO_URI відсутній у .env');
 
     await mongoose.connect(MONGODB_CONNECT);
-    console.log('✅ MongoDB connected');
+    logger.info('✅  MongoDB connected');
 
     // Start server
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
-        console.log(`🌐 Filmory server listening on port ${PORT}`);
+        logger.info(`🌐 Filmory server listening on port ${PORT}`);
     });
 
     return app;

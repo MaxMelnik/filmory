@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import bot from './bot/index.js';
 import { startServer } from './server.js';
 import mongoose from 'mongoose';
+import logger from './utils/logger.js';
 
 dotenv.config();
 
@@ -17,19 +18,19 @@ dotenv.config();
 
         // 3️⃣ Запускаємо бота
         const info = await bot.telegram.getMe();
-        console.log(`🤖 Filmory бот запущений як @${info.username}`);
+        logger.info(`🤖 Filmory бот запущений як @${info.username}`);
         await bot.launch();
 
         // 4️⃣ Graceful shutdown
         process.once('SIGINT', async () => {
-            console.log('🛑 Зупиняю Filmory...');
+            logger.info('🛑 Зупиняю Filmory...');
             await bot.stop('SIGINT');
             await mongoose.connection.close();
             process.exit(0);
         });
 
         process.once('SIGTERM', async () => {
-            console.log('🛑 Зупиняю Filmory...');
+            logger.info('🛑 Зупиняю Filmory...');
             await bot.stop('SIGTERM');
             await mongoose.connection.close();
             process.exit(0);

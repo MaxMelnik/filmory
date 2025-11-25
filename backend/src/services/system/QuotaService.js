@@ -3,6 +3,7 @@ import { FREE_DAILY_LIMIT, PLUS_DAILY_LIMIT, MIN_REQUEST_INTERVAL_MS } from '../
 import { UserService } from '../UserService.js';
 import { AnalyticsService } from './AnalyticsService.js';
 import { Markup } from 'telegraf';
+import logger from '../../utils/logger.js';
 
 function getTodayKey() {
     // Можеш тут використати moment.tz / dayjs.tz, якщо вже є,
@@ -51,7 +52,7 @@ export async function checkAndConsumeQuota(telegramId, plan) {
     // Rate-limit: занадто часті запити (захист від скриптів)
     const diffMs = now - (usage.lastRequestAt || new Date(0));
     if (diffMs < MIN_REQUEST_INTERVAL_MS) {
-        console.log(`[QUOTA REACHED]: ${telegramId} ${plan} 'too_fast'`);
+        logger.info(`[QUOTA REACHED]: ${telegramId} ${plan} 'too_fast'`);
         return {
             allowed: false,
             reason: 'too_fast',
@@ -61,7 +62,7 @@ export async function checkAndConsumeQuota(telegramId, plan) {
 
     // Перевірка денного ліміту
     if (usage.requestsToday >= limit) {
-        console.log(`[QUOTA REACHED]: ${telegramId} ${plan} 'quota_exceeded'`);
+        logger.info(`[QUOTA REACHED]: ${telegramId} ${plan} 'quota_exceeded'`);
         return {
             allowed: false,
             reason: 'quota_exceeded',

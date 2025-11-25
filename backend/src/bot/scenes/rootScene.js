@@ -8,7 +8,7 @@ const scene = new Scenes.BaseScene('ROOT_SCENE_ID');
 
 // === Вхід у сцену ===
 scene.enter(async (ctx) => {
-    console.log(`[ROOT SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
+    logger.info(`[ROOT SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('📊 General Statistics', 'GENERAL_STATS')],
         [Markup.button.callback('🙍‍♂️ User', 'USER_INFO')],

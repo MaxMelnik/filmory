@@ -2,9 +2,10 @@ import { searchFilm } from '../../services/integrations/tmdbClient.js';
 import { Markup } from 'telegraf';
 import { FilmService } from '../../services/FilmService.js';
 import { UserService } from '../../services/UserService.js';
+import logger from '../../utils/logger.js';
 
 export async function handleAddFilm(ctx) {
-    console.log(`[ADD FILM SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
+    logger.info(`[ADD FILM SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
     await UserService.getOrCreateUserFromCtx(ctx);
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('⬅ Назад', 'GO_BACK')],
@@ -26,7 +27,7 @@ export async function handleFilmTitleInput(ctx) {
     if (!ctx.session?.awaitingFilmTitle) return;
 
     ctx.session.title = title;
-    console.log(`Add Film by @${ctx.from.username}: ${title}`);
+    logger.info(`Add Film by @${ctx.from.username}: ${title}`);
 
     const found = await searchFilm(title);
     if (!found) {

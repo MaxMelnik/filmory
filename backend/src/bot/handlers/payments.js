@@ -5,6 +5,7 @@ import {
 import { SubscriptionService } from '../../services/SubscriptionService.js';
 import { UserService } from '../../services/UserService.js';
 import { Markup } from 'telegraf';
+import logger from '../../utils/logger.js';
 
 export function registerPaymentHandlers(bot) {
     /**
@@ -71,6 +72,6 @@ export function registerPaymentHandlers(bot) {
 
         const user = await UserService.getByTelegramId(ctx.from.id);
         if (!user) return;
-        console.log(`Payment registered: @${user.username || user.telegramId}, ${starsPaid} ⭐`);
+        logger.info(`Payment registered: @${user.username || user.telegramId}, ${starsPaid} ⭐`);
     });
 }

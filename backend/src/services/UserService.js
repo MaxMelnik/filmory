@@ -1,4 +1,5 @@
 import { User, Subscription } from '../models/index.js';
+import logger from '../utils/logger.js';
 
 /**
  * UserService — відповідає за роботу з користувачами в базі даних.
@@ -23,7 +24,7 @@ export class UserService {
                 firstName: ctx.from.first_name,
                 lastName: ctx.from.last_name,
             });
-            console.log(`[NEW USER] @${user.username || user.telegramId}`);
+            logger.info(`[NEW USER] @${user.username || user.telegramId}`);
         }
 
         return user;

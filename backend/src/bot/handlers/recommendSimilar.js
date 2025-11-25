@@ -3,6 +3,7 @@ import { showWaiter } from '../../utils/animatedWaiter.js';
 import { getFilmRecommendations } from '../../services/integrations/geminiService.js';
 import { isRequestAllowed } from '../../services/system/QuotaService.js';
 import { Markup } from 'telegraf';
+import logger from '../../utils/logger.js';
 
 export async function recommendSimilar(ctx) {
     await ctx.answerCbQuery();
@@ -15,7 +16,7 @@ export async function recommendSimilar(ctx) {
     const filmId = parseInt(ctx.match[1]);
     const film = await Film.findById(filmId);
     const movieName = film.title;
-    console.log(`RECOMMEND_: ${movieName}`);
+    logger.info(`RECOMMEND_: ${movieName}`);
     await showWaiter(ctx, {
         message: `Шукаю фільми схожі на "${movieName}"`,
         animation: 'emoji', // "dots", "emoji", "phrases"

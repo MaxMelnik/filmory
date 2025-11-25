@@ -3,9 +3,10 @@ import { getListOfFilmsRecommendations } from '../../services/integrations/gemin
 import { LibraryService } from '../../services/LibraryService.js';
 import { UserService } from '../../services/UserService.js';
 import { isRequestAllowed } from '../../services/system/QuotaService.js';
+import logger from '../../utils/logger.js';
 
 export async function showRecommendations(ctx) {
-    console.log(`[RECOMMENDATIONS SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
+    logger.info(`[RECOMMENDATIONS SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
 
     if (!await isRequestAllowed(ctx)) return;
 
@@ -25,8 +26,8 @@ export async function showRecommendations(ctx) {
         .map(title => `"${title}"`)
         .join(', ');
 
-    console.log({ includeFilms });
-    console.log({ excludeFilms });
+    logger.info(includeFilms);
+    logger.info(excludeFilms);
 
     await showWaiter(ctx, {
         message: `Шукаю фільми на основі твоїх вподобань`,

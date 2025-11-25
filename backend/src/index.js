@@ -36,7 +36,7 @@ dotenv.config();
             process.exit(0);
         });
     } catch (err) {
-        console.error('❌ Помилка запуску Filmory:', err);
+        logger.error('❌ Помилка запуску Filmory:', err);
         process.exit(1);
     }
 })();

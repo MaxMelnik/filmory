@@ -1,4 +1,5 @@
 import { Markup } from 'telegraf';
+import logger from './logger.js';
 
 /**
  * Animated waiter for Telegraf
@@ -55,7 +56,7 @@ export async function showWaiter(ctx, {
                 animatedText,
             );
         } catch (e) {
-            console.error('⚠️ Animated waiter update error:', e.message);
+            logger.error('⚠️ Animated waiter update error:', e.message);
             clearInterval(interval);
         }
     }, delay);
@@ -91,7 +92,7 @@ export async function showWaiter(ctx, {
 
     } catch (error) {
         clearInterval(interval);
-        console.error('❌ Animated waiter failed:', error);
+        logger.error('❌ Animated waiter failed:', error);
 
         await ctx.telegram.editMessageText(
             ctx.chat.id,

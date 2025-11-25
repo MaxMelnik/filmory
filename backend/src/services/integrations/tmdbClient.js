@@ -1,12 +1,13 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import logger from '../../utils/logger.js';
 
 dotenv.config();
 
 const { TMDB_API_KEY, TMDB_BASE_URL } = process.env;
 
 if (!TMDB_API_KEY) {
-    console.error('❌ TMDB_API_KEY не знайдено у .env');
+    logger.error('❌ TMDB_API_KEY не знайдено у .env');
     process.exit(1);
 }
 
@@ -39,7 +40,7 @@ export async function searchFilm(title) {
                 null,
         };
     } catch (error) {
-        console.error('❌ Помилка TMDB search:', error.message);
+        logger.error('❌ Помилка TMDB search:', error.message);
         return null;
     }
 }
@@ -72,7 +73,7 @@ export async function getMovieDetails(id) {
                 null,
         };
     } catch (error) {
-        console.error('❌ Помилка TMDB details:', error.message);
+        logger.error('❌ Помилка TMDB details:', error.message);
         return null;
     }
 }
@@ -100,7 +101,7 @@ export async function getRecommendations(id) {
                 null,
         }));
     } catch (error) {
-        console.error('❌ Помилка TMDB recommendations:', error.message);
+        logger.error('❌ Помилка TMDB recommendations:', error.message);
         return [];
     }
 }

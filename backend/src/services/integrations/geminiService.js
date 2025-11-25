@@ -1,12 +1,13 @@
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
+import logger from '../../utils/logger.js';
 
 dotenv.config();
 
 const { GEMINI_API_KEY } = process.env;
 
 if (!GEMINI_API_KEY) {
-    console.error('❌ GOOGLE_API_KEY не знайдено у .env');
+    logger.error('❌ GOOGLE_API_KEY не знайдено у .env');
     process.exit(1);
 }
 
@@ -32,7 +33,7 @@ export async function askGemini({ system, prompt, model = 'gemini-2.0-flash' }) 
 
         return response.text?.trim() || '⚠️ Порожня відповідь від моделі';
     } catch (err) {
-        console.error('❌ Gemini API error:', err);
+        logger.error('❌ Gemini API error:', err);
         return '⚠️ Сервіс Gemini тимчасово недоступний. Спробуй, будь ласка, пізніше';
     }
 }

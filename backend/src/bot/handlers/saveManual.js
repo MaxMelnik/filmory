@@ -1,5 +1,6 @@
 import { FilmService } from '../../services/FilmService.js';
 import { Markup } from 'telegraf';
+import logger from '../../utils/logger.js';
 
 export async function saveManual(ctx) {
     const title = ctx.session.title;
@@ -25,6 +26,6 @@ export async function saveManual(ctx) {
             await ctx.editMessageText(caption, keyboard);
         }
     } catch (e) {
-        console.error('⚠️ Не вдалося оновити повідомлення:', e.message);
+        logger.error('⚠️ Не вдалося оновити повідомлення:', e.message);
     }
 }

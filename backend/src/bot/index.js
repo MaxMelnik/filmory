@@ -11,6 +11,7 @@ import subscriptionsScene from './scenes/subscriptionsScene.js';
 import rootScene from './scenes/rootScene.js';
 import { activityMiddleware } from './middlewares/activityMiddleware.js';
 import { UserService } from '../services/UserService.js';
+import logger from '../utils/logger.js';
 
 // === Ініціалізація ===
 const bot = getBotInstance();
@@ -33,7 +34,7 @@ bot.use(activityMiddleware());
 
 // === Обробка помилок ===
 bot.catch(async (err, ctx) => {
-    console.error('❌ Bot error:', err);
+    logger.error('❌ Bot error:', err);
 
     if (err.name === 'TimeoutError') {
         console.warn('⏳ Telegram API call timed out. Skipping...');
@@ -49,16 +50,16 @@ bot.catch(async (err, ctx) => {
                 if (e.code === 403) {
                     console.warn(`🚫 Користувач ${userId} заблокував бота.`);
                 } else {
-                    console.error('Помилка при відповіді користувачу:', e);
+                    logger.error('Помилка при відповіді користувачу:', e);
                 }
             });
 
             await ctx.scene.enter('START_SCENE_ID').catch((e) => {
-                console.error('Не вдалося перейти до стартової сцени:', e);
+                logger.error('Не вдалося перейти до стартової сцени:', e);
             });
         }
     } catch (e) {
-        console.error('Внутрішня помилка в catch:', e);
+        logger.error('Внутрішня помилка в catch:', e);
     }
 });
 

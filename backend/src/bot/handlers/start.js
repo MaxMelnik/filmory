@@ -33,7 +33,7 @@ export async function handleStart(ctx) {
             },
         });
     } catch (err) {
-        console.error('❌ Error in /start:', err);
+        logger.error('❌ Error in /start:', err);
         await ctx.reply('Сталася помилка при запуску Filmory 😢');
     }
 }

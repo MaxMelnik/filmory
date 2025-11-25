@@ -120,6 +120,6 @@ export async function isRequestAllowed(ctx, goBackKeyboard = null, getPlusKeyboa
     }
 
     plan = await UserService.isRoot(telegramId) ? 'ROOT' : plan;
-    AnalyticsService.trackAiRequest(telegramId, plan).catch(console.error);
+    AnalyticsService.trackAiRequest(telegramId, plan).catch(logger.error);
     return true;
 }

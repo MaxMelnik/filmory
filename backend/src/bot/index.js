@@ -107,6 +107,7 @@ bot.action(/^SELECT_ACTIVE_REC_(\d+)$/, async (ctx) => {
 
     const { finalText, keyboard } = parseRecommendations(ctx);
 
+    ctx.answerCbQuery();
     await ctx.editMessageText(
         finalText,
         {

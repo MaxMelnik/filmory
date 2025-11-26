@@ -23,6 +23,6 @@ export async function recommendSimilar(ctx) {
         animation: 'emoji', // "dots", "emoji", "phrases"
         delay: 500,
         asyncTask: async () => await getFilmRecommendations(movieName),
-        onDone: (response) => parseRecommendations(response, `🎬 Фільми схожі на ${movieName}:\n`),
+        onDone: (ctx, response) => parseRecommendations(ctx, `🎬 Фільми схожі на ${movieName}:\n`, response),
     });
 }

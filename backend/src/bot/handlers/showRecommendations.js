@@ -35,6 +35,6 @@ export async function showRecommendations(ctx) {
         animation: 'emoji', // "dots", "emoji", "phrases"
         delay: 500,
         asyncTask: async () => await getListOfFilmsRecommendations(includeFilms, excludeFilms),
-        onDone: (response) => parseRecommendations(response, '🎬 Я знайшов для тебе фільми, які можуть сподобатись:\n'),
+        onDone: (ctx, response) => parseRecommendations(ctx, '🎬 Я знайшов для тебе фільми, які можуть сподобатись:\n', response),
     });
 }

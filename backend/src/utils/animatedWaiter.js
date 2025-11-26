@@ -69,11 +69,11 @@ export async function showWaiter(ctx, {
         clearInterval(interval);
 
         // ✅ Оновлюємо повідомлення після завершення
-        const finalText = typeof onDone === 'function' ?
-            onDone(result) :
+        let { finalText, keyboard } = typeof onDone === 'function' ?
+            onDone(ctx, result) :
             `✅ Завершено:\n\n${result}`;
 
-        const keyboard = Markup.inlineKeyboard([
+        keyboard ??= Markup.inlineKeyboard([
             [Markup.button.callback('⬅ Назад', 'GO_BACK')],
         ]);
 

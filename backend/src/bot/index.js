@@ -12,6 +12,7 @@ import rootScene from './scenes/rootScene.js';
 import { activityMiddleware } from './middlewares/activityMiddleware.js';
 import { UserService } from '../services/UserService.js';
 import logger from '../utils/logger.js';
+import parseRecommendations from '../utils/parseRecommendations.js';
 
 // === Ініціалізація ===
 const bot = getBotInstance();
@@ -101,6 +102,21 @@ bot.action('GET_SUBSCRIPTION', (ctx) => {
     ctx.scene.enter('SUBSCRIPTIONS_SCENE_ID');
 });
 
+bot.action(/^SELECT_ACTIVE_REC_(\d+)$/, async (ctx) => {
+    ctx.session.activeRecommendation = parseInt(ctx.match[1]);
+
+    const { finalText, keyboard } = parseRecommendations(ctx);
+
+    await ctx.editMessageText(
+        finalText,
+        {
+            parse_mode: 'Markdown',
+            ...keyboard,
+        },
+    ).catch(async () => {
+        await ctx.reply(finalText, { parse_mode: 'Markdown', ...keyboard });
+    });
+});
 
 bot.action('GO_BACK', (ctx) => {
     ctx.answerCbQuery();

@@ -1,4 +1,4 @@
-import { searchFilm } from '../../services/integrations/tmdbClient.js';
+import { searchAllFilms, searchFilm } from '../../services/integrations/tmdbClient.js';
 import { Markup } from 'telegraf';
 import { FilmService } from '../../services/FilmService.js';
 import { UserService } from '../../services/UserService.js';
@@ -29,7 +29,10 @@ export async function handleFilmTitleInput(ctx) {
     ctx.session.title = title;
     logger.info(`Add Film by @${ctx.from.username}: ${title}`);
 
-    const found = await searchFilm(title);
+    const films = await searchAllFilms(title);
+    ctx.scene.state.films = films;
+    ctx.scene.state.filmIndex ??= 0;
+    const found = films[ctx.scene.state.filmIndex];
     if (!found) {
         const keyboard = Markup.inlineKeyboard([
             [Markup.button.callback(`📝 Зберегти як "${title}"`, `SAVE_MANUAL`)],
@@ -41,14 +44,23 @@ export async function handleFilmTitleInput(ctx) {
     const film = await FilmService.upsertFromTmdb(found);
     ctx.scene.state.film = film;
 
+    console.log(films);
+
+    const navButtons = (films.length > 1) ? [
+        Markup.button.callback('⬅', 'PREV_FILM_SEARCH'),
+        Markup.button.callback(`📄 ${ctx.scene.state.filmIndex + 1}/${films.length}`, 'FAKE_BUTTON'),
+        Markup.button.callback('➡', 'NEXT_FILM_SEARCH'),
+    ] : [];
+
     const keyboard = Markup.inlineKeyboard([
+        navButtons,
         [Markup.button.callback('🎞 Подивитись пізніше', 'ADD_WATCH_LATER')],
         [Markup.button.callback('✅ Вже переглянуто', 'ADD_WATCHED')],
         [Markup.button.callback(`📝 Лише назву "${title}"`, `SAVE_MANUAL`)],
         [Markup.button.callback('⬅ Назад', 'GO_BACK')],
     ]);
 
-    const caption = `<b>${film.title}</b> (${film.year || '?'})\n\nЯк зберегти цей фільм?`;
+    const caption = `<b>${film.title}</b> (${film.year || '?'})\n\n${film.description ? `${film.description}\n\n` : ''}Як зберегти цей фільм?`;
 
     if (film.posterUrl) {
         await ctx.replyWithPhoto(film.posterUrl, {

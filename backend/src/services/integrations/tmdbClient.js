@@ -12,7 +12,7 @@ if (!TMDB_API_KEY) {
 }
 
 /**
- * 🔹 Пошук фільму за назвою
+ * Search one film on TMDB by title
  * @param {string} title
  * @returns {Promise<Object|null>}
  */
@@ -39,6 +39,41 @@ export async function searchFilm(title) {
                 `https://image.tmdb.org/t/p/w500${first.poster_path}` :
                 null,
         };
+    } catch (error) {
+        logger.error('❌ Помилка TMDB search:', error.message);
+        return null;
+    }
+}
+
+/**
+ * Search all films on TMDB by title
+ * @param {string} title
+ * @returns {Promise<Object|null>}
+ */
+export async function searchAllFilms(title) {
+    try {
+        const response = await axios.get(`${TMDB_BASE_URL}/search/movie`, {
+            params: {
+                api_key: TMDB_API_KEY,
+                query: title,
+                include_adult: false,
+                language: 'uk-UA',
+            },
+        });
+
+        const results = response.data.results;
+
+        if (results?.length === 0) return null;
+
+        return results.map(film => ({
+            tmdbId: film.id,
+            title: film.title || film.original_title,
+            year: film.release_date ? film.release_date.slice(0, 4) : null,
+            overview: film.overview,
+            posterUrl: film.poster_path ?
+                `https://image.tmdb.org/t/p/w500${film.poster_path}` :
+                null,
+        }));
     } catch (error) {
         logger.error('❌ Помилка TMDB search:', error.message);
         return null;

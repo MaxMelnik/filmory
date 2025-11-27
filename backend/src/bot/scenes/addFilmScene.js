@@ -5,6 +5,8 @@ import { addAsWatched } from '../handlers/addAsWatched.js';
 import { addAsWatchLater } from '../handlers/addAsWatchLater.js';
 import { saveManual } from '../handlers/saveManual.js';
 import { setRateAddFilm } from '../handlers/setRateAddFilm.js';
+import { showLibraryPage } from '../handlers/showLibraryPage.js';
+import { openSearchFilmCard } from '../handlers/openSearchFilmCard.js';
 
 const scene = new Scenes.BaseScene('ADD_FILM_SCENE_ID');
 
@@ -16,6 +18,20 @@ scene.enter(async (ctx) => {
 // === Обробка тексту (назва фільму) ===
 scene.on(message('text'), async (ctx) => {
     await handleFilmTitleInput(ctx);
+});
+
+scene.action('NEXT_FILM_SEARCH', async (ctx) => {
+    ctx.scene.state.filmIndex++;
+    if (ctx.scene.state.filmIndex >= ctx.scene.state.films.length) ctx.scene.state.filmIndex = 0;
+    await ctx.answerCbQuery();
+    await openSearchFilmCard(ctx);
+});
+
+scene.action('PREV_FILM_SEARCH', async (ctx) => {
+    ctx.scene.state.filmIndex--;
+    if (ctx.scene.state.filmIndex < 0) ctx.scene.state.filmIndex = ctx.scene.state.films.length - 1;
+    await ctx.answerCbQuery();
+    await openSearchFilmCard(ctx);
 });
 
 // === Додати у "Подивитись пізніше" ===

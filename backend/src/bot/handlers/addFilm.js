@@ -1,4 +1,4 @@
-import { searchAllFilms, searchFilm } from '../../services/integrations/tmdbClient.js';
+import { searchAllFilms } from '../../services/integrations/tmdbClient.js';
 import { Markup } from 'telegraf';
 import { FilmService } from '../../services/FilmService.js';
 import { UserService } from '../../services/UserService.js';
@@ -17,7 +17,7 @@ export async function handleAddFilm(ctx) {
 }
 
 export async function handleFilmTitleInput(ctx) {
-    const title = ctx.message.text.trim();
+    const title = ctx.message?.text?.trim() ?? ctx.session.title;
     if (title === '/start') return ctx.scene.enter('START_SCENE_ID');
     if (title === '/add') return ctx.scene.enter('ADD_FILM_SCENE_ID');
     if (title === '/my_films') return ctx.scene.enter('LIBRARY_SCENE_ID');
@@ -30,21 +30,19 @@ export async function handleFilmTitleInput(ctx) {
     logger.info(`Add Film by @${ctx.from.username}: ${title}`);
 
     const films = await searchAllFilms(title);
-    ctx.scene.state.films = films;
+    ctx.scene.state.films = films ?? [];
     ctx.scene.state.filmIndex ??= 0;
-    const found = films[ctx.scene.state.filmIndex];
-    if (!found) {
+    if (!films || !films[ctx.scene.state.filmIndex]) {
         const keyboard = Markup.inlineKeyboard([
             [Markup.button.callback(`📝 Зберегти як "${title}"`, `SAVE_MANUAL`)],
             [Markup.button.callback('⬅ Назад', 'GO_BACK')],
         ]);
         return ctx.reply('Не знайшов такого фільму на TMDB 😢', keyboard);
     }
+    const found = films[ctx.scene.state.filmIndex];
 
     const film = await FilmService.upsertFromTmdb(found);
     ctx.scene.state.film = film;
-
-    console.log(films);
 
     const navButtons = (films.length > 1) ? [
         Markup.button.callback('⬅', 'PREV_FILM_SEARCH'),

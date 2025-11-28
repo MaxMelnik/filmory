@@ -5,7 +5,6 @@ import { addAsWatched } from '../handlers/addAsWatched.js';
 import { addAsWatchLater } from '../handlers/addAsWatchLater.js';
 import { saveManual } from '../handlers/saveManual.js';
 import { setRateAddFilm } from '../handlers/setRateAddFilm.js';
-import { showLibraryPage } from '../handlers/showLibraryPage.js';
 import { openSearchFilmCard } from '../handlers/openSearchFilmCard.js';
 
 const scene = new Scenes.BaseScene('ADD_FILM_SCENE_ID');

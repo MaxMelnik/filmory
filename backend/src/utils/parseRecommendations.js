@@ -1,5 +1,4 @@
 import { Markup } from 'telegraf';
-import logger from './logger.js';
 
 export default function parseRecommendations(ctx, heading = null, recommendations = null) {
     if (!recommendations) recommendations = ctx.session.recommendations;
@@ -16,7 +15,6 @@ export default function parseRecommendations(ctx, heading = null, recommendation
     let res = heading;
 
     for (const rec of recommendations) {
-        logger.info(rec);
         res += '\n\n';
 
         res += `*${rec.position}. ${rec.title}*`;
@@ -50,8 +48,11 @@ export default function parseRecommendations(ctx, heading = null, recommendation
     }
 
     const actionButtons = [
-        [Markup.button.callback(`💾 Зберегти '${recommendations[activeRecommendation - 1].title}'`, `SAVE_ACTIVE_REC_${activeRecommendation - 1}`)],
-        [Markup.button.callback('⬅ Назад', 'GO_BACK')],
+        [Markup.button.callback(
+            `💾 Зберегти '${recommendations[activeRecommendation - 1].title}'`,
+            `SAVE_ACTIVE_REC_${activeRecommendation - 1}`,
+        )],
+        [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
     ];
 
     const keyboard = Markup.inlineKeyboard([

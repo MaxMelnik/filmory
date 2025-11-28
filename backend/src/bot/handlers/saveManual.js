@@ -9,9 +9,9 @@ export async function saveManual(ctx) {
     await ctx.answerCbQuery();
 
     const keyboard = Markup.inlineKeyboard([
-        [Markup.button.callback('🎞 Подивитись пізніше', 'ADD_WATCH_LATER')],
+        [Markup.button.callback('📼 Подивитись пізніше', 'ADD_WATCH_LATER')],
         [Markup.button.callback('✅ Вже переглянуто', 'ADD_WATCHED')],
-        [Markup.button.callback('⬅ Назад', 'GO_BACK')],
+        [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
     ]);
 
     try {

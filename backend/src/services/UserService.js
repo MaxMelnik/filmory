@@ -44,7 +44,7 @@ export class UserService {
         // шукаємо підписку Plus / Root для цього юзера
         const sub = await Subscription.findOne({
             telegramId,
-            plan: { $in: ['PLUS', 'ROOT'] },
+            plan: { $in: ['PLUS', 'ROOT', 'PROMO'] },
         }).lean();
 
         if (!sub) {
@@ -52,7 +52,7 @@ export class UserService {
         }
 
         // ROOT можна вважати «вічним» доступом
-        if (sub.plan === 'ROOT') {
+        if (sub.plan === 'ROOT' || sub.plan === 'PROMO') {
             return true;
         }
 
@@ -65,6 +65,19 @@ export class UserService {
         const expiresAtTime = new Date(sub.expiresAt).getTime();
 
         return expiresAtTime > now;
+    }
+
+    static async isPromo(telegramId) {
+        if (!telegramId) {
+            return false;
+        }
+
+        const sub = await Subscription.findOne({
+            telegramId,
+            plan: 'PROMO',
+        }).lean();
+
+        return !!sub;
     }
 
     static async isRoot(telegramId) {

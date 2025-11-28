@@ -76,7 +76,7 @@ export class LibraryService {
     /**
      * Get user worst films
      */
-    static async getUserWorstFilms(userId, maxRating = 1, limit = 25) {
+    static async getUserWorstFilms(userId, maxRating = 1, limit = 100) {
         const items = await LibraryItem.find({
             userId: userId,
             status: 'watched',

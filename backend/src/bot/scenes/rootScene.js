@@ -12,7 +12,7 @@ scene.enter(async (ctx) => {
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('📊 General Statistics', 'GENERAL_STATS')],
         [Markup.button.callback('🙍‍♂️ User', 'USER_INFO')],
-        [Markup.button.callback('⬅ Назад', 'GO_BACK')],
+        [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
     ]);
     ctx.reply(
         '> Welcome to ROOT!',
@@ -20,11 +20,12 @@ scene.enter(async (ctx) => {
 });
 
 scene.action('GENERAL_STATS', async (ctx) => {
-    const [mau, req30, plusReq30, freeReq30, rootReq30] = await Promise.all([
+    const [mau, req30, plusReq30, freeReq30, promoReq30, rootReq30] = await Promise.all([
         AnalyticsService.getMau(30),
         AnalyticsService.getAiRequestsCount({ days: 30 }),
         AnalyticsService.getAiRequestsCount({ days: 30, plan: 'PLUS' }),
         AnalyticsService.getAiRequestsCount({ days: 30, plan: 'FREE' }),
+        AnalyticsService.getAiRequestsCount({ days: 30, plan: 'PROMO' }),
         AnalyticsService.getAiRequestsCount({ days: 30, plan: 'ROOT' }),
     ]);
 
@@ -35,6 +36,7 @@ scene.action('GENERAL_STATS', async (ctx) => {
         `• Всього AI-запитів: ${req30}\n` +
         `   – від Plus: ${plusReq30}\n` +
         `   – від Free: ${freeReq30}\n` +
+        `   - від PROMO: ${promoReq30}\n` +
         `   – від Root: ${rootReq30}`,
     );
 });

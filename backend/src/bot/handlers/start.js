@@ -22,7 +22,7 @@ export async function handleStart(ctx) {
 
         const keyboard = [
             [{ text: '➕ Додати фільм', callback_data: 'ADD_FILM' }],
-            [{ text: '📋 Мій список', callback_data: 'SHOW_LIST' }],
+            [{ text: '🎞 Мій список', callback_data: 'SHOW_LIST' }],
             [{ text: '🤖 Рекомендації', callback_data: 'GET_RECS' }],
             [{ text: subscriptionButtonLabel, callback_data: 'GET_SUBSCRIPTION' }],
         ];

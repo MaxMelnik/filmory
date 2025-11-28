@@ -20,13 +20,13 @@ function getTodayKey() {
  * і, якщо так, інкрементить лічильник.
  *
  * @param {number} telegramId
- * @param {'FREE'|'PLUS'|'ROOT'} plan
+ * @param {'FREE'|'PLUS'|'ROOT'|'PROMO'} plan
  * @returns {Promise<{allowed: boolean, reason?: string, remaining?: number}>}
  */
 export async function checkAndConsumeQuota(telegramId, plan) {
     const dayKey = getTodayKey();
     const limit =
-        plan === 'PLUS' || plan === 'ROOT'
+        plan === 'PLUS' || plan === 'ROOT' || plan === 'PROMO'
             ? PLUS_DAILY_LIMIT
             : FREE_DAILY_LIMIT;
 
@@ -90,11 +90,11 @@ export async function isRequestAllowed(ctx, goBackKeyboard = null, getPlusKeyboa
 
     if (!quota.allowed) {
         goBackKeyboard ??= Markup.inlineKeyboard([
-            [Markup.button.callback('⬅ Назад', 'GO_BACK')],
+            [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
         ]);
         getPlusKeyboard ??= Markup.inlineKeyboard([
             [Markup.button.callback('⭐ Filmory Plus', 'GET_SUBSCRIPTION')],
-            [Markup.button.callback('⬅ Назад', 'GO_BACK')],
+            [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
         ]);
 
         if (quota.reason === 'too_fast') {
@@ -119,6 +119,7 @@ export async function isRequestAllowed(ctx, goBackKeyboard = null, getPlusKeyboa
         return false;
     }
 
+    plan = await UserService.isPromo(telegramId) ? 'PROMO' : plan;
     plan = await UserService.isRoot(telegramId) ? 'ROOT' : plan;
     AnalyticsService.trackAiRequest(telegramId, plan).catch(logger.error);
     return true;

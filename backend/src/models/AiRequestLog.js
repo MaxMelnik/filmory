@@ -15,7 +15,7 @@ const aiRequestLogSchema = new mongoose.Schema(
         },
         plan: {
             type: String,
-            enum: ['FREE', 'PLUS', 'ROOT'],
+            enum: ['FREE', 'PLUS', 'ROOT', 'PROMO'],
             index: true,
         },
     },

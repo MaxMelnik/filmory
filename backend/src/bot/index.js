@@ -119,7 +119,11 @@ bot.action(/^SELECT_ACTIVE_REC_(\d+)$/, async (ctx) => {
     });
 });
 
-bot.action('GO_BACK', (ctx) => {
+bot.action('DELETE_THIS_MESSAGE', (ctx) => {
+    ctx.deleteMessage();
+});
+
+bot.action('GO_HOME', (ctx) => {
     ctx.answerCbQuery();
     ctx.editMessageReplyMarkup();
     ctx.scene.enter('START_SCENE_ID');

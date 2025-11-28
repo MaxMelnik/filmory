@@ -1,4 +1,4 @@
-import { searchAllFilms } from '../../services/integrations/tmdbClient.js';
+import { searchAllByMediaType } from '../../services/integrations/tmdbClient.js';
 import { Markup } from 'telegraf';
 import { FilmService } from '../../services/FilmService.js';
 import { UserService } from '../../services/UserService.js';
@@ -29,7 +29,7 @@ export async function handleFilmTitleInput(ctx) {
     ctx.session.title = title;
     logger.info(`Add Film by @${ctx.from.username}: ${title}`);
 
-    const films = await searchAllFilms(title);
+    const films = await searchAllByMediaType(title);
     ctx.scene.state.films = films ?? [];
     ctx.scene.state.filmIndex ??= 0;
     if (!films || !films[ctx.scene.state.filmIndex]) {

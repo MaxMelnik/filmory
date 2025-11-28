@@ -27,10 +27,6 @@ async function updateSearchFilmCardMessage(ctx, film, caption, keyboard) {
         return;
     }
 
-    if (msg) {
-        await ctx.telegram.deleteMessage(msg.chat.id, msg.message_id);
-    }
-
     if (wantsPoster) {
         await ctx.replyWithPhoto(film.posterUrl, {
             caption,
@@ -42,6 +38,10 @@ async function updateSearchFilmCardMessage(ctx, film, caption, keyboard) {
             parse_mode: 'HTML',
             ...keyboard,
         });
+    }
+
+    if (msg) {
+        await ctx.telegram.deleteMessage(msg.chat.id, msg.message_id);
     }
 }
 

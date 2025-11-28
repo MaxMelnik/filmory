@@ -48,27 +48,31 @@ export async function searchFilm(title) {
 /**
  * Search all films on TMDB by title
  * @param {string} title
+ * @param {string[]} allowedTypes = ['movie', 'tv']
  * @returns {Promise<Object|null>}
  */
-export async function searchAllFilms(title) {
+export async function searchAllByMediaType(title, allowedTypes = ['movie', 'tv']) {
     try {
-        const response = await axios.get(`${TMDB_BASE_URL}/search/movie`, {
+        const response = await axios.get(`${TMDB_BASE_URL}/search/multi`, {
             params: {
                 api_key: TMDB_API_KEY,
                 query: title,
-                include_adult: false,
+                include_adult: true,
                 language: 'uk-UA',
+                page: 1,
             },
         });
 
-        const results = response.data.results;
+        const results = response.data.results.filter((item) =>
+            item && allowedTypes.includes(item.media_type),
+        );
 
         if (results?.length === 0) return null;
 
         return results.map(film => ({
             tmdbId: film.id,
-            title: film.title || film.original_title,
-            year: film.release_date ? film.release_date.slice(0, 4) : null,
+            title: film.title || film.original_title || film.name || film.original_name,
+            year: (film.release_date ? film.release_date.slice(0, 4) : null) || (film.first_air_date ? film.first_air_date.slice(0, 4) : null),
             overview: film.overview,
             posterUrl: film.poster_path ?
                 `https://image.tmdb.org/t/p/w500${film.poster_path}` :

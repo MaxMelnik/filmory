@@ -38,7 +38,7 @@ bot.catch(async (err, ctx) => {
     logger.error('❌ Bot error:', err);
 
     if (err.name === 'TimeoutError') {
-        console.warn('⏳ Telegram API call timed out. Skipping...');
+        logger.warn('⏳ Telegram API call timed out. Skipping...');
         return;
     }
 
@@ -49,7 +49,7 @@ bot.catch(async (err, ctx) => {
         if (chatType === 'private') {
             await ctx.reply('⚠️ Щось пішло не так. Перезапускаю сеанс…').catch((e) => {
                 if (e.code === 403) {
-                    console.warn(`🚫 Користувач ${userId} заблокував бота.`);
+                    logger.warn(`🚫 Користувач ${userId} заблокував бота.`);
                 } else {
                     logger.error('Помилка при відповіді користувачу:', e);
                 }

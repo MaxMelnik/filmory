@@ -6,7 +6,7 @@ export async function changeMark(ctx) {
     await ctx.answerCbQuery();
     await ctx.editMessageReplyMarkup();
 
-    const ratingKeyboard = await rateKeyboard(filmId, ctx.from.id);
+    const ratingKeyboard = await rateKeyboard(filmId, ctx.from.id, true);
 
     await ctx.editMessageReplyMarkup(ratingKeyboard.reply_markup);
 }

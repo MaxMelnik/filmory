@@ -20,11 +20,11 @@ scene.enter(async (ctx) => {
 });
 
 scene.action('GENERAL_STATS', async (ctx) => {
-    const [mau, req30, plusReq30, freeReq30, promoReq30, rootReq30] = await Promise.all([
+    const [mau, req30, freeReq30, plusReq30, promoReq30, rootReq30] = await Promise.all([
         AnalyticsService.getMau(30),
         AnalyticsService.getAiRequestsCount({ days: 30 }),
-        AnalyticsService.getAiRequestsCount({ days: 30, plan: 'PLUS' }),
         AnalyticsService.getAiRequestsCount({ days: 30, plan: 'FREE' }),
+        AnalyticsService.getAiRequestsCount({ days: 30, plan: 'PLUS' }),
         AnalyticsService.getAiRequestsCount({ days: 30, plan: 'PROMO' }),
         AnalyticsService.getAiRequestsCount({ days: 30, plan: 'ROOT' }),
     ]);
@@ -34,10 +34,13 @@ scene.action('GENERAL_STATS', async (ctx) => {
         `Статистика за 30 днів:\n` +
         `• MAU: ${mau}\n` +
         `• Всього AI-запитів: ${req30}\n` +
-        `   – від Plus: ${plusReq30}\n` +
         `   – від Free: ${freeReq30}\n` +
-        `   - від PROMO: ${promoReq30}\n` +
+        `   – від Plus: ${plusReq30}\n` +
+        `   – від Promo: ${promoReq30}\n` +
         `   – від Root: ${rootReq30}`,
+        Markup.inlineKeyboard([
+            [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
+        ]),
     );
 });
 

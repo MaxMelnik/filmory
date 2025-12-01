@@ -123,9 +123,13 @@ bot.action('DELETE_THIS_MESSAGE', (ctx) => {
     ctx.deleteMessage();
 });
 
-bot.action('GO_HOME', (ctx) => {
-    ctx.answerCbQuery();
+bot.action('GO_HOME_AND_CLEAR_KEYBOARD', (ctx) => {
     ctx.editMessageReplyMarkup();
+    ctx.scene.enter('START_SCENE_ID');
+});
+
+bot.action('GO_HOME_AND_DELETE_MESSAGE', (ctx) => {
+    ctx.deleteMessage();
     ctx.scene.enter('START_SCENE_ID');
 });
 

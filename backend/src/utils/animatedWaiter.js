@@ -74,7 +74,7 @@ export async function showWaiter(ctx, {
             `✅ Завершено:\n\n${result}`;
 
         keyboard ??= Markup.inlineKeyboard([
-            [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
+            [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
         ]);
 
         await ctx.telegram.editMessageText(

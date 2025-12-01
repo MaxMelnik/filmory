@@ -11,7 +11,7 @@ export async function saveManual(ctx) {
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('📼 Подивитись пізніше', 'ADD_WATCH_LATER')],
         [Markup.button.callback('✅ Вже переглянуто', 'ADD_WATCHED')],
-        [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
+        [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
     ]);
 
     try {

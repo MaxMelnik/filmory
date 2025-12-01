@@ -90,11 +90,11 @@ export async function isRequestAllowed(ctx, goBackKeyboard = null, getPlusKeyboa
 
     if (!quota.allowed) {
         goBackKeyboard ??= Markup.inlineKeyboard([
-            [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
+            [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_DELETE_MESSAGE')],
         ]);
         getPlusKeyboard ??= Markup.inlineKeyboard([
             [Markup.button.callback('⭐ Filmory Plus', 'GET_SUBSCRIPTION')],
-            [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
+            [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_DELETE_MESSAGE')],
         ]);
 
         if (quota.reason === 'too_fast') {

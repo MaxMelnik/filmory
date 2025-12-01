@@ -8,7 +8,7 @@ export async function handleAddFilm(ctx) {
     logger.info(`[ADD FILM SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
     await UserService.getOrCreateUserFromCtx(ctx);
     const keyboard = Markup.inlineKeyboard([
-        [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
+        [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_DELETE_MESSAGE')],
     ]);
     await ctx.reply('Введи назву фільму, який хочеш додати:', keyboard);
 
@@ -35,7 +35,7 @@ export async function handleFilmTitleInput(ctx) {
     if (!films || !films[ctx.scene.state.filmIndex]) {
         const keyboard = Markup.inlineKeyboard([
             [Markup.button.callback(`📝 Зберегти як "${title}"`, `SAVE_MANUAL`)],
-            [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
+            [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
         ]);
         return ctx.reply('Не знайшов такого фільму на TMDB 😢', keyboard);
     }
@@ -55,7 +55,7 @@ export async function handleFilmTitleInput(ctx) {
         [Markup.button.callback('📼 Подивитись пізніше', 'ADD_WATCH_LATER')],
         [Markup.button.callback('✅ Вже переглянуто', 'ADD_WATCHED')],
         [Markup.button.callback(`📝 Лише назву "${title}"`, `SAVE_MANUAL`)],
-        [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
+        [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
     ]);
 
     const caption = `<b>${film.title}</b> (${film.year || '?'})\n\n${film.description ? `${film.description}\n\n` : ''}Як зберегти цей фільм?`;

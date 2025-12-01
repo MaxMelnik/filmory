@@ -11,7 +11,7 @@ export async function openSearchFilmCard(ctx) {
     if (!found) {
         const keyboard = Markup.inlineKeyboard([
             [Markup.button.callback(`📝 Зберегти як "${title}"`, `SAVE_MANUAL`)],
-            [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
+            [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
         ]);
         return ctx.reply('Не знайшов такого фільму на TMDB 😢', keyboard);
     }
@@ -30,7 +30,7 @@ export async function openSearchFilmCard(ctx) {
         [Markup.button.callback('📼 Подивитись пізніше', 'ADD_WATCH_LATER')],
         [Markup.button.callback('✅ Вже переглянуто', 'ADD_WATCHED')],
         [Markup.button.callback(`📝 Лише назву "${title}"`, `SAVE_MANUAL`)],
-        [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
+        [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
     ]);
 
     const caption = `<b>${film.title}</b> (${film.year || '?'})\n\n${film.description ? `${film.description}\n\n` : ''}Як зберегти цей фільм?`;

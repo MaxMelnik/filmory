@@ -12,7 +12,7 @@ scene.enter(async (ctx) => {
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('📊 General Statistics', 'GENERAL_STATS')],
         [Markup.button.callback('🙍‍♂️ User', 'USER_INFO')],
-        [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
+        [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
     ]);
     ctx.reply(
         '> Welcome to ROOT!',
@@ -39,7 +39,7 @@ scene.action('GENERAL_STATS', async (ctx) => {
         `   – від Promo: ${promoReq30}\n` +
         `   – від Root: ${rootReq30}`,
         Markup.inlineKeyboard([
-            [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
+            [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
         ]),
     );
 });

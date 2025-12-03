@@ -129,7 +129,7 @@ bot.action('GO_HOME_AND_CLEAR_KEYBOARD', (ctx) => {
 });
 
 bot.action('GO_HOME_AND_DELETE_MESSAGE', (ctx) => {
-    ctx.deleteMessage();
+    ctx.session.editMessageText = true;
     ctx.scene.enter('START_SCENE_ID');
 });
 

@@ -24,7 +24,10 @@ async function showLibraryPage(ctx) {
         ),
     ];
 
-    // --- Якщо список порожній ---
+    const homeButtons = [
+        Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_DELETE_MESSAGE'),
+    ];
+
     if (!films.length) {
         const emptyText =
             view === 'watchLater' ?
@@ -33,6 +36,7 @@ async function showLibraryPage(ctx) {
 
         const emptyKeyboard = Markup.inlineKeyboard([
             switchButtons,
+            homeButtons,
         ]);
 
         await ctx
@@ -63,6 +67,7 @@ async function showLibraryPage(ctx) {
     const keyboard = Markup.inlineKeyboard([
         switchButtons,
         ...filmButtons,
+        homeButtons,
         navButtons,
     ]);
 

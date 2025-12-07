@@ -41,7 +41,7 @@ export class HealthService {
         // Gemini
         // try {
         //     const resp = await ai.models.generateContent({
-        //         model: 'gemini-2.0-flash',
+        //         model: 'gemini-robotics-er-1.5-preview',
         //         contents: 'ping',
         //     });
         //     const text = resp?.text?.trim()?.toLowerCase() || '';

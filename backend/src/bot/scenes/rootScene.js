@@ -3,6 +3,7 @@ import { AnalyticsService } from '../../services/system/AnalyticsService.js';
 import { message } from 'telegraf/filters';
 import { UserService } from '../../services/UserService.js';
 import logger from '../../utils/logger.js';
+import { pingGeminiAPI } from '../handlers/pingGeminiAPI.js';
 
 const scene = new Scenes.BaseScene('ROOT_SCENE_ID');
 
@@ -12,6 +13,7 @@ scene.enter(async (ctx) => {
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('📊 General Statistics', 'GENERAL_STATS')],
         [Markup.button.callback('🙍‍♂️ User', 'USER_INFO')],
+        [Markup.button.callback('🏓️ PING GEMINI AI', 'PING_GEMINI_API')],
         [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
     ]);
     ctx.reply(
@@ -48,6 +50,11 @@ scene.action('USER_INFO', async (ctx) => {
     ctx.scene.session.awaitingTelegramId = true;
     ctx.reply('> Введіть telegramId');
 });
+
+scene.action('PING_GEMINI_API', async (ctx) => {
+    await pingGeminiAPI(ctx);
+    ctx.answerCbQuery();
+})
 
 scene.on(message('text'), async (ctx) => {
     if (!ctx.scene?.session?.awaitingTelegramId) return;

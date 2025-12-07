@@ -84,21 +84,25 @@ bot.command('plus', (ctx) => ctx.scene.enter('SUBSCRIPTIONS_SCENE_ID'));
 
 bot.action('ADD_FILM', (ctx) => {
     ctx.answerCbQuery();
+    ctx.session.editMessageText = true;
     ctx.scene.enter('ADD_FILM_SCENE_ID');
 });
 
 bot.action('SHOW_LIST', (ctx) => {
     ctx.answerCbQuery();
+    ctx.session.editMessageText = true;
     ctx.scene.enter('LIBRARY_SCENE_ID');
 });
 
 bot.action('GET_RECS', (ctx) => {
     ctx.answerCbQuery();
+    ctx.session.editMessageText = true;
     ctx.scene.enter('RECOMMENDATION_SCENE_ID');
 });
 
 bot.action('GET_SUBSCRIPTION', (ctx) => {
     ctx.answerCbQuery();
+    ctx.session.editMessageText = true;
     ctx.scene.enter('SUBSCRIPTIONS_SCENE_ID');
 });
 
@@ -129,6 +133,7 @@ bot.action('GO_HOME_AND_CLEAR_KEYBOARD', (ctx) => {
 });
 
 bot.action('GO_HOME_AND_DELETE_MESSAGE', (ctx) => {
+    ctx.answerCbQuery();
     ctx.session.editMessageText = true;
     ctx.scene.enter('START_SCENE_ID');
 });

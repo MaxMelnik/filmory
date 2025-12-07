@@ -21,21 +21,19 @@ const ai = new GoogleGenAI({
  * 🔹 Базовий генератор тексту з system + user контекстом
  * @param {string} system - роль або інструкція (напр. "Ти кінокритик Filmory")
  * @param {string} prompt - запит користувача
- * @param {string} model - модель Gemini (за замовчуванням gemini-2.0-flash)
+ * @param {string} model - модель Gemini (за замовчуванням gemini-robotics-er-1.5-preview)
  * @param {string} responseMimeType - формат відповіді моделі (наприклад 'application/json')
  * @returns {Promise<string>}
  */
 export async function askGemini({
     system,
     prompt,
-    model = 'gemini-2.0-flash',
+    model = 'gemini-robotics-er-1.5-preview',
     responseMimeType,
 } = {}) {
     try {
         const request = {
             model,
-            // якщо твій SDK реально підтримує це поле — ок,
-            // в офіційному клієнті воно називається systemInstruction
             system,
             contents: prompt,
         };
@@ -103,7 +101,7 @@ export async function getFilmRecommendations(movieTitle) {
     const responseText = await askGemini({
         system,
         prompt,
-        model: 'gemini-2.0-flash',
+        model: 'gemini-robotics-er-1.5-preview',
         responseMimeType: 'application/json',
     });
 
@@ -121,7 +119,7 @@ export async function getFilmRecommendations(movieTitle) {
     } catch (err) {
         logger.error('❌ Failed to parse Gemini JSON response:', err, { responseText });
 
-        // Фолбек — щоб бот не падав
+        // TODO fallback
         return [];
     }
 }
@@ -174,7 +172,7 @@ export async function getListOfFilmsRecommendations(includeFilms, excludeFilms) 
     const responseText = await askGemini({
         system,
         prompt,
-        model: 'gemini-2.0-flash',
+        model: 'gemini-robotics-er-1.5-preview',
         responseMimeType: 'application/json',
     });
 
@@ -192,8 +190,19 @@ export async function getListOfFilmsRecommendations(includeFilms, excludeFilms) 
     } catch (err) {
         logger.error('❌ Failed to parse Gemini JSON response:', err, { responseText });
 
-        // Фолбек — щоб бот не падав
+        // TODO fallback
         return [];
     }
+}
+
+export async function pingGemini(model = 'gemini-robotics-er-1.5-preview') {
+    const system = '';
+    const prompt = `PING`;
+
+    return await askGemini({
+            system,
+            prompt,
+            model,
+        });
 }
 

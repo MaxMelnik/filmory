@@ -9,7 +9,8 @@ export async function pingGeminiAPI(ctx) {
         message: `Шукаю фільми на основі твоїх вподобань`,
         animation: 'emoji', // "dots", "emoji", "phrases"
         delay: 500,
-        asyncTask: async () => await pingGemini('gemini-robotics-er-1.5-preview'),
+        asyncTask: async () => await pingGemini('gemma-3-27b-it'),
         // onDone: (response) => response,
     });
+    ctx.answerCbQuery();
 }

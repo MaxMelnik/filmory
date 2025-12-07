@@ -53,7 +53,6 @@ scene.action('USER_INFO', async (ctx) => {
 
 scene.action('PING_GEMINI_API', async (ctx) => {
     await pingGeminiAPI(ctx);
-    ctx.answerCbQuery();
 })
 
 scene.on(message('text'), async (ctx) => {

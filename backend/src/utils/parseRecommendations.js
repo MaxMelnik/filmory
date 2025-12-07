@@ -1,25 +1,24 @@
 import { Markup } from 'telegraf';
 
 export default function parseRecommendations(ctx, heading = null, recommendations = null) {
+    if (!recommendations) recommendations = ctx.session.recommendations;
+    ctx.session.recommendations = recommendations;
+
     if (!recommendations?.length) {
         const keyboard = Markup.inlineKeyboard([
             [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
         ]);
 
         return {
-            finalText: '⚠️ Сервіс Gemini тимчасово недоступний. Спробуй, будь ласка, пізніше',
+            finalText: 'Не вдалось отримати рекомендації. Спробуй, будь ласка, пізніше 😔',
             keyboard,
         };
     }
 
-    if (!recommendations) recommendations = ctx.session.recommendations;
-    ctx.session.recommendations = recommendations;
     if (!heading) heading = ctx.session.heading;
     ctx.session.heading = heading;
     if (!ctx.session.activeRecommendation) ctx.session.activeRecommendation = 1;
     const activeRecommendation = ctx.session.activeRecommendation;
-
-    if (recommendations.length === 0) return 'Не вдалось отримати рекомендації. Спробуй, будь ласка, ще раз 😔';
 
     const pageButtons = [];
 

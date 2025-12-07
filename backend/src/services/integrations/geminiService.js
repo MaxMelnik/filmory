@@ -21,14 +21,14 @@ const ai = new GoogleGenAI({
  * 🔹 Базовий генератор тексту з system + user контекстом
  * @param {string} system - роль або інструкція (напр. "Ти кінокритик Filmory")
  * @param {string} prompt - запит користувача
- * @param {string} model - модель Gemini (за замовчуванням gemini-robotics-er-1.5-preview)
+ * @param {string} model - модель Gemini (за замовчуванням gemma-3-27b-it)
  * @param {string} responseMimeType - формат відповіді моделі (наприклад 'application/json')
  * @returns {Promise<string>}
  */
 export async function askGemini({
     system,
     prompt,
-    model = 'gemini-robotics-er-1.5-preview',
+    model = 'gemma-3-27b-it',
     responseMimeType,
 } = {}) {
     try {
@@ -65,7 +65,7 @@ export async function askGemini({
  * @returns {Promise<string>}
  */
 export async function getFilmRecommendations(movieTitle) {
-    const system = 'Ти — розумний кінокритик, який радить фільми користувачам Filmory.';
+    const system = 'Ти — розумний кінокритик, який радить фільми користувачам Filmory. Тон спілкування - дружній, теплий, але експертний';
     const prompt = `
 Дай 5 фільмів, схожих на "${movieTitle}".
     
@@ -101,7 +101,7 @@ export async function getFilmRecommendations(movieTitle) {
     const responseText = await askGemini({
         system,
         prompt,
-        model: 'gemini-robotics-er-1.5-preview',
+        model: 'gemma-3-27b-it',
         responseMimeType: 'application/json',
     });
 
@@ -131,7 +131,7 @@ export async function getFilmRecommendations(movieTitle) {
  * @returns {Promise<string>}
  */
 export async function getListOfFilmsRecommendations(includeFilms, excludeFilms) {
-    const system = 'Ти — розумний кінокритик, який радить фільми користувачам Filmory.';
+    const system = 'Ти — розумний кінокритик, який радить фільми користувачам Filmory. Тон спілкування - дружній, теплий, але експертний';
 
     const prompt = `
 Користувачу сподобались фільми: ${includeFilms || '—'}.
@@ -172,7 +172,7 @@ export async function getListOfFilmsRecommendations(includeFilms, excludeFilms) 
     const responseText = await askGemini({
         system,
         prompt,
-        model: 'gemini-robotics-er-1.5-preview',
+        model: 'gemma-3-27b-it',
         responseMimeType: 'application/json',
     });
 
@@ -195,7 +195,7 @@ export async function getListOfFilmsRecommendations(includeFilms, excludeFilms) 
     }
 }
 
-export async function pingGemini(model = 'gemini-robotics-er-1.5-preview') {
+export async function pingGemini(model = 'gemma-3-27b-it') {
     const system = '';
     const prompt = `PING`;
 

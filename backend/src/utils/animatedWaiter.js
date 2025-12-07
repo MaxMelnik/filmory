@@ -71,7 +71,7 @@ export async function showWaiter(ctx, {
         // ✅ Оновлюємо повідомлення після завершення
         let { finalText, keyboard } = typeof onDone === 'function' ?
             onDone(ctx, result) :
-            { finalText: `✅ Завершено:\n\n${result}` };
+            { finalText: result };
 
         keyboard ??= Markup.inlineKeyboard([
             [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],

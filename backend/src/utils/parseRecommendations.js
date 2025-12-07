@@ -1,6 +1,17 @@
 import { Markup } from 'telegraf';
 
 export default function parseRecommendations(ctx, heading = null, recommendations = null) {
+    if (!recommendations?.length) {
+        const keyboard = Markup.inlineKeyboard([
+            [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
+        ]);
+
+        return {
+            finalText: '⚠️ Сервіс Gemini тимчасово недоступний. Спробуй, будь ласка, пізніше',
+            keyboard,
+        };
+    }
+
     if (!recommendations) recommendations = ctx.session.recommendations;
     ctx.session.recommendations = recommendations;
     if (!heading) heading = ctx.session.heading;

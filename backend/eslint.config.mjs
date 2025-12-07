@@ -45,7 +45,7 @@ export default defineConfig([globalIgnores(['**/vue-frontend/', '**/dist/', '**/
         'require-jsdoc': 'off',
         'valid-jsdoc': 'off',
         'linebreak-style': 'off',
-        'no-console': 'off',
+        'no-console': 'on',
         'prefer-const': 'error',
     },
 }]);

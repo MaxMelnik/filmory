@@ -59,7 +59,7 @@ export default function parseRecommendations(ctx, heading = null, recommendation
 
     const actionButtons = [
         [Markup.button.callback(
-            `💾 Зберегти '${recommendations[activeRecommendation - 1].title}'`,
+            `💾 Зберегти "${recommendations[activeRecommendation - 1].title}"`,
             `SAVE_ACTIVE_REC_${activeRecommendation - 1}`,
         )],
         [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],

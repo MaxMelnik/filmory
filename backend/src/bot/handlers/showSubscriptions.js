@@ -48,7 +48,7 @@ _(потім вона буде подовжена автоматично, якщ
         Markup.inlineKeyboard([
             [Markup.button.callback('⚙ Керувати підпискою', 'MANAGE_SUBSCRIPTION')],
             [Markup.button.callback('🎞 Мій список', 'SHOW_LIST')],
-            [Markup.button.callback('🤖 Рекомендації', 'GET_RECS')],
+            [Markup.button.callback('👾 Рекомендації', 'GET_RECS')],
             [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_DELETE_MESSAGE')],
         ]));
 }

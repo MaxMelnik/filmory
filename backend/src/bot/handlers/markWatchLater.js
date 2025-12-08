@@ -12,7 +12,7 @@ export async function markWatchLater(ctx) {
             Markup.button.callback('❌ Видалити', `DELETE_FROM_LIB_${filmId}`),
             Markup.button.callback('👁 Переглянуто', `MARK_WATCHED_${filmId}`),
         ],
-        [Markup.button.callback('🤖 Знайти схожі фільми', `RECOMMEND_${filmId}`)],
+        [Markup.button.callback('👾 знайти схожі фільми', `RECOMMEND_${filmId}`)],
         [Markup.button.callback('⬅ Назад', 'BACK_TO_LIBRARY')],
     ]);
 

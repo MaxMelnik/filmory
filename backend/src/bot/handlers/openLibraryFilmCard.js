@@ -35,7 +35,7 @@ export async function openLibraryFilmCard(ctx) {
     const keyboard = Markup.inlineKeyboard([
         statusButtons,
         (ctx.session.view === 'watched') ? [Markup.button.callback('⭐ Змінити оцінку', `CHANGE_MARK_${filmId}`)] : [],
-        [Markup.button.callback('🤖 Знайти схожі фільми', `RECOMMEND_${filmId}`)],
+        [Markup.button.callback('👾 знайти схожі фільми', `RECOMMEND_${filmId}`)],
         [Markup.button.callback('⬅ Назад', 'BACK_TO_LIBRARY')],
     ]);
 

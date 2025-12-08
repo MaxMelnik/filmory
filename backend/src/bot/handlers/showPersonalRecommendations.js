@@ -6,8 +6,8 @@ import { isRequestAllowed } from '../../services/system/QuotaService.js';
 import parseRecommendations from '../../utils/parseRecommendations.js';
 import logger from '../../utils/logger.js';
 
-export async function showRecommendations(ctx) {
-    logger.info(`[RECOMMENDATIONS SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
+export async function showPersonalRecommendations(ctx) {
+    logger.info(`GET_PERSONAL_RECOMMENDATIONS: @${ctx.from.username || ctx.from.id}`);
 
     if (!await isRequestAllowed(ctx)) return;
 
@@ -29,6 +29,8 @@ export async function showRecommendations(ctx) {
 
     logger.info(includeFilms);
     logger.info(excludeFilms);
+
+    ctx.answerCbQuery();
 
     await showWaiter(ctx, {
         message: `Шукаю фільми на основі твоїх вподобань`,

@@ -13,6 +13,8 @@ import { activityMiddleware } from './middlewares/activityMiddleware.js';
 import { UserService } from '../services/UserService.js';
 import logger from '../utils/logger.js';
 import parseRecommendations from '../utils/parseRecommendations.js';
+import { showRecommendationsMenu } from './handlers/showRecommendationsMenu.js';
+import scene from './scenes/recommendationScene.js';
 
 // === Ініціалізація ===
 const bot = getBotInstance();
@@ -129,6 +131,7 @@ bot.action('DELETE_THIS_MESSAGE', (ctx) => {
 
 bot.action('GO_HOME_AND_CLEAR_KEYBOARD', (ctx) => {
     ctx.editMessageReplyMarkup();
+    ctx.session.editMessageText = false;
     ctx.scene.enter('START_SCENE_ID');
 });
 
@@ -136,6 +139,12 @@ bot.action('GO_HOME_AND_DELETE_MESSAGE', (ctx) => {
     ctx.answerCbQuery();
     ctx.session.editMessageText = true;
     ctx.scene.enter('START_SCENE_ID');
+});
+
+scene.action('GO_RECS_AND_DELETE_MESSAGE', (ctx) => {
+    ctx.answerCbQuery();
+    ctx.session.editMessageText = true;
+    ctx.scene.enter('RECOMMENDATION_SCENE_ID');
 });
 
 bot.action('FAKE_BUTTON', (ctx) => ctx.answerCbQuery());

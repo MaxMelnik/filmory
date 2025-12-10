@@ -9,6 +9,13 @@ import { setRateAddFilm } from '../handlers/setRateAddFilm.js';
 import { saveManual } from '../handlers/saveManual.js';
 import { showRecommendationsMenu } from '../handlers/showRecommendationsMenu.js';
 import { showSimilarRecommendations } from '../handlers/showSimilarRecommendations.js';
+import { message } from 'telegraf/filters';
+import { handleCommandsOnText } from '../handlers/handleCommandsOnText.js';
+import { UserService } from '../../services/UserService.js';
+import { Film } from '../../models/index.js';
+import { showWaiter } from '../../utils/animatedWaiter.js';
+import { getFilmRecommendations } from '../../services/integrations/geminiService.js';
+import parseRecommendations from '../../utils/parseRecommendations.js';
 
 const scene = new Scenes.BaseScene('RECOMMENDATION_SCENE_ID');
 
@@ -18,6 +25,23 @@ scene.enter(async (ctx) => await showRecommendationsMenu(ctx));
 scene.action('PERSONAL_REC_CAT', async (ctx) => await showPersonalRecommendations(ctx));
 
 scene.action('SIMILAR_REC_CAT', async (ctx) => await showSimilarRecommendations(ctx));
+
+
+scene.on(message('text'), async (ctx) => {
+    const input = ctx.message.text.trim();
+    if (handleCommandsOnText(ctx, input)) return;
+
+    if (ctx.scene.state.recCat === 'show_similar') {
+        logger.info(`show_similar: ${input}`);
+        await showWaiter(ctx, {
+            message: `Шукаю фільми схожі на "${input}"`,
+            animation: 'emoji', // "dots", "emoji", "phrases"
+            delay: 500,
+            asyncTask: async () => await getFilmRecommendations(input),
+            onDone: (ctx, response) => parseRecommendations(ctx, `🎬 Фільми схожі на ${input}:`, response),
+        });
+    }
+});
 
 // Film Card keyboard handlers
 scene.action(/^SAVE_ACTIVE_REC_(\d+)$/, async (ctx) => {

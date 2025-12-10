@@ -3,6 +3,7 @@ import { Markup } from 'telegraf';
 import { FilmService } from '../../services/FilmService.js';
 import { UserService } from '../../services/UserService.js';
 import logger from '../../utils/logger.js';
+import { handleCommandsOnText } from './handleCommandsOnText.js';
 
 export async function handleAddFilm(ctx) {
     logger.info(`[ADD FILM SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
@@ -18,11 +19,7 @@ export async function handleAddFilm(ctx) {
 
 export async function handleFilmTitleInput(ctx) {
     const title = ctx.message?.text?.trim() ?? ctx.session.title;
-    if (title === '/start') return ctx.scene.enter('START_SCENE_ID');
-    if (title === '/add') return ctx.scene.enter('ADD_FILM_SCENE_ID');
-    if (title === '/my_films') return ctx.scene.enter('LIBRARY_SCENE_ID');
-    if (title === '/recommend') return ctx.scene.enter('RECOMMENDATION_SCENE_ID');
-    if (title === '/plus') return ctx.scene.enter('SUBSCRIPTIONS_SCENE_ID');
+    if (handleCommandsOnText(ctx, title)) return;
 
     if (!ctx.session?.awaitingFilmTitle) return;
 

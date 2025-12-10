@@ -4,6 +4,7 @@ import { message } from 'telegraf/filters';
 import { UserService } from '../../services/UserService.js';
 import logger from '../../utils/logger.js';
 import { pingGeminiAPI } from '../handlers/pingGeminiAPI.js';
+import { handleCommandsOnText } from '../handlers/handleCommandsOnText.js';
 
 const scene = new Scenes.BaseScene('ROOT_SCENE_ID');
 
@@ -47,22 +48,23 @@ scene.action('GENERAL_STATS', async (ctx) => {
 });
 
 scene.action('USER_INFO', async (ctx) => {
-    ctx.scene.session.awaitingTelegramId = true;
+    ctx.scene.state.awaitingTelegramId = true;
     ctx.reply('> Введіть telegramId');
 });
 
 scene.action('PING_GEMINI_API', async (ctx) => {
     await pingGeminiAPI(ctx);
-})
+});
 
 scene.on(message('text'), async (ctx) => {
-    if (!ctx.scene?.session?.awaitingTelegramId) return;
-
     const telegramId = ctx.message.text.trim();
-    ctx.scene.session.awaitingTelegramId = false;
+    if (handleCommandsOnText(ctx, telegramId)) return;
 
-    const user = await UserService.getByTelegramId(telegramId);
-    ctx.reply(user);
+    if (ctx.scene.state.awaitingTelegramId) {
+        ctx.scene.state.awaitingTelegramId = false;
+        const user = await UserService.getByTelegramId(telegramId);
+        ctx.reply(user);
+    }
 });
 
 export default scene;

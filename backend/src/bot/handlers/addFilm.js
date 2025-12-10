@@ -32,7 +32,6 @@ export async function handleFilmTitleInput(ctx) {
     if (!films || !films[ctx.scene.state.filmIndex]) {
         const keyboard = Markup.inlineKeyboard([
             [Markup.button.callback(`📝 Зберегти як "${title}"`, `SAVE_MANUAL`)],
-            [Markup.button.callback('📼 Знайти схожі', 'ADD_WATCH_LATER')],
             [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
         ]);
         return ctx.reply('Не знайшов такого фільму на TMDB 😢', keyboard);
@@ -53,6 +52,7 @@ export async function handleFilmTitleInput(ctx) {
         [Markup.button.callback('📼 Подивитись пізніше', 'ADD_WATCH_LATER')],
         [Markup.button.callback('✅ Вже переглянуто', 'ADD_WATCHED')],
         [Markup.button.callback(`📝 Лише назву "${title}"`, `SAVE_MANUAL`)],
+        [Markup.button.callback('👾 знайти схожі фільми', `RECOMMEND_${film._id}`)],
         [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
     ]);
 

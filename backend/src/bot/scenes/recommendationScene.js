@@ -10,7 +10,12 @@ import { showRecommendationsMenu } from '../handlers/showRecommendationsMenu.js'
 import { message } from 'telegraf/filters';
 import { handleCommandsOnText } from '../handlers/handleCommandsOnText.js';
 import { showWaiter } from '../../utils/animatedWaiter.js';
-import { getFilmRecommendations, getFilmRecommendationsByMood } from '../../services/integrations/geminiService.js';
+import {
+    getCoopFilmRecommendations,
+    getFilmRecommendations,
+    getFilmRecommendationsByMood,
+    getListOfFilmsRecommendations,
+} from '../../services/integrations/geminiService.js';
 import parseRecommendations from '../../utils/parseRecommendations.js';
 import {
     plusOnlyRestriction,
@@ -18,7 +23,12 @@ import {
     showSimilarRecommendations,
     showMoodRecommendations,
     showCompanyRecommendations,
+    showCooperativeRecommendations,
 } from '../handlers/recommendationsCategories.js';
+import { UserService } from '../../services/UserService.js';
+import bot from '../index.js';
+import { LibraryService } from '../../services/LibraryService.js';
+import escapeReservedCharacters from '../../utils/escapeReservedCharacters.js';
 
 const scene = new Scenes.BaseScene('RECOMMENDATION_SCENE_ID');
 
@@ -35,6 +45,7 @@ scene.action('MOOD_REC_CAT', async (ctx) => await showMoodRecommendations(ctx));
 
 scene.action('COMPANY_REC_CAT', async (ctx) => await showCompanyRecommendations(ctx));
 
+scene.action('COOP_REC_CAT', async (ctx) => await showCooperativeRecommendations(ctx));
 
 scene.on(message('text'), async (ctx) => {
     const input = ctx.message.text.trim();
@@ -61,13 +72,73 @@ scene.on(message('text'), async (ctx) => {
         });
     }
     if (ctx.scene.state.recCat === 'show_company') {
-        logger.info(`show_mood: ${input}`);
+        logger.info(`show_company: ${input}`);
         return await showWaiter(ctx, {
             message: `Шукаю фільми для перегляду ${input}`,
             animation: 'emoji', // "dots", "emoji", "phrases"
             delay: 500,
             asyncTask: async () => await getFilmRecommendationsByMood(input),
             onDone: (ctx, response) => parseRecommendations(ctx, `🎬 Фільми для перегляду ${input}:`, response),
+        });
+    }
+    if (ctx.scene.state.recCat === 'show_coop') {
+        logger.info(`show_coop: ${input}`);
+
+        let telegramId = ctx.message.forward_from ? ctx.message.forward_from.id : null;
+        telegramId ??= (await UserService.getByUsername(input))?.telegramId;
+
+        const info = await bot.telegram.getMe();
+        if (!telegramId) {
+            return ctx.replyWithMarkdownV2(`Схоже, цей користувач ще не користувався *Filmory*\\.
+        
+Попроси його зайти в @${escapeReservedCharacters(info.username)} і додати свої улюблені фільми\\.
+`);
+        }
+
+        const userOne = await UserService.getByTelegramId(ctx.from.id);
+        const userTwo = await UserService.getByTelegramId(telegramId);
+
+        const userOneFavouriteMovies = await LibraryService.getUserFavouriteFilms(userOne._id, 8);
+        const userOneWorstMovies = await LibraryService.getUserWorstFilms(userOne._id, 4);
+
+        const userTwoFavouriteMovies = await LibraryService.getUserFavouriteFilms(userTwo._id, 8);
+        const userTwoWorstMovies = await LibraryService.getUserWorstFilms(userTwo._id, 4);
+
+        const userOneIncludeFilms = userOneFavouriteMovies
+            .map(movie => movie.title)
+            .filter(Boolean)
+            .map(title => `"${title}"`)
+            .join(', ');
+
+        const userOneExcludeFilms = userOneWorstMovies
+            .map(movie => movie.title)
+            .filter(Boolean)
+            .map(title => `"${title}"`)
+            .join(', ');
+
+        const userTwoIncludeFilms = userTwoFavouriteMovies
+            .map(movie => movie.title)
+            .filter(Boolean)
+            .map(title => `"${title}"`)
+            .join(', ');
+
+        const userTwoExcludeFilms = userTwoWorstMovies
+            .map(movie => movie.title)
+            .filter(Boolean)
+            .map(title => `"${title}"`)
+            .join(', ');
+
+        logger.info(userOneIncludeFilms);
+        logger.info(userOneExcludeFilms);
+        logger.info(userTwoIncludeFilms);
+        logger.info(userTwoExcludeFilms);
+
+        return await showWaiter(ctx, {
+            message: `Шукаю фільми для перегляду разом з @${userTwo.username}`,
+            animation: 'emoji', // "dots", "emoji", "phrases"
+            delay: 500,
+            asyncTask: async () => await getCoopFilmRecommendations(userOneIncludeFilms, userOneExcludeFilms, userTwoIncludeFilms, userTwoExcludeFilms),
+            onDone: (ctx, response) => parseRecommendations(ctx, '🎬 Я знайшов для вас фільми, які сподобаються обом:', response),
         });
     }
 });

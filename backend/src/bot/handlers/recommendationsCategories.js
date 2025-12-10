@@ -165,3 +165,33 @@ export async function showCompanyRecommendations(ctx) {
         });
 }
 
+export async function showCooperativeRecommendations(ctx) {
+    if (!await UserService.isPlus(ctx.from.id)) {
+        return await plusOnlyRestriction(ctx);
+    }
+
+    const getPlusKeyboard = Markup.inlineKeyboard([
+        [Markup.button.callback('⭐ Filmory Plus', 'GET_SUBSCRIPTION')],
+    ]);
+    const goBackKeyboard = [
+        [{ text: `⬅ Назад`, callback_data: 'GO_RECS_AND_DELETE_MESSAGE' }],
+    ];
+    if (!await isRequestAllowed(ctx, goBackKeyboard, getPlusKeyboard)) return;
+
+    ctx.scene.state.recCat = 'show_coop';
+    const text = escapeReservedCharacters(`🤝 Зробимо підбірку, яка сподобається вам двом.
+
+Напиши @username друга або перешли мені будь-яке його повідомлення.
+Я порівняю ваші смаки і підберу фільми, які зайдуть вам обом.
+`);
+    const keyboard = [
+        [{ text: `⬅ Назад`, callback_data: 'GO_RECS_AND_DELETE_MESSAGE' }],
+    ];
+
+    await ctx
+        .editMessageText?.(text, { parse_mode: 'MarkdownV2', ...Markup.inlineKeyboard(keyboard) })
+        .catch(async () => {
+            await ctx.reply(text, { parse_mode: 'MarkdownV2', ...Markup.inlineKeyboard(keyboard) });
+        });
+}
+

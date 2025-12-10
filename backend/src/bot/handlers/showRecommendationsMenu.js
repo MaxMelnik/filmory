@@ -34,7 +34,7 @@ export async function showRecommendationsMenu(ctx) {
         [
             [{ text: `🌈 За настроєм ${isPlusSymbol}`, callback_data: isPlus ? 'MOOD_REC_CAT' : 'PLUS_REC_CAT' }],
             [{ text: `👥 З ким дивимось? ${isPlusSymbol}`, callback_data: isPlus ? 'COMPANY_REC_CAT' : 'PLUS_REC_CAT' }],
-            // [{ text: `🤝 Спільний перегляд ${isPlusSymbol}`, callback_data: isPlus ? 'COOP_REC_CAT' : 'PLUS_REC_CAT' }],
+            [{ text: `🤝 Спільний перегляд ${isPlusSymbol}`, callback_data: isPlus ? 'COOP_REC_CAT' : 'PLUS_REC_CAT' }],
         ];
 
     const keyboard = [

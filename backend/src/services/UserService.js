@@ -12,6 +12,14 @@ export class UserService {
         return User.findOne({ telegramId });
     }
 
+    /**
+     * Find user by username
+     */
+    static async getByUsername(username) {
+        if (username.startsWith('@')) username = username.substr(1);
+        return User.findOne({ username });
+    }
+
     static async getOrCreateUserFromCtx(ctx) {
         const telegramId = ctx.from.id;
 

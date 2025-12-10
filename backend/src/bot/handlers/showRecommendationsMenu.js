@@ -15,10 +15,11 @@ export async function showRecommendationsMenu(ctx) {
 ⭐ *Filmory Plus* — додаткові режими:
     • Рекомендації за настроєм
     • З ким плануєш дивитись?
-    • Спільний перегляд із ще одним користувачем
 
 Обери режим нижче 👇
 `;
+
+// • Спільний перегляд із ще одним користувачем
 
     const freeCatsButtons =
         [
@@ -26,18 +27,19 @@ export async function showRecommendationsMenu(ctx) {
             [{ text: '🎬 Схожі на фільм', callback_data: 'SIMILAR_REC_CAT' }],
         ];
 
-    const isPlusSymbol = await UserService.isPlus(ctx.from.id) ? '⭐' : '🔒';
+    const isPlus = await UserService.isPlus(ctx.from.id);
+    const isPlusSymbol = isPlus ? '⭐' : '🔒';
 
     const plusCatsButtons =
         [
-            [{ text: `🌈 За настроєм ${isPlusSymbol}`, callback_data: 'MOOD_REC_CAT' }],
-            [{ text: `👥 З ким дивимось? ${isPlusSymbol}`, callback_data: 'COMPANY_REC_CAT' }],
-            [{ text: `🤝 Спільний перегляд ${isPlusSymbol}`, callback_data: 'COOP_REC_CAT' }],
+            [{ text: `🌈 За настроєм ${isPlusSymbol}`, callback_data: isPlus ? 'MOOD_REC_CAT' : 'PLUS_REC_CAT' }],
+            [{ text: `👥 З ким дивимось? ${isPlusSymbol}`, callback_data: isPlus ? 'COMPANY_REC_CAT' : 'PLUS_REC_CAT' }],
+            // [{ text: `🤝 Спільний перегляд ${isPlusSymbol}`, callback_data: isPlus ? 'COOP_REC_CAT' : 'PLUS_REC_CAT' }],
         ];
 
     const keyboard = [
         ...freeCatsButtons,
-        // ...plusCatsButtons,
+        ...plusCatsButtons,
         [{ text: `🏠︎ На головну`, callback_data: 'GO_HOME_AND_DELETE_MESSAGE' }],
     ];
 

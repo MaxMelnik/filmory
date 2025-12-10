@@ -11,20 +11,27 @@ import { showRecommendationsMenu } from '../handlers/showRecommendationsMenu.js'
 import { showSimilarRecommendations } from '../handlers/showSimilarRecommendations.js';
 import { message } from 'telegraf/filters';
 import { handleCommandsOnText } from '../handlers/handleCommandsOnText.js';
-import { UserService } from '../../services/UserService.js';
-import { Film } from '../../models/index.js';
 import { showWaiter } from '../../utils/animatedWaiter.js';
-import { getFilmRecommendations } from '../../services/integrations/geminiService.js';
+import { getFilmRecommendations, getFilmRecommendationsByMood } from '../../services/integrations/geminiService.js';
 import parseRecommendations from '../../utils/parseRecommendations.js';
+import { showMoodRecommendations } from '../handlers/showMoodRecommendations.js';
+import { plusOnlyRestriction } from '../handlers/plusOnlyRestriction.js';
+import { showCompanyRecommendations } from '../handlers/showCompanyRecommendations.js';
 
 const scene = new Scenes.BaseScene('RECOMMENDATION_SCENE_ID');
 
 // Enter Recommendations Scene
 scene.enter(async (ctx) => await showRecommendationsMenu(ctx));
 
+scene.action('PLUS_REC_CAT', async (ctx) => await plusOnlyRestriction(ctx));
+
 scene.action('PERSONAL_REC_CAT', async (ctx) => await showPersonalRecommendations(ctx));
 
 scene.action('SIMILAR_REC_CAT', async (ctx) => await showSimilarRecommendations(ctx));
+
+scene.action('MOOD_REC_CAT', async (ctx) => await showMoodRecommendations(ctx));
+
+scene.action('COMPANY_REC_CAT', async (ctx) => await showCompanyRecommendations(ctx));
 
 
 scene.on(message('text'), async (ctx) => {
@@ -33,12 +40,32 @@ scene.on(message('text'), async (ctx) => {
 
     if (ctx.scene.state.recCat === 'show_similar') {
         logger.info(`show_similar: ${input}`);
-        await showWaiter(ctx, {
+        return await showWaiter(ctx, {
             message: `Шукаю фільми схожі на "${input}"`,
             animation: 'emoji', // "dots", "emoji", "phrases"
             delay: 500,
             asyncTask: async () => await getFilmRecommendations(input),
-            onDone: (ctx, response) => parseRecommendations(ctx, `🎬 Фільми схожі на ${input}:`, response),
+            onDone: (ctx, response) => parseRecommendations(ctx, `🎬 Фільми схожі на "${input}":`, response),
+        });
+    }
+    if (ctx.scene.state.recCat === 'show_mood') {
+        logger.info(`show_mood: ${input}`);
+        return await showWaiter(ctx, {
+            message: `Шукаю фільми за настроєм "${input}"`,
+            animation: 'emoji', // "dots", "emoji", "phrases"
+            delay: 500,
+            asyncTask: async () => await getFilmRecommendationsByMood(input),
+            onDone: (ctx, response) => parseRecommendations(ctx, `🎬 Фільми за настроєм "${input}":`, response),
+        });
+    }
+    if (ctx.scene.state.recCat === 'show_company') {
+        logger.info(`show_mood: ${input}`);
+        return await showWaiter(ctx, {
+            message: `Шукаю фільми для перегляду ${input}`,
+            animation: 'emoji', // "dots", "emoji", "phrases"
+            delay: 500,
+            asyncTask: async () => await getFilmRecommendationsByMood(input),
+            onDone: (ctx, response) => parseRecommendations(ctx, `🎬 Фільми для перегляду ${input}:`, response),
         });
     }
 });

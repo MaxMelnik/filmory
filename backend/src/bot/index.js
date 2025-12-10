@@ -13,7 +13,6 @@ import { activityMiddleware } from './middlewares/activityMiddleware.js';
 import { UserService } from '../services/UserService.js';
 import logger from '../utils/logger.js';
 import parseRecommendations from '../utils/parseRecommendations.js';
-import { showRecommendationsMenu } from './handlers/showRecommendationsMenu.js';
 import scene from './scenes/recommendationScene.js';
 
 // === Ініціалізація ===

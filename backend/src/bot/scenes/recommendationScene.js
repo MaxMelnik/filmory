@@ -1,5 +1,4 @@
 import { Scenes } from 'telegraf';
-import { showPersonalRecommendations } from '../handlers/showPersonalRecommendations.js';
 import { handleFilmTitleInput } from '../handlers/addFilm.js';
 import logger from '../../utils/logger.js';
 import { openSearchFilmCard } from '../handlers/openSearchFilmCard.js';
@@ -8,15 +7,18 @@ import { addAsWatched } from '../handlers/addAsWatched.js';
 import { setRateAddFilm } from '../handlers/setRateAddFilm.js';
 import { saveManual } from '../handlers/saveManual.js';
 import { showRecommendationsMenu } from '../handlers/showRecommendationsMenu.js';
-import { showSimilarRecommendations } from '../handlers/showSimilarRecommendations.js';
 import { message } from 'telegraf/filters';
 import { handleCommandsOnText } from '../handlers/handleCommandsOnText.js';
 import { showWaiter } from '../../utils/animatedWaiter.js';
 import { getFilmRecommendations, getFilmRecommendationsByMood } from '../../services/integrations/geminiService.js';
 import parseRecommendations from '../../utils/parseRecommendations.js';
-import { showMoodRecommendations } from '../handlers/showMoodRecommendations.js';
-import { plusOnlyRestriction } from '../handlers/plusOnlyRestriction.js';
-import { showCompanyRecommendations } from '../handlers/showCompanyRecommendations.js';
+import {
+    plusOnlyRestriction,
+    showPersonalRecommendations,
+    showSimilarRecommendations,
+    showMoodRecommendations,
+    showCompanyRecommendations,
+} from '../handlers/recommendationsCategories.js';
 
 const scene = new Scenes.BaseScene('RECOMMENDATION_SCENE_ID');
 

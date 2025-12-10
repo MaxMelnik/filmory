@@ -16,7 +16,7 @@ export class UserService {
      * Find user by username
      */
     static async getByUsername(username) {
-        if (username.startsWith('@')) username = username.substr(1);
+        if (username.startsWith('@')) username = username.slice(1);
         return User.findOne({ username });
     }
 

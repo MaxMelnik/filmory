@@ -12,6 +12,12 @@ export class FilmService {
         return Film.findOne({ tmdbId });
     }
 
+    static truncateString(text, maxLength = 300) {
+        if (!text) return '';
+        if (text.length <= maxLength) return text;
+        return text.slice(0, maxLength - 1).trimEnd() + '…';
+    }
+
     /**
      * Додати або оновити фільм, отриманий з TMDB
      */
@@ -21,7 +27,7 @@ export class FilmService {
             title: found.title,
             year: found.year,
             posterUrl: found.posterUrl,
-            description: found.overview,
+            description: this.truncateString(found.overview),
             genres: found.genre_names || [],
         };
 

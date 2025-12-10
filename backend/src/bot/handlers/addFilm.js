@@ -32,6 +32,7 @@ export async function handleFilmTitleInput(ctx) {
     if (!films || !films[ctx.scene.state.filmIndex]) {
         const keyboard = Markup.inlineKeyboard([
             [Markup.button.callback(`📝 Зберегти як "${title}"`, `SAVE_MANUAL`)],
+            [Markup.button.callback('📼 Знайти схожі', 'ADD_WATCH_LATER')],
             [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
         ]);
         return ctx.reply('Не знайшов такого фільму на TMDB 😢', keyboard);

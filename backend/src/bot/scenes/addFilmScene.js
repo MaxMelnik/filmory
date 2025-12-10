@@ -6,6 +6,7 @@ import { addAsWatchLater } from '../handlers/addAsWatchLater.js';
 import { saveManual } from '../handlers/saveManual.js';
 import { setRateAddFilm } from '../handlers/setRateAddFilm.js';
 import { openSearchFilmCard } from '../handlers/openSearchFilmCard.js';
+import { recommendSimilar } from '../handlers/recommendSimilar.js';
 
 const scene = new Scenes.BaseScene('ADD_FILM_SCENE_ID');
 
@@ -43,6 +44,8 @@ scene.action('ADD_WATCHED', async (ctx) => addAsWatched(ctx));
 scene.action(/^RATE_(\d+)_(\d+)$/, async (ctx) => setRateAddFilm(ctx));
 
 scene.action('SAVE_MANUAL', async (ctx) => saveManual(ctx));
+
+scene.action(/^RECOMMEND_(\d+)$/, async (ctx) => recommendSimilar(ctx));
 
 // === Вихід зі сцени ===
 scene.leave(async (ctx) => {

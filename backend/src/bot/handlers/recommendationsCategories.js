@@ -30,9 +30,13 @@ export async function plusOnlyRestriction(ctx) {
 }
 
 export async function showPersonalRecommendations(ctx) {
-    logger.info(`GET_PERSONAL_RECOMMENDATIONS: @${ctx.from.username || ctx.from.id}`);
-
-    if (!await isRequestAllowed(ctx)) return;
+    const getPlusKeyboard = Markup.inlineKeyboard([
+        [Markup.button.callback('⭐ Filmory Plus', 'GET_SUBSCRIPTION')],
+    ]);
+    const goBackKeyboard = [
+        [{ text: `⬅ Назад`, callback_data: 'GO_RECS_AND_DELETE_MESSAGE' }],
+    ];
+    if (!await isRequestAllowed(ctx, goBackKeyboard, getPlusKeyboard)) return;
 
     const user = await UserService.getOrCreateUserFromCtx(ctx);
 
@@ -65,6 +69,14 @@ export async function showPersonalRecommendations(ctx) {
 }
 
 export async function showSimilarRecommendations(ctx) {
+    const getPlusKeyboard = Markup.inlineKeyboard([
+        [Markup.button.callback('⭐ Filmory Plus', 'GET_SUBSCRIPTION')],
+    ]);
+    const goBackKeyboard = [
+        [{ text: `⬅ Назад`, callback_data: 'GO_RECS_AND_DELETE_MESSAGE' }],
+    ];
+    if (!await isRequestAllowed(ctx, goBackKeyboard, getPlusKeyboard)) return;
+
     ctx.scene.state.recCat = 'show_similar';
     const text = escapeReservedCharacters(`🎬 Оберемо щось схоже на конкретний фільм.
 
@@ -85,6 +97,15 @@ export async function showMoodRecommendations(ctx) {
     if (!await UserService.isPlus(ctx.from.id)) {
         return await plusOnlyRestriction(ctx);
     }
+
+    const getPlusKeyboard = Markup.inlineKeyboard([
+        [Markup.button.callback('⭐ Filmory Plus', 'GET_SUBSCRIPTION')],
+    ]);
+    const goBackKeyboard = [
+        [{ text: `⬅ Назад`, callback_data: 'GO_RECS_AND_DELETE_MESSAGE' }],
+    ];
+    if (!await isRequestAllowed(ctx, goBackKeyboard, getPlusKeyboard)) return;
+
     ctx.scene.state.recCat = 'show_mood';
     const text = escapeReservedCharacters(`🌈 Підберемо фільм під твій настрій.
 
@@ -112,6 +133,15 @@ export async function showCompanyRecommendations(ctx) {
     if (!await UserService.isPlus(ctx.from.id)) {
         return await plusOnlyRestriction(ctx);
     }
+
+    const getPlusKeyboard = Markup.inlineKeyboard([
+        [Markup.button.callback('⭐ Filmory Plus', 'GET_SUBSCRIPTION')],
+    ]);
+    const goBackKeyboard = [
+        [{ text: `⬅ Назад`, callback_data: 'GO_RECS_AND_DELETE_MESSAGE' }],
+    ];
+    if (!await isRequestAllowed(ctx, goBackKeyboard, getPlusKeyboard)) return;
+
     ctx.scene.state.recCat = 'show_company';
     const text = escapeReservedCharacters(`👥 Добре, давай підберемо фільм під компанію.
 

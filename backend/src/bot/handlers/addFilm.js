@@ -95,14 +95,6 @@ export async function handleFilmTitleInput(ctx) {
 }
 
 export async function searchNewFilmByUserDescription(ctx) {
-    const getPlusKeyboard = Markup.inlineKeyboard([
-        [Markup.button.callback('⭐ Filmory Plus', 'GET_SUBSCRIPTION')],
-    ]);
-    const goBackKeyboard = [
-        [{ text: `⬅ Назад`, callback_data: 'GO_RECS_AND_DELETE_MESSAGE' }],
-    ];
-    if (!await isRequestAllowed(ctx, goBackKeyboard, getPlusKeyboard)) return;
-
     ctx.session = ctx.session || {};
     ctx.session.awaitingFilmTitle = false;
     ctx.scene.state.inputType = 'description';
@@ -122,6 +114,14 @@ export async function searchNewFilmByUserDescription(ctx) {
 export async function handleFilmDescriptionInput(ctx) {
     const description = ctx.message?.text?.trim();
     logger.info(`Search Film by description @${ctx.from.username}: ${description}`);
+
+    const getPlusKeyboard = Markup.inlineKeyboard([
+        [Markup.button.callback('⭐ Filmory Plus', 'GET_SUBSCRIPTION')],
+    ]);
+    const goBackKeyboard = [
+        [{ text: `⬅ Назад`, callback_data: 'GO_RECS_AND_DELETE_MESSAGE' }],
+    ];
+    if (!await isRequestAllowed(ctx, goBackKeyboard, getPlusKeyboard)) return;
 
     return await showWaiter(ctx, {
         message: `Шукаю фільми за описом "${description}"`,

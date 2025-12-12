@@ -3,10 +3,9 @@ import { Markup } from 'telegraf';
 import { FilmService } from '../../services/FilmService.js';
 import { UserService } from '../../services/UserService.js';
 import logger from '../../utils/logger.js';
-import { handleCommandsOnText } from './handleCommandsOnText.js';
 import escapeReservedCharacters from '../../utils/escapeReservedCharacters.js';
 import { showWaiter } from '../../utils/animatedWaiter.js';
-import { getFilmByUserDescription, getFilmRecommendations } from '../../services/integrations/geminiService.js';
+import { getFilmByUserDescription } from '../../services/integrations/geminiService.js';
 import parseRecommendations from '../../utils/parseRecommendations.js';
 import { isRequestAllowed } from '../../services/system/QuotaService.js';
 

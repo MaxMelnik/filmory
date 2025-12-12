@@ -133,7 +133,12 @@ scene.on(message('text'), async (ctx) => {
             message: `Шукаю фільми для перегляду разом з @${userTwo.username}`,
             animation: 'emoji', // "dots", "emoji", "phrases"
             delay: 500,
-            asyncTask: async () => await getCoopFilmRecommendations(userOneIncludeFilms, userOneExcludeFilms, userTwoIncludeFilms, userTwoExcludeFilms),
+            asyncTask: async () => await getCoopFilmRecommendations(
+                userOneIncludeFilms,
+                userOneExcludeFilms,
+                userTwoIncludeFilms,
+                userTwoExcludeFilms,
+            ),
             onDone: (ctx, response) => parseRecommendations(ctx, '🎬 Я знайшов для вас фільми, які сподобаються обом:', response),
         });
     }

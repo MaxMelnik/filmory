@@ -13,7 +13,7 @@ import { activityMiddleware } from './middlewares/activityMiddleware.js';
 import { UserService } from '../services/UserService.js';
 import logger from '../utils/logger.js';
 import parseRecommendations from '../utils/parseRecommendations.js';
-import scene from './scenes/recommendationScene.js';
+import { plusOnlyRestriction } from './handlers/recommendationsCategories.js';
 
 // === Ініціалізація ===
 const bot = getBotInstance();
@@ -140,11 +140,19 @@ bot.action('GO_HOME_AND_DELETE_MESSAGE', (ctx) => {
     ctx.scene.enter('START_SCENE_ID');
 });
 
-scene.action('GO_RECS_AND_DELETE_MESSAGE', (ctx) => {
+bot.action('GO_RECS_AND_DELETE_MESSAGE', (ctx) => {
     ctx.answerCbQuery();
     ctx.session.editMessageText = true;
     ctx.scene.enter('RECOMMENDATION_SCENE_ID');
 });
+
+bot.action('GO_SEARCH_FILM_AND_DELETE_MESSAGE', (ctx) => {
+    ctx.answerCbQuery();
+    ctx.session.editMessageText = true;
+    ctx.scene.enter('ADD_FILM_SCENE_ID');
+});
+
+bot.action('PLUS_REC_CAT', async (ctx) => await plusOnlyRestriction(ctx));
 
 bot.action('FAKE_BUTTON', (ctx) => ctx.answerCbQuery());
 

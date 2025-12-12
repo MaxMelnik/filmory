@@ -4,27 +4,53 @@ import { FilmService } from '../../services/FilmService.js';
 import { UserService } from '../../services/UserService.js';
 import logger from '../../utils/logger.js';
 import { handleCommandsOnText } from './handleCommandsOnText.js';
+import escapeReservedCharacters from '../../utils/escapeReservedCharacters.js';
+import { showWaiter } from '../../utils/animatedWaiter.js';
+import { getFilmByUserDescription, getFilmRecommendations } from '../../services/integrations/geminiService.js';
+import parseRecommendations from '../../utils/parseRecommendations.js';
+import { isRequestAllowed } from '../../services/system/QuotaService.js';
 
 export async function handleAddFilm(ctx) {
     logger.info(`[ADD FILM SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
     await UserService.getOrCreateUserFromCtx(ctx);
-    const keyboard = Markup.inlineKeyboard([
-        [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_DELETE_MESSAGE')],
-    ]);
-    await ctx.reply('Введи назву фільму, який хочеш додати:', keyboard);
 
     ctx.session = ctx.session || {};
     ctx.session.awaitingFilmTitle = true;
+    ctx.scene.state.inputType = 'title';
+
+    const isPlus = await UserService.isPlus(ctx.from.id);
+    const isPlusSymbol = isPlus ? '⭐' : '🔒';
+
+    const text = 'Введи назву фільму, який хочеш додати:';
+    const keyboard = [
+        [{ text: `🤔 Не пам'ятаю назву ${isPlusSymbol}`, callback_data: isPlus ? 'SEARCH_NEW_BY_DESCRIPTION' : 'PLUS_REC_CAT' }],
+        [{ text: `🏠︎ На головну`, callback_data: 'GO_HOME_AND_DELETE_MESSAGE' }],
+    ];
+
+    if (!ctx.session.editMessageText) {
+        return await ctx.replyWithMarkdownV2(text, {
+            reply_markup: {
+                inline_keyboard: keyboard,
+            },
+        });
+    }
+
+    ctx.session.editMessageText = false;
+
+    await ctx
+        .editMessageText?.(text, { parse_mode: 'MarkdownV2', ...Markup.inlineKeyboard(keyboard) })
+        .catch(async () => {
+            await ctx.reply(text, { parse_mode: 'MarkdownV2', ...Markup.inlineKeyboard(keyboard) });
+        });
 }
 
 export async function handleFilmTitleInput(ctx) {
     const title = ctx.message?.text?.trim() ?? ctx.session.title;
-    if (handleCommandsOnText(ctx, title)) return;
 
     if (!ctx.session?.awaitingFilmTitle) return;
 
     ctx.session.title = title;
-    logger.info(`Add Film by @${ctx.from.username}: ${title}`);
+    logger.info(`Search Film by title @${ctx.from.username}: ${title}`);
 
     const films = await searchAllByMediaType(title);
     ctx.scene.state.films = films ?? [];
@@ -67,4 +93,42 @@ export async function handleFilmTitleInput(ctx) {
     } else {
         await ctx.reply(caption, { parse_mode: 'HTML', ...keyboard });
     }
+}
+
+export async function searchNewFilmByUserDescription(ctx) {
+    const getPlusKeyboard = Markup.inlineKeyboard([
+        [Markup.button.callback('⭐ Filmory Plus', 'GET_SUBSCRIPTION')],
+    ]);
+    const goBackKeyboard = [
+        [{ text: `⬅ Назад`, callback_data: 'GO_RECS_AND_DELETE_MESSAGE' }],
+    ];
+    if (!await isRequestAllowed(ctx, goBackKeyboard, getPlusKeyboard)) return;
+
+    ctx.session = ctx.session || {};
+    ctx.session.awaitingFilmTitle = false;
+    ctx.scene.state.inputType = 'description';
+
+    const keyboard = [
+        [{ text: '⬅ Назад', callback_data: 'GO_SEARCH_FILM_AND_DELETE_MESSAGE' }],
+    ];
+    const text = escapeReservedCharacters(`Не біда! Введи деталі фільму, які пам'ятаєш, а я спробую його знайти:`);
+    await ctx
+        .editMessageText?.(text, { parse_mode: 'MarkdownV2', ...Markup.inlineKeyboard(keyboard) })
+        .catch(async () => {
+            await ctx.reply(text, { parse_mode: 'MarkdownV2', ...Markup.inlineKeyboard(keyboard) });
+        });
+    await ctx.answerCbQuery();
+}
+
+export async function handleFilmDescriptionInput(ctx) {
+    const description = ctx.message?.text?.trim();
+    logger.info(`Search Film by description @${ctx.from.username}: ${description}`);
+
+    return await showWaiter(ctx, {
+        message: `Шукаю фільми за описом "${description}"`,
+        animation: 'emoji', // "dots", "emoji", "phrases"
+        delay: 500,
+        asyncTask: async () => await getFilmByUserDescription(description),
+        onDone: (ctx, response) => parseRecommendations(ctx, `🎬 Опису "${description}" відповідають наступні фільми:`, response),
+    });
 }

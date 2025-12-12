@@ -12,13 +12,11 @@ import { handleCommandsOnText } from '../handlers/handleCommandsOnText.js';
 import { showWaiter } from '../../utils/animatedWaiter.js';
 import {
     getCoopFilmRecommendations,
-    getFilmRecommendations,
+    getFilmRecommendations, getFilmRecommendationsByCompany,
     getFilmRecommendationsByMood,
-    getListOfFilmsRecommendations,
 } from '../../services/integrations/geminiService.js';
 import parseRecommendations from '../../utils/parseRecommendations.js';
 import {
-    plusOnlyRestriction,
     showPersonalRecommendations,
     showSimilarRecommendations,
     showMoodRecommendations,
@@ -34,8 +32,6 @@ const scene = new Scenes.BaseScene('RECOMMENDATION_SCENE_ID');
 
 // Enter Recommendations Scene
 scene.enter(async (ctx) => await showRecommendationsMenu(ctx));
-
-scene.action('PLUS_REC_CAT', async (ctx) => await plusOnlyRestriction(ctx));
 
 scene.action('PERSONAL_REC_CAT', async (ctx) => await showPersonalRecommendations(ctx));
 
@@ -77,7 +73,7 @@ scene.on(message('text'), async (ctx) => {
             message: `Шукаю фільми для перегляду ${input}`,
             animation: 'emoji', // "dots", "emoji", "phrases"
             delay: 500,
-            asyncTask: async () => await getFilmRecommendationsByMood(input),
+            asyncTask: async () => await getFilmRecommendationsByCompany(input),
             onDone: (ctx, response) => parseRecommendations(ctx, `🎬 Фільми для перегляду ${input}:`, response),
         });
     }
@@ -143,7 +139,7 @@ scene.on(message('text'), async (ctx) => {
     }
 });
 
-// Film Card keyboard handlers
+// Film Recs keyboard handlers
 scene.action(/^SAVE_ACTIVE_REC_(\d+)$/, async (ctx) => {
     logger.info(`SAVE_ACTIVE_REC_${parseInt(ctx.match[1])}`);
     const activeRecommendationIndex = parseInt(ctx.match[1]);

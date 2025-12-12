@@ -272,7 +272,7 @@ export async function getFilmRecommendationsByMood(mood) {
       "tmdb_id": null,
       "imdb_id": null,
       "overview": "Короткий опис сюжету без спойлерів, одним реченням",
-      "why_recommended": "Коротко поясни, чому цей фільм підходить саме цьому користувачу.",
+      "why_recommended": "Коротко поясни, чому цей фільм підходить саме під цей настрій.",
       "mood_tags": ["настрій1", "настрій2"],
       "content_warnings": ["якщо є важливі попередження, інакше порожній масив []"]
     }
@@ -300,7 +300,6 @@ export async function getFilmRecommendationsByMood(mood) {
             throw new Error('Invalid JSON structure: "films" is missing or not an array');
         }
 
-        // Тут уже масив об’єктів: [{ title, year, overview, ... }, ...]
         return parsed.films;
     } catch (err) {
         logger.error('❌ Failed to parse Gemini JSON response:', err, { responseText });
@@ -311,13 +310,13 @@ export async function getFilmRecommendationsByMood(mood) {
 
 /**
  * 🎬 Get recommendations by company
- * @param {string} mood
+ * @param {string} company
  * @returns {Promise<string>}
  */
-export async function getFilmRecommendationsByCompany(mood) {
+export async function getFilmRecommendationsByCompany(company) {
     const system = 'Ти — розумний кінокритик, який радить фільми користувачам Filmory. Тон спілкування - дружній, теплий, але експертний';
     const prompt = `
-Дай 5 фільмів, які ідеально підійдуть для перегляду в наступній компанії: "${mood}".
+Дай 5 фільмів, які ідеально підійдуть для перегляду в наступній компанії: "${company}".
     
 ВІДПОВІДАЙ СТРОГО У ФОРМАТІ JSON, без \`\`\`json, без бектіків, без markdown, без будь-якого додаткового тексту до чи після JSON, без пояснень.
 У текстових полях не використовуй символ \`"\`. Якщо потрібні лапки – використовуй українські « … » або одинарні ' … '.
@@ -335,7 +334,7 @@ export async function getFilmRecommendationsByCompany(mood) {
       "tmdb_id": null,
       "imdb_id": null,
       "overview": "Короткий опис сюжету без спойлерів, одним реченням",
-      "why_recommended": "Коротко поясни, чому цей фільм підходить саме цьому користувачу.",
+      "why_recommended": "Коротко поясни, чому цей фільм підходить саме для цієї компанії.",
       "mood_tags": ["настрій1", "настрій2"],
       "content_warnings": ["якщо є важливі попередження, інакше порожній масив []"]
     }
@@ -373,7 +372,7 @@ export async function getFilmRecommendationsByCompany(mood) {
 }
 
 /**
- * 🎬 Отримати рекомендації фільмів за списками фільмів двох юзерів
+ * 🎬 Get recommendations by two users preferences
  * @returns {Promise<string>}
  */
 export async function getCoopFilmRecommendations(userOneIncludeFilms, userOneExcludeFilms, userTwoIncludeFilms, userTwoExcludeFilms) {
@@ -405,7 +404,7 @@ export async function getCoopFilmRecommendations(userOneIncludeFilms, userOneExc
       "tmdb_id": null,
       "imdb_id": null,
       "overview": "Короткий опис сюжету без спойлерів, одним реченням",
-      "why_recommended": "Коротко поясни, чому цей фільм підходить саме цьому користувачу.",
+      "why_recommended": "Коротко поясни, чому цей фільм підходить обом цим користувачам.",
       "mood_tags": ["настрій1", "настрій2"],
       "content_warnings": ["якщо є важливі попередження, інакше порожній масив []"]
     }
@@ -432,6 +431,69 @@ export async function getCoopFilmRecommendations(userOneIncludeFilms, userOneExc
             throw new Error('Invalid JSON structure: "films" is missing or not an array');
         }
 
+        return parsed.films;
+    } catch (err) {
+        logger.error('❌ Failed to parse Gemini JSON response:', err, { responseText });
+
+        return [];
+    }
+}
+
+/**
+ * 🎬 Get films by user description
+ * @param {string} company
+ * @returns {Promise<string>}
+ */
+export async function getFilmByUserDescription(company) {
+    const system = 'Ти — розумний кінокритик, який радить фільми користувачам Filmory. Тон спілкування - дружній, теплий, але експертний';
+    const prompt = `
+Користувач не пам'ятає назву фільму, але пам'ятає про нього наступне: "${company}". Дай існуючі фільми, які відповідають цьому опису.
+    
+ВІДПОВІДАЙ СТРОГО У ФОРМАТІ JSON, без \`\`\`json, без бектіків, без markdown, без будь-якого додаткового тексту до чи після JSON, без пояснень.
+У текстових полях не використовуй символ \`"\`. Якщо потрібні лапки – використовуй українські « … » або одинарні ' … '.
+
+Формат відповіді:
+
+{
+  "films": [
+    {
+      "position": 1,
+      "title": "Назва фільму (локалізована або міжнародна)",
+      "original_title": "Оригінальна назва латинськими літерами",
+      "year": 2010,
+      "type": "movie",
+      "tmdb_id": null,
+      "imdb_id": null,
+      "overview": "Короткий опис сюжету без спойлерів, одним реченням",
+      "why_recommended": "Коротко поясни, чому цей фільм підходить під цей опис.",
+      "mood_tags": ["настрій1", "настрій2"],
+      "content_warnings": ["якщо є важливі попередження, інакше порожній масив []"]
+    }
+  ]
+}
+
+Важливо:
+- Поверни рівно 5 фільмів у масиві films.
+- Якщо ти не впевнений у tmdb_id або imdb_id, постав null.
+- Не додавай жодних полів, яких немає в цьому форматі.
+`;
+
+    const responseText = await askGemini({
+        system,
+        prompt,
+        responseMimeType: 'application/json',
+    });
+
+    // responseText тут має бути JSON-строка
+    try {
+        const cleanText = stripJsonFence(responseText);
+        const parsed = JSON.parse(cleanText);
+
+        if (!parsed || !Array.isArray(parsed.films)) {
+            throw new Error('Invalid JSON structure: "films" is missing or not an array');
+        }
+
+        // Тут уже масив об’єктів: [{ title, year, overview, ... }, ...]
         return parsed.films;
     } catch (err) {
         logger.error('❌ Failed to parse Gemini JSON response:', err, { responseText });

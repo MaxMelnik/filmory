@@ -58,7 +58,7 @@ scene.action('PING_GEMINI_API', async (ctx) => {
 
 scene.on(message('text'), async (ctx) => {
     const telegramId = ctx.message.text.trim();
-    if (handleCommandsOnText(ctx, telegramId)) return;
+    if (await handleCommandsOnText(ctx, telegramId)) return;
 
     if (ctx.scene.state.awaitingTelegramId) {
         ctx.scene.state.awaitingTelegramId = false;

@@ -9,6 +9,7 @@ import { openSearchFilmCard } from '../handlers/openSearchFilmCard.js';
 import { recommendSimilar } from '../handlers/recommendSimilar.js';
 import { handleCommandsOnText } from '../handlers/handleCommandsOnText.js';
 import logger from '../../utils/logger.js';
+import { shareFilmLink } from '../handlers/shareFilmLink.js';
 
 const scene = new Scenes.BaseScene('ADD_FILM_SCENE_ID');
 
@@ -18,7 +19,7 @@ scene.enter(async (ctx) => {
 });
 
 scene.on(message('text'), async (ctx) => {
-    if (handleCommandsOnText(ctx, ctx.message?.text?.trim())) return;
+    if (await handleCommandsOnText(ctx, ctx.message?.text?.trim())) return;
     const inputType = ctx.scene?.state?.inputType;
     if (inputType === 'title') return await handleFilmTitleInput(ctx);
     if (inputType === 'description') return await handleFilmDescriptionInput(ctx);
@@ -56,18 +57,17 @@ scene.action('PREV_FILM_SEARCH', async (ctx) => {
     await openSearchFilmCard(ctx);
 });
 
-// === Додати у "Подивитись пізніше" ===
 scene.action('ADD_WATCH_LATER', async (ctx) => addAsWatchLater(ctx));
 
-// === Вже переглянуто → показати оцінку ===
 scene.action('ADD_WATCHED', async (ctx) => addAsWatched(ctx));
 
-// === Обробка вибору рейтингу ===
 scene.action(/^RATE_(\d+)_(\d+)$/, async (ctx) => setRateAddFilm(ctx));
 
 scene.action('SAVE_MANUAL', async (ctx) => saveManual(ctx));
 
 scene.action(/^RECOMMEND_(\d+)$/, async (ctx) => recommendSimilar(ctx));
+
+scene.action(/^SHARE_(\d+)$/, async (ctx) => shareFilmLink(ctx));
 
 // === Вихід зі сцени ===
 scene.leave(async (ctx) => {

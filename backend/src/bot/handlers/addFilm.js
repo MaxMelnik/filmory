@@ -11,6 +11,37 @@ import { isRequestAllowed } from '../../services/system/QuotaService.js';
 
 export async function handleAddFilm(ctx) {
     logger.info(`[ADD FILM SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
+
+    if (ctx.session.filmId) {
+        const film = await FilmService.getById(ctx.session.filmId);
+        ctx.session.filmId = null;
+        if (!film) return ctx.reply('Пошкоджене посилання. Спробуй знайти фільм вручну: /add');
+
+        ctx.scene.state.film = film;
+
+        const keyboard = Markup.inlineKeyboard([
+            [Markup.button.callback('📼 Подивитись пізніше', 'ADD_WATCH_LATER')],
+            [Markup.button.callback('✅ Вже переглянуто', 'ADD_WATCHED')],
+            [Markup.button.callback(`📝 Лише назву "${film.title}"`, `SAVE_MANUAL`)],
+            [Markup.button.callback('👾 Знайти схожі фільми', `RECOMMEND_${film._id}`)],
+            [Markup.button.callback('🔗 Поділитись', `SHARE_${film._id}`)],
+            [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
+        ]);
+
+        const caption = `<b>${film.title}</b> (${film.year || '?'})\n\n${film.description ? `${film.description}\n\n` : ''}Як зберегти цей фільм?`;
+
+        if (film.posterUrl) {
+            await ctx.replyWithPhoto(film.posterUrl, {
+                caption,
+                parse_mode: 'HTML',
+                ...keyboard,
+            });
+        } else {
+            await ctx.reply(caption, { parse_mode: 'HTML', ...keyboard });
+        }
+        return;
+    }
+
     await UserService.getOrCreateUserFromCtx(ctx);
 
     ctx.session = ctx.session || {};
@@ -78,6 +109,7 @@ export async function handleFilmTitleInput(ctx) {
         [Markup.button.callback('✅ Вже переглянуто', 'ADD_WATCHED')],
         [Markup.button.callback(`📝 Лише назву "${title}"`, `SAVE_MANUAL`)],
         [Markup.button.callback('👾 Знайти схожі фільми', `RECOMMEND_${film._id}`)],
+        [Markup.button.callback('🔗 Поділитись', `SHARE_${film._id}`)],
         [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
     ]);
 

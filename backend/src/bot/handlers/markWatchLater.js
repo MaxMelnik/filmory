@@ -13,6 +13,7 @@ export async function markWatchLater(ctx) {
             Markup.button.callback('👁 Переглянуто', `MARK_WATCHED_${filmId}`),
         ],
         [Markup.button.callback('👾 Знайти схожі фільми', `RECOMMEND_${filmId}`)],
+        [Markup.button.callback('🔗 Поділитись', `SHARE_${filmId}`)],
         [Markup.button.callback('⬅ Назад', 'BACK_TO_LIBRARY')],
     ]);
 

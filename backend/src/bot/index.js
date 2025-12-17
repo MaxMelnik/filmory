@@ -66,8 +66,18 @@ bot.catch(async (err, ctx) => {
 });
 
 // === Маршрути / entry points ===
-// Коли користувач вводить /start → потрапляє в сцену
-bot.start((ctx) => ctx.scene.enter('START_SCENE_ID'));
+bot.start(async (ctx) => {
+    const payload = ctx.startPayload;
+    if (payload && payload.startsWith('movie_')) {
+        const user = await UserService.getOrCreateUserFromCtx(ctx);
+        logger.info(`Start with payload by @${user.username || user.telegramId}: ${payload}`);
+
+        ctx.session.filmId = payload.slice('movie_'.length);
+        return ctx.scene.enter('ADD_FILM_SCENE_ID');
+    }
+
+    ctx.scene.enter('START_SCENE_ID');
+});
 
 // bot.command('test', async (ctx) => ctx.reply(await UserService.isPlus(ctx.from.id)));
 

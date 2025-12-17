@@ -28,6 +28,7 @@ export async function setRateLibrary(ctx) {
         ],
         [Markup.button.callback('⭐ Змінити оцінку', `CHANGE_MARK_${filmId}`)],
         [Markup.button.callback('👾 Знайти схожі фільми', `RECOMMEND_${filmId}`)],
+        [Markup.button.callback('🔗 Поділитись', `SHARE_${filmId}`)],
         [Markup.button.callback('⬅ Назад', 'BACK_TO_LIBRARY')],
     ]);
 

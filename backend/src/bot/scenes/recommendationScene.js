@@ -45,7 +45,7 @@ scene.action('COOP_REC_CAT', async (ctx) => await showCooperativeRecommendations
 
 scene.on(message('text'), async (ctx) => {
     const input = ctx.message.text.trim();
-    if (handleCommandsOnText(ctx, input)) return;
+    if (await handleCommandsOnText(ctx, input)) return;
 
     if (ctx.scene.state.recCat === 'show_similar') {
         logger.info(`show_similar: ${input}`);

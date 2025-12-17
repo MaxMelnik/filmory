@@ -5,6 +5,10 @@ import { Film, LibraryItem } from '../models/index.js';
  * Використовує TMDB-дані або створює ручні записи.
  */
 export class FilmService {
+    static async getById(id) {
+        return Film.findOne({ _id: id });
+    }
+
     /**
      * Знайти фільм за TMDB ID
      */

@@ -15,6 +15,7 @@ import { addAsWatchLater } from '../handlers/addAsWatchLater.js';
 import { addAsWatched } from '../handlers/addAsWatched.js';
 import { setRateAddFilm } from '../handlers/setRateAddFilm.js';
 import { saveManual } from '../handlers/saveManual.js';
+import { shareFilmLink } from '../handlers/shareFilmLink.js';
 
 const scene = new Scenes.BaseScene('LIBRARY_SCENE_ID');
 
@@ -31,6 +32,8 @@ scene.enter(async (ctx) => {
 scene.action(/^OPEN_FILM_(\d+)$/, (ctx) => openLibraryFilmCard(ctx));
 
 scene.action(/^RECOMMEND_(\d+)$/, async (ctx) => recommendSimilar(ctx));
+
+scene.action(/^SHARE_(\d+)$/, async (ctx) => shareFilmLink(ctx));
 
 scene.action(/^MARK_WATCHED_(\d+)$/, async (ctx) => markWatched(ctx));
 

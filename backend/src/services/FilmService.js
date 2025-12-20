@@ -29,10 +29,12 @@ export class FilmService {
         const data = {
             tmdbId: found.tmdbId,
             title: found.title,
+            originalTitle: found.original_title,
             year: found.year,
             posterUrl: found.posterUrl,
             description: this.truncateString(found.overview),
-            genres: found.genre_names || [],
+            duration: found.duration,
+            genres: found.genres || [],
         };
 
         let film = await Film.findOne({ tmdbId: data.tmdbId });

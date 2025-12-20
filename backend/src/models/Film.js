@@ -13,6 +13,9 @@ const filmSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        originalTitle: {
+            type: String,
+        },
         altTitles: [{
             type: String,
         }],
@@ -36,7 +39,9 @@ const filmSchema = new mongoose.Schema(
         posterUrl: {
             type: String,
         },
-
+        duration: {
+            type: Number,
+        },
     },
     { timestamps: true, _id: false },
 );

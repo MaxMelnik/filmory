@@ -5,6 +5,7 @@ import { UserService } from '../../services/UserService.js';
 import logger from '../../utils/logger.js';
 import { pingGeminiAPI } from '../handlers/pingGeminiAPI.js';
 import { handleCommandsOnText } from '../handlers/handleCommandsOnText.js';
+import { getMovieDetails, searchFilm } from '../../services/integrations/tmdbClient.js';
 
 const scene = new Scenes.BaseScene('ROOT_SCENE_ID');
 
@@ -57,14 +58,19 @@ scene.action('PING_GEMINI_API', async (ctx) => {
 });
 
 scene.on(message('text'), async (ctx) => {
-    const telegramId = ctx.message.text.trim();
-    if (await handleCommandsOnText(ctx, telegramId)) return;
+    const input = ctx.message.text.trim();
+    if (await handleCommandsOnText(ctx, input)) return;
 
     if (ctx.scene.state.awaitingTelegramId) {
         ctx.scene.state.awaitingTelegramId = false;
-        const user = await UserService.getByTelegramId(telegramId);
-        ctx.reply(user);
+        const user = await UserService.getByTelegramId(input);
+        return ctx.reply(user);
     }
+
+    const movie = await searchFilm(input);
+    const details = await getMovieDetails(movie.tmdbId);
+
+    ctx.reply(details);
 });
 
 export default scene;

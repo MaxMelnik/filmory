@@ -33,7 +33,9 @@ export async function searchFilm(title) {
         return {
             tmdbId: first.id,
             title: first.title || first.original_title,
+            original_title: first.original_title,
             year: first.release_date ? first.release_date.slice(0, 4) : null,
+            tmdb_rate: first.vote_average,
             overview: first.overview,
             posterUrl: first.poster_path ?
                 `https://image.tmdb.org/t/p/w500${first.poster_path}` :
@@ -100,11 +102,13 @@ export async function getMovieDetails(id) {
         });
 
         const movie = response.data;
+
         return {
             tmdbId: movie.id,
             imdbId: movie.external_ids?.imdb_id,
             title: movie.title,
             year: movie.release_date?.slice(0, 4) || null,
+            runtime: movie.runtime,
             genres: movie.genres?.map((g) => g.name) || [],
             description: movie.overview,
             posterUrl: movie.poster_path ?

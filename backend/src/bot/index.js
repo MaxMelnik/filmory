@@ -14,6 +14,7 @@ import { UserService } from '../services/UserService.js';
 import logger from '../utils/logger.js';
 import parseRecommendations from '../utils/parseRecommendations.js';
 import { plusOnlyRestriction } from './handlers/recommendationsCategories.js';
+import DailyRecommendationService from '../services/DailyRecommendationService.js';
 
 // === Ініціалізація ===
 const bot = getBotInstance();
@@ -83,6 +84,10 @@ bot.start(async (ctx) => {
 
 bot.command('root', async (ctx) => {
     if (await UserService.isRoot(ctx.from.id)) ctx.scene.enter('ROOT_SCENE_ID');
+});
+
+bot.command('test', async (ctx) => {
+    ctx.reply(await DailyRecommendationService.getAllRecommendedFilms());
 });
 
 bot.command('add', (ctx) => ctx.scene.enter('ADD_FILM_SCENE_ID'));

@@ -4,6 +4,7 @@ import { LibraryItem } from './LibraryItem.js';
 import { Subscription } from './Subscription.js';
 import { Usage } from './Usage.js';
 import { AiRequestLog } from './AiRequestLog.js';
+import { DailyRecommendation } from './DailyRecommendation.js';
 
 export {
     User,
@@ -12,4 +13,5 @@ export {
     Subscription,
     Usage,
     AiRequestLog,
+    DailyRecommendation,
 };

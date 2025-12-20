@@ -11,9 +11,11 @@ import { isRequestAllowed } from '../../services/system/QuotaService.js';
 
 export async function handleAddFilm(ctx) {
     logger.info(`[ADD FILM SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
+    await UserService.getOrCreateUserFromCtx(ctx);
 
     if (ctx.session.filmId) {
         const film = await FilmService.getById(ctx.session.filmId);
+
         ctx.session.filmId = null;
         if (!film) return ctx.reply('Пошкоджене посилання. Спробуй знайти фільм вручну: /add');
 
@@ -41,8 +43,6 @@ export async function handleAddFilm(ctx) {
         }
         return;
     }
-
-    await UserService.getOrCreateUserFromCtx(ctx);
 
     ctx.session = ctx.session || {};
     ctx.session.awaitingFilmTitle = true;

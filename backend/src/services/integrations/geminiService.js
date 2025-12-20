@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import logger from '../../utils/logger.js';
 import stripJsonFence from '../../utils/stripJsonFence.js';
 import escapeReservedCharacters from '../../utils/escapeReservedCharacters.js';
+import getTodayKey from '../../utils/getTodayKey.js';
+import { DAYS } from '../../config/dailyRecommendationThemes.js';
 
 dotenv.config();
 
@@ -135,7 +137,7 @@ export async function getFilmRecommendations(movieTitle) {
   "films": [
     {
       "position": 1,
-      "title": "Назва фільму (локалізована або міжнародна)",
+      "title": "Назва фільму (українська або міжнародна)",
       "original_title": "Оригінальна назва латинськими літерами",
       "year": 2010,
       "type": "movie",
@@ -204,7 +206,7 @@ export async function getListOfFilmsRecommendations(includeFilms, excludeFilms) 
   "films": [
     {
       "position": 1,
-      "title": "Назва фільму (локалізована або міжнародна)",
+      "title": "Назва фільму (українська або міжнародна)",
       "original_title": "Оригінальна назва латинськими літерами",
       "year": 2010,
       "type": "movie",
@@ -265,7 +267,7 @@ export async function getFilmRecommendationsByMood(mood) {
   "films": [
     {
       "position": 1,
-      "title": "Назва фільму (локалізована або міжнародна)",
+      "title": "Назва фільму (українська або міжнародна)",
       "original_title": "Оригінальна назва латинськими літерами",
       "year": 2010,
       "type": "movie",
@@ -327,7 +329,7 @@ export async function getFilmRecommendationsByCompany(company) {
   "films": [
     {
       "position": 1,
-      "title": "Назва фільму (локалізована або міжнародна)",
+      "title": "Назва фільму (українська або міжнародна)",
       "original_title": "Оригінальна назва латинськими літерами",
       "year": 2010,
       "type": "movie",
@@ -397,7 +399,7 @@ export async function getCoopFilmRecommendations(userOneIncludeFilms, userOneExc
   "films": [
     {
       "position": 1,
-      "title": "Назва фільму (локалізована або міжнародна)",
+      "title": "Назва фільму (українська або міжнародна)",
       "original_title": "Оригінальна назва латинськими літерами",
       "year": 2010,
       "type": "movie",
@@ -458,7 +460,7 @@ export async function getFilmByUserDescription(company) {
   "films": [
     {
       "position": 1,
-      "title": "Назва фільму (локалізована або міжнародна)",
+      "title": "Назва фільму (українська або міжнародна)",
       "original_title": "Оригінальна назва латинськими літерами",
       "year": 2010,
       "type": "movie",
@@ -474,6 +476,67 @@ export async function getFilmByUserDescription(company) {
 
 Важливо:
 - Поверни рівно 5 фільмів у масиві films.
+- Якщо ти не впевнений у tmdb_id або imdb_id, постав null.
+- Не додавай жодних полів, яких немає в цьому форматі.
+`;
+
+    const responseText = await askGemini({
+        system,
+        prompt,
+        responseMimeType: 'application/json',
+    });
+
+    // responseText тут має бути JSON-строка
+    try {
+        const cleanText = stripJsonFence(responseText);
+        const parsed = JSON.parse(cleanText);
+
+        if (!parsed || !Array.isArray(parsed.films)) {
+            throw new Error('Invalid JSON structure: "films" is missing or not an array');
+        }
+
+        // Тут уже масив об’єктів: [{ title, year, overview, ... }, ...]
+        return parsed.films;
+    } catch (err) {
+        logger.error('❌ Failed to parse Gemini JSON response:', err, { responseText });
+
+        return [];
+    }
+}
+
+/**
+ * 🎬 Get daily recommendation
+ * @returns {Promise<string>}
+ */
+export async function getDailyRecommendation(excludeFilms) {
+    const theme = DAYS[getTodayKey()].description;
+    const system = 'Ти — розумний кінокритик, який радить фільми користувачам Filmory. Тон спілкування - дружній, теплий, але експертний';
+    const prompt = `
+Порадь фільм дня за наступною темою: ${theme}
+${excludeFilms ? `Не включай фільми з переліку: [${excludeFilms}], бо ти вже радив їх раніше.` : ''}
+
+Формат відповіді:
+
+{
+  "films": [
+    {
+      "position": 1,
+      "title": "Назва фільму (українська або міжнародна)",
+      "original_title": "Оригінальна назва латинськими літерами",
+      "year": 2010,
+      "type": "movie",
+      "tmdb_id": null,
+      "imdb_id": null,
+      "overview": "Короткий опис сюжету без спойлерів, одним реченням",
+      "why_recommended": "Коротко поясни, чому цей фільм підходить під цей опис.",
+      "mood_tags": ["настрій1", "настрій2"],
+      "content_warnings": ["якщо є важливі попередження, інакше порожній масив []"]
+    }
+  ]
+}
+
+Важливо:
+- Поверни рівно 1 фільм у масиві films.
 - Якщо ти не впевнений у tmdb_id або imdb_id, постав null.
 - Не додавай жодних полів, яких немає в цьому форматі.
 `;

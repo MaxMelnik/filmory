@@ -33,7 +33,8 @@ export async function showSubscriptions(ctx, paymentPlan = 'plus') {
 Скасувати можна будь-коли одним натисканням.`,
             Markup.inlineKeyboard([
                 [Markup.button.url(`🔓 Оформити за ${FILMORY_PLUS_PRICE_STARS} ⭐`, link)],
-                [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_DELETE_MESSAGE')]]),
+                [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_DELETE_MESSAGE')],
+            ]),
         );
     }
 

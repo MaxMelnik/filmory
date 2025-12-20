@@ -17,7 +17,7 @@ export async function createDailyRecommendation({
     const caption = `🎬 ${DAYS[day].emoji} ${DAYS[day].description}
 
 🎬 *${escapeReservedCharacters(title)}*${originalTitle ? ` / _${escapeReservedCharacters(originalTitle)}_` : ''} \\(${year}\\)
-🎭 Жанр: ${genres.toString().toLowerCase().replace(',', ', ').trim()}
+🎭 Жанр: ${genres.toString().toLowerCase().replaceAll(',', ', ').trim()}
 ⏱ Тривалість: ${duration}
 
 ━━ Чому варто глянути ━━

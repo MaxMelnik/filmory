@@ -69,6 +69,7 @@ export async function showWaiter(ctx, {
         clearInterval(interval);
 
         // ✅ Оновлюємо повідомлення після завершення
+        ctx.session.activeRecommendation = 1
         let { finalText, keyboard } = typeof onDone === 'function' ?
             onDone(ctx, result) :
             { finalText: result };

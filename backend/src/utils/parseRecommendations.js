@@ -24,10 +24,13 @@ export default function parseRecommendations(ctx, heading = null, recommendation
 
     let res = heading;
 
-    for (const rec of recommendations) {
-        res += '\n\n';
+    let activeFilmCard = '';
 
-        res += `*${rec.position}. ${rec.title}*`;
+    res += '\n';
+    for (const rec of recommendations) {
+        res += '\n';
+
+        res += `*${rec.position === activeRecommendation ? '👉 ' : ''} ${rec.position}. ${rec.title}*`;
         if (rec.original_title && rec.original_title !== rec.title) {
             res += ` / _${rec.original_title}_`;
         }
@@ -36,19 +39,30 @@ export default function parseRecommendations(ctx, heading = null, recommendation
         }
 
         if (rec.position === activeRecommendation) {
+            activeFilmCard += `\n\n\`━━━━━ Картка фільму №${rec.position} ━━━━━\`\n\n`;
+
+            activeFilmCard += `*🎞 ${rec.title}*`;
+            if (rec.original_title && rec.original_title !== rec.title) {
+                activeFilmCard += ` / _${rec.original_title}_`;
+            }
+            if (rec.year) {
+                activeFilmCard += ` (${rec.year})`;
+            }
+            activeFilmCard += '\n';
+
             if (rec.mood_tags?.length) {
-                res += `\n`;
                 for (const tag of rec.mood_tags) {
-                    res += `\\[\`${tag}\`] `;
+                    activeFilmCard += `\\[\`${tag}\`] `;
                 }
+                activeFilmCard += '\n';
             }
 
             if (rec.overview) {
-                res += `\n${rec.overview.trim()}`;
+                activeFilmCard += `\n${rec.overview.trim()}`;
             }
 
             if (rec.why_recommended) {
-                res += `\n\n_${rec.why_recommended.trim()}_`;
+                activeFilmCard += `\n\n_${rec.why_recommended.trim()}_`;
             }
         }
 
@@ -56,6 +70,8 @@ export default function parseRecommendations(ctx, heading = null, recommendation
             `${rec.position} ${(rec.position === activeRecommendation) ? '🔍' : ''}`,
             `SELECT_ACTIVE_REC_${rec.position}`));
     }
+
+    res += activeFilmCard;
 
     const actionButtons = [
         [Markup.button.callback(

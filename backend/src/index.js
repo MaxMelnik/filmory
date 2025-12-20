@@ -3,6 +3,7 @@ import bot from './bot/index.js';
 import { startServer } from './server.js';
 import mongoose from 'mongoose';
 import logger from './utils/logger.js';
+import cron from './cron/index.js';
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ dotenv.config();
         if (mongoose.connection.readyState !== 1) {
             throw new Error('MongoDB не підключено, бот не може стартувати');
         }
+
+        cron();
 
         // 3️⃣ Запускаємо бота
         const info = await bot.telegram.getMe();

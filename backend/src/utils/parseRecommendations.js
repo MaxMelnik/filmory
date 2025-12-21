@@ -31,9 +31,9 @@ export default function parseRecommendations(ctx, heading = null, recommendation
         res += '\n';
 
         res += `*${rec.position === activeRecommendation ? '👉 ' : ''} ${rec.position}. ${rec.title}*`;
-        if (rec.original_title && rec.original_title !== rec.title) {
-            res += ` / _${rec.original_title}_`;
-        }
+        // if (rec.original_title && rec.original_title !== rec.title) {
+        //     res += ` / _${rec.original_title}_`;
+        // }
         if (rec.year) {
             res += ` (${rec.year})`;
         }

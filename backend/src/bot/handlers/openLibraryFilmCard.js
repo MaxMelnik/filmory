@@ -9,6 +9,8 @@ export async function openLibraryFilmCard(ctx) {
     const filmId = parseInt(ctx.match[1]);
     const film = await Film.findById(filmId);
 
+    console.log('film raw:', film);
+
     if (!film) {
         await ctx.reply('❌ Не вдалося знайти фільм.');
         return;
@@ -16,10 +18,11 @@ export async function openLibraryFilmCard(ctx) {
 
     const rating = await LibraryService.getRating(user._id, filmId);
     const userRating = rating ? `Твоя оцінка: ⭐ ${rating}/10\n\n` : ``;
+    const tmdbRating = film.tmdbRate ? ` Оцінка TMDB: 💙 ${film.tmdbRate}/10\n\n` : ``;
 
     const caption =
-        `🎬 *${film.title}*${film.year ? ` (${film.year})` : ''}\n\n` +
-        userRating +
+        `🎬 *${film.title}* ${film.originalTitle ? ` / _${film.originalTitle}_ ` : ''}${film.year ? ` (${film.year})` : ''}\n\n` +
+        userRating + tmdbRating +
         `${film.description || 'Опис відсутній.'}`;
 
     const statusButtons = (ctx.session.view === 'watched') ?

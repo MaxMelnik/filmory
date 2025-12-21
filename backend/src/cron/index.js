@@ -15,14 +15,14 @@ export default function() {
         logger.info(`Done. Cron PING: ${new Date().toString().substring(0, 25)}`);
     });
 
-    // if (process.env.ENVIRONMENT === 'PROD') {
+    if (process.env.ENVIRONMENT === 'PROD') {
         const postDailyRecommendationCronRule  = (process.env.ENVIRONMENT === 'DEV') ? '* * * * *' : '0 17 * * *';
         logger.info(`postDailyRecommendationCronRule: ${postDailyRecommendationCronRule}`);
         cron.schedule(postDailyRecommendationCronRule, async () => {
             await postDailyRecommendation(bot);
             logger.info(`Done. Cron post Daily Recommendation: ${new Date().toString().substring(0, 25)}`);
         });
-    // }
+    }
 
     logger.info(`🕑 Cron is scheduled`);
 };

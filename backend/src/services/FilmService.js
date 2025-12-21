@@ -26,6 +26,7 @@ export class FilmService {
      * Додати або оновити фільм, отриманий з TMDB
      */
     static async upsertFromTmdb(found) {
+        console.log(found);
         const data = {
             tmdbId: found.tmdbId,
             title: found.title,
@@ -33,6 +34,7 @@ export class FilmService {
             year: found.year,
             posterUrl: found.posterUrl,
             description: this.truncateString(found.overview),
+            tmdbRate: found.tmdbRate,
             duration: found.duration,
             genres: found.genres || [],
         };
@@ -44,6 +46,7 @@ export class FilmService {
             Object.assign(film, data);
         }
 
+        console.log(film);
         return film.save();
     }
 

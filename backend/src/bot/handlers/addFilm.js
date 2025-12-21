@@ -1,4 +1,4 @@
-import { searchAllByMediaType } from '../../services/integrations/tmdbClient.js';
+import { getMovieDetails, searchAllByMediaType } from '../../services/integrations/tmdbClient.js';
 import { Markup } from 'telegraf';
 import { FilmService } from '../../services/FilmService.js';
 import { UserService } from '../../services/UserService.js';
@@ -8,10 +8,11 @@ import { showWaiter } from '../../utils/animatedWaiter.js';
 import { getFilmByUserDescription } from '../../services/integrations/geminiService.js';
 import parseRecommendations from '../../utils/parseRecommendations.js';
 import { isRequestAllowed } from '../../services/system/QuotaService.js';
+import { LibraryService } from '../../services/LibraryService.js';
 
 export async function handleAddFilm(ctx) {
     logger.info(`[ADD FILM SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
-    await UserService.getOrCreateUserFromCtx(ctx);
+    const user = await UserService.getOrCreateUserFromCtx(ctx);
 
     if (ctx.session.filmId) {
         const film = await FilmService.getById(ctx.session.filmId);
@@ -30,7 +31,13 @@ export async function handleAddFilm(ctx) {
             [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
         ]);
 
-        const caption = `<b>${film.title}</b> (${film.year || '?'})\n\n${film.description ? `${film.description}\n\n` : ''}Як зберегти цей фільм?`;
+        const rating = await LibraryService.getRating(user._id, film._id);
+        const userRating = rating ? `Твоя оцінка: ⭐ ${rating}/10\n\n` : ``;
+        const tmdbRating = film.tmdbRate ? ` Оцінка TMDB: 💙 ${film.tmdbRate}/10\n\n` : ``;
+
+        const caption = `<b>${film.title}</b>${film.originalTitle ? ` / <i>${film.originalTitle}</i> ` : ''} (${film.year || '?'})\n\n` +
+            userRating + tmdbRating +
+            `${film.description ? `${film.description}\n\n` : ''}Як зберегти цей фільм?`;
 
         if (film.posterUrl) {
             await ctx.replyWithPhoto(film.posterUrl, {
@@ -94,7 +101,19 @@ export async function handleFilmTitleInput(ctx) {
     }
     const found = films[ctx.scene.state.filmIndex];
 
-    const film = await FilmService.upsertFromTmdb(found);
+    const details = await getMovieDetails(found.tmdbId);
+
+    const film = await FilmService.upsertFromTmdb({
+        tmdbId: found.tmdbId,
+        title: found.title,
+        original_title: found.original_title,
+        year: found.year,
+        posterUrl: found.posterUrl,
+        overview: found.overview,
+        tmdbRate: found.tmdbRate,
+        genres: details.genres,
+        duration: details.runtime,
+    });
     ctx.scene.state.film = film;
 
     const navButtons = (films.length > 1) ? [
@@ -113,7 +132,14 @@ export async function handleFilmTitleInput(ctx) {
         [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
     ]);
 
-    const caption = `<b>${film.title}</b> (${film.year || '?'})\n\n${film.description ? `${film.description}\n\n` : ''}Як зберегти цей фільм?`;
+    const user = await UserService.getByTelegramId(ctx.from.id);
+    const rating = await LibraryService.getRating(user._id, film._id);
+    const userRating = rating ? `Твоя оцінка: ⭐ ${rating}/10\n\n` : ``;
+    const tmdbRating = film.tmdbRate ? ` Оцінка TMDB: 💙 ${film.tmdbRate}/10\n\n` : ``;
+
+    const caption = `<b>${film.title}</b>${film.originalTitle ? ` / <i>${film.originalTitle}</i> ` : ''} (${film.year || '?'})\n\n` +
+        userRating + tmdbRating +
+        `${film.description ? `${film.description}\n\n` : ''}Як зберегти цей фільм?`;
 
     if (film.posterUrl) {
         await ctx.replyWithPhoto(film.posterUrl, {

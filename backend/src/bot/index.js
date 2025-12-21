@@ -15,6 +15,8 @@ import logger from '../utils/logger.js';
 import parseRecommendations from '../utils/parseRecommendations.js';
 import { plusOnlyRestriction } from './handlers/recommendationsCategories.js';
 import DailyRecommendationService from '../services/DailyRecommendationService.js';
+import { Film } from '../models/index.js';
+import mongoose from 'mongoose';
 
 // === Ініціалізація ===
 const bot = getBotInstance();
@@ -87,7 +89,7 @@ bot.command('root', async (ctx) => {
 });
 
 bot.command('test', async (ctx) => {
-    ctx.reply(await DailyRecommendationService.getAllRecommendedFilms());
+    logger.info(ctx.from);
 });
 
 bot.command('add', (ctx) => ctx.scene.enter('ADD_FILM_SCENE_ID'));

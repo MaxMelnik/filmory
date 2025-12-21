@@ -22,6 +22,7 @@ export default async () => {
         year: film.year,
         posterUrl: film.posterUrl,
         overview: film.overview,
+        tmdbRate: film.tmdbRate,
         genres: details.genres,
         duration: details.runtime,
     });

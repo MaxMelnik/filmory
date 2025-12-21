@@ -35,7 +35,7 @@ export async function searchFilm(title) {
             title: first.title || first.original_title,
             original_title: first.original_title,
             year: first.release_date ? first.release_date.slice(0, 4) : null,
-            tmdb_rate: first.vote_average,
+            tmdbRate: first.vote_average,
             overview: first.overview,
             posterUrl: first.poster_path ?
                 `https://image.tmdb.org/t/p/w500${first.poster_path}` :
@@ -74,8 +74,10 @@ export async function searchAllByMediaType(title, allowedTypes = ['movie', 'tv']
         return results.map(film => ({
             tmdbId: film.id,
             title: film.title || film.original_title || film.name || film.original_name,
+            original_title: film.original_title || '',
             year: (film.release_date ? film.release_date.slice(0, 4) : null) || (film.first_air_date ? film.first_air_date.slice(0, 4) : null),
             overview: film.overview,
+            tmdbRate: film.vote_average,
             posterUrl: film.poster_path ?
                 `https://image.tmdb.org/t/p/w500${film.poster_path}` :
                 null,

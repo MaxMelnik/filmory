@@ -1,6 +1,9 @@
 import { Markup } from 'telegraf';
 import { FilmService } from '../../services/FilmService.js';
 import updateSearchFilmCardMessage from '../../utils/updateSearchFilmCardMessage.js';
+import { getMovieDetails } from '../../services/integrations/tmdbClient.js';
+import { UserService } from '../../services/UserService.js';
+import { LibraryService } from '../../services/LibraryService.js';
 
 export async function openSearchFilmCard(ctx) {
     const title = ctx.session.title;
@@ -16,7 +19,19 @@ export async function openSearchFilmCard(ctx) {
         return ctx.reply('Не знайшов такого фільму на TMDB 😢', keyboard);
     }
 
-    const film = await FilmService.upsertFromTmdb(found);
+    const details = await getMovieDetails(found.tmdbId);
+
+    const film = await FilmService.upsertFromTmdb({
+        tmdbId: found.tmdbId,
+        title: found.title,
+        original_title: found.original_title,
+        year: found.year,
+        posterUrl: found.posterUrl,
+        overview: found.overview,
+        tmdbRate: found.tmdbRate,
+        genres: details.genres,
+        duration: details.runtime,
+    });
     ctx.scene.state.film = film;
 
     const navButtons = (films.length > 1) ? [
@@ -35,7 +50,14 @@ export async function openSearchFilmCard(ctx) {
         [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
     ]);
 
-    const caption = `<b>${film.title}</b> (${film.year || '?'})\n\n${film.description ? `${film.description}\n\n` : ''}Як зберегти цей фільм?`;
+    const user = await UserService.getByTelegramId(ctx.from.id);
+    const rating = await LibraryService.getRating(user._id, film._id);
+    const userRating = rating ? `Твоя оцінка: ⭐ ${rating}/10\n\n` : ``;
+    const tmdbRating = film.tmdbRate ? ` Оцінка TMDB: 💙 ${film.tmdbRate}/10\n\n` : ``;
+
+    const caption = `<b>${film.title}</b>${film.originalTitle ? ` / <i>${film.originalTitle}</i> ` : ''} (${film.year || '?'})\n\n` +
+        userRating + tmdbRating +
+        `${film.description ? `${film.description}\n\n` : ''}Як зберегти цей фільм?`;
 
     await updateSearchFilmCardMessage(ctx, film, caption, keyboard);
 }

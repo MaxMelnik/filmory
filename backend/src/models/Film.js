@@ -42,9 +42,19 @@ const filmSchema = new mongoose.Schema(
         duration: {
             type: Number,
         },
+        tmdbRate: {
+            type: Number,
+        },
     },
     { timestamps: true, _id: false },
 );
+
+filmSchema.pre('save', function(next) {
+    if (this.isModified('tmdbRate') && typeof this.tmdbRate === 'number') {
+        this.tmdbRate = Math.round(this.tmdbRate * 10) / 10;
+    }
+    next();
+});
 
 filmSchema.plugin(AutoIncrement, { id: 'Film' });
 export const Film = mongoose.model('Film', filmSchema);

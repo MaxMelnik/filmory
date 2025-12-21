@@ -6,10 +6,12 @@ import { getMovieDetails, searchFilm } from '../services/integrations/tmdbClient
 import formatRuntime from '../utils/formatRuntime.js';
 import { FilmService } from '../services/FilmService.js';
 import DailyRecommendationService from '../services/DailyRecommendationService.js';
+import logger from '../utils/logger.js';
 
 export default async () => {
     const excludeFilms = await DailyRecommendationService.getAllRecommendedFilms();
     const dailyRecommendation = (await getDailyRecommendation(excludeFilms.toString()))[0];
+    logger.info(`Daily recommendation found: ${dailyRecommendation}`);
     const film = await searchFilm(dailyRecommendation.original_title ?? dailyRecommendation.title);
     const details = await getMovieDetails(film.tmdbId);
 
@@ -24,7 +26,7 @@ export default async () => {
         duration: details.runtime,
     });
 
-    const { caption, keyboard } = await createDailyRecommendation({
+    const { caption } = await createDailyRecommendation({
         day: getTodayKey(),
         title: film.title ?? dailyRecommendation.title,
         originalTitle: film.original_title ?? dailyRecommendation.original_title,
@@ -34,7 +36,7 @@ export default async () => {
         description: dailyRecommendation.why_recommended.trim(),
         filmId: savedFilm._id,
     });
-    await postMovieToChannel(film.posterUrl, caption, keyboard);
+    await postMovieToChannel(film.posterUrl, caption);
 
     if (process.env.ENVIRONMENT === 'PROD') {
         DailyRecommendationService.upsert({

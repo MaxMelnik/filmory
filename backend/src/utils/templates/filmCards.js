@@ -16,13 +16,15 @@ export async function createDailyRecommendation({
 }) {
     const caption = `🎬 ${DAYS[day].emoji} ${DAYS[day].description}
 
-🎬 *${escapeReservedCharacters(title)}*${originalTitle ? ` / _${escapeReservedCharacters(originalTitle)}_` : ''} \\(${year}\\)
+*${escapeReservedCharacters(title)}*${originalTitle ? ` / _${escapeReservedCharacters(originalTitle)}_` : ''} \\(${year}\\)
 🎭 Жанр: ${genres.toString().toLowerCase().replaceAll(',', ', ').trim()}
 ⏱ Тривалість: ${duration}
 
 ━━ Чому варто глянути ━━
 
 ${escapeReservedCharacters(description)}
+
+[💡 Відкрити "${escapeReservedCharacters(title)}" в Filmory](${makeMovieDeepLink(filmId)})
 
 Хочеш персональну підбірку – пиши в *Filmory* 👇
 @${escapeReservedCharacters(process.env.BOT_USERNAME) || ''}

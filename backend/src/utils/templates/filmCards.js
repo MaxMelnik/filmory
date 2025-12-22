@@ -14,9 +14,9 @@ export async function createDailyRecommendation({
     filmId,
     postUrl,
 }) {
-    const caption = `🎬 ${DAYS[day].emoji} ${DAYS[day].description}
+    const caption = `${DAYS[day].emoji} ${DAYS[day].description}
 
-*${escapeReservedCharacters(title)}*${originalTitle ? ` / _${escapeReservedCharacters(originalTitle)}_` : ''} \\(${year}\\)
+*🎬 ${escapeReservedCharacters(title)}*${originalTitle ? ` / _${escapeReservedCharacters(originalTitle)}_` : ''} \\(${year}\\)
 🎭 Жанр: ${genres.toString().toLowerCase().replaceAll(',', ', ').trim()}
 ⏱ Тривалість: ${duration}
 

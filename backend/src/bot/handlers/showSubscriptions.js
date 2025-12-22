@@ -17,8 +17,7 @@ export async function showSubscriptions(ctx, paymentPlan = 'plus') {
             return ctx.scene.enter('START_SCENE_ID');
         }
 
-        return ctx.replyWithMarkdown(
-            `*Filmory Plus ✨*
+        const text = `*Filmory Plus ✨*
 
 Дає тобі більше з того, заради чого ти користуєшся *Filmory*:
 • Без ліміту на розумні рекомендації;
@@ -30,18 +29,33 @@ export async function showSubscriptions(ctx, paymentPlan = 'plus') {
 
 *Ціна:* ${FILMORY_PLUS_PRICE_STARS} ⭐ на місяць (~90 грн).
 Підписка автоматично подовжується раз на 30 днів, доки в тебе є зірки *або ти її не скасуєш*.
-Скасувати можна будь-коли одним натисканням.`,
-            Markup.inlineKeyboard([
-                [Markup.button.url(`🔓 Оформити за ${FILMORY_PLUS_PRICE_STARS} ⭐`, link)],
-                [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_DELETE_MESSAGE')],
-            ]),
-        );
+Скасувати можна будь-коли одним натисканням.`;
+
+        const keyboard = [
+            [{ text: `🔓 Оформити за ${FILMORY_PLUS_PRICE_STARS} ⭐`, url: link }],
+            [{ text: `🏠︎ На головну`, callback_data: 'GO_HOME_AND_DELETE_MESSAGE' }],
+        ];
+
+        if (!ctx.session.editMessageText) {
+            return await ctx.replyWithMarkdown(text, {
+                reply_markup: {
+                    inline_keyboard: keyboard,
+                },
+            });
+        }
+
+        ctx.session.editMessageText = false;
+
+        await ctx
+            .editMessageText?.(text, { parse_mode: 'Markdown', ...Markup.inlineKeyboard(keyboard) })
+            .catch(async () => {
+                await ctx.reply(text, { parse_mode: 'Markdown', ...Markup.inlineKeyboard(keyboard) });
+            });
     }
 
     const untilLabel = await SubscriptionService.getSubscriptionExpiryLabel(telegramId);
 
-    return ctx.replyWithMarkdown(
-        `⭐ У тебе вже активний *Filmory Plus*!
+    const text = `⭐ У тебе вже активний *Filmory Plus*!
 
 ✅ Більше щоденних запитів до ШІ
 ✅ Розумні рекомендації за твоїм настроєм та компанією для перегляду;
@@ -49,11 +63,28 @@ export async function showSubscriptions(ctx, paymentPlan = 'plus') {
 ✅ Підтримка розробки Filmory 💚
 
 Твоя підписка діє до: *${untilLabel}*
-_(потім вона буде подовжена автоматично, якщо автоплатіж увімкнений)_`,
-        Markup.inlineKeyboard([
-            [Markup.button.callback('⚙ Керувати підпискою', 'MANAGE_SUBSCRIPTION')],
-            [Markup.button.callback('🎞 Мій список', 'SHOW_LIST')],
-            [Markup.button.callback('👾 Рекомендації', 'GET_RECS')],
-            [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_DELETE_MESSAGE')],
-        ]));
+_(потім вона буде подовжена автоматично, якщо автоплатіж увімкнений)_`;
+
+    const keyboard = [
+        [{ text: '⚙ Керувати підпискою', callback_data: 'MANAGE_SUBSCRIPTION' }],
+        [{ text: '🎞 Мій список', callback_data: 'SHOW_LIST' }],
+        [{ text: '👾 Рекомендації', callback_data: 'GET_RECS' }],
+        [{ text: `🏠︎ На головну`, callback_data: 'GO_HOME_AND_DELETE_MESSAGE' }],
+    ];
+
+    if (!ctx.session.editMessageText) {
+        return await ctx.replyWithMarkdown(text, {
+            reply_markup: {
+                inline_keyboard: keyboard,
+            },
+        });
+    }
+
+    ctx.session.editMessageText = false;
+
+    await ctx
+        .editMessageText?.(text, { parse_mode: 'Markdown', ...Markup.inlineKeyboard(keyboard) })
+        .catch(async () => {
+            await ctx.reply(text, { parse_mode: 'Markdown', ...Markup.inlineKeyboard(keyboard) });
+        });
 }

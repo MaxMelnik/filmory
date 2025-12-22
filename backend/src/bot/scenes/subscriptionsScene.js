@@ -4,15 +4,19 @@ import { SubscriptionService } from '../../services/SubscriptionService.js';
 
 const scene = new Scenes.BaseScene('SUBSCRIPTIONS_SCENE_ID');
 
-// === Вхід у сцену ===
+// Enter Subscription Scene
 scene.enter(async (ctx) => {
     await showSubscriptions(ctx);
 });
 
 scene.action('MANAGE_SUBSCRIPTION', async (ctx) => {
+    ctx.session.editMessageText = true;
+
     const untilLabel = await SubscriptionService.getSubscriptionExpiryLabel(ctx.from.id);
 
-    await ctx.replyWithMarkdown(`
+    ctx.answerCbQuery();
+
+    const text = `
     ⭐ Керування підпискою *Filmory Plus*
 
 Твоя підписка оформлена через Telegram, тому:
@@ -33,11 +37,27 @@ scene.action('MANAGE_SUBSCRIPTION', async (ctx) => {
 
 Якщо передумаєш — підписку на *Filmory Plus* завжди можна оформити знову прямо тут у боті 💚
 
-Зараз твоя підписка активна до: *${untilLabel}*`,
-    Markup.inlineKeyboard([
-        [Markup.button.callback('⬅ Назад', 'DELETE_THIS_MESSAGE')],
-    ]));
-    ctx.answerCbQuery();
+Зараз твоя підписка активна до: *${untilLabel}*`;
+
+    const keyboard = [
+        [{ text: '⬅ Назад', callback_data: 'GO_SUBS_AND_DELETE_MESSAGE' }],
+    ];
+
+    if (!ctx.session.editMessageText) {
+        return await ctx.replyWithMarkdown(text, {
+            reply_markup: {
+                inline_keyboard: keyboard,
+            },
+        });
+    }
+
+    ctx.session.editMessageText = false;
+
+    await ctx
+        .editMessageText?.(text, { parse_mode: 'Markdown', ...Markup.inlineKeyboard(keyboard) })
+        .catch(async () => {
+            await ctx.reply(text, { parse_mode: 'Markdown', ...Markup.inlineKeyboard(keyboard) });
+        });
 });
 
 export default scene;

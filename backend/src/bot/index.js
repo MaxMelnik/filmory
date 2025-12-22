@@ -169,6 +169,12 @@ bot.action('GO_SEARCH_FILM_AND_DELETE_MESSAGE', (ctx) => {
     ctx.scene.enter('ADD_FILM_SCENE_ID');
 });
 
+bot.action('GO_SUBS_AND_DELETE_MESSAGE', (ctx) => {
+    ctx.answerCbQuery();
+    ctx.session.editMessageText = true;
+    ctx.scene.enter('SUBSCRIPTIONS_SCENE_ID');
+});
+
 bot.action('PLUS_REC_CAT', async (ctx) => await plusOnlyRestriction(ctx));
 
 bot.action('FAKE_BUTTON', (ctx) => ctx.answerCbQuery());

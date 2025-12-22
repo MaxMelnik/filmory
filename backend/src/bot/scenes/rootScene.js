@@ -6,6 +6,7 @@ import logger from '../../utils/logger.js';
 import { pingGeminiAPI } from '../handlers/pingGeminiAPI.js';
 import { handleCommandsOnText } from '../handlers/handleCommandsOnText.js';
 import { getMovieDetails, searchFilm } from '../../services/integrations/tmdbClient.js';
+import { AiRequestLog, User } from '../../models/index.js';
 
 const scene = new Scenes.BaseScene('ROOT_SCENE_ID');
 
@@ -24,6 +25,9 @@ scene.enter(async (ctx) => {
 });
 
 scene.action('GENERAL_STATS', async (ctx) => {
+    const totalUsersCount = await User.countDocuments();
+    const totalReq = await AiRequestLog.countDocuments();
+
     const [mau, req30, freeReq30, plusReq30, promoReq30, rootReq30] = await Promise.all([
         AnalyticsService.getMau(30),
         AnalyticsService.getAiRequestsCount({ days: 30 }),
@@ -35,9 +39,11 @@ scene.action('GENERAL_STATS', async (ctx) => {
 
     ctx.answerCbQuery();
     await ctx.reply(
+        `Всього користувачів: ${totalUsersCount}\n` +
+        `Всього AI-запитів: ${totalReq}\n\n` +
         `Статистика за 30 днів:\n` +
         `• MAU: ${mau}\n` +
-        `• Всього AI-запитів: ${req30}\n` +
+        `• AI-запитів: ${req30}\n` +
         `   – від Free: ${freeReq30}\n` +
         `   – від Plus: ${plusReq30}\n` +
         `   – від Promo: ${promoReq30}\n` +

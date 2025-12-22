@@ -51,6 +51,8 @@ export async function showSubscriptions(ctx, paymentPlan = 'plus') {
             .catch(async () => {
                 await ctx.reply(text, { parse_mode: 'Markdown', ...Markup.inlineKeyboard(keyboard) });
             });
+
+        return;
     }
 
     const untilLabel = await SubscriptionService.getSubscriptionExpiryLabel(telegramId);

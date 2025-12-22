@@ -58,7 +58,12 @@ export async function handleAddFilm(ctx) {
     const isPlus = await UserService.isPlus(ctx.from.id);
     const isPlusSymbol = isPlus ? '⭐' : '🔒';
 
-    const text = 'Введи назву фільму, який хочеш додати:';
+    const text = `✍ Напиши назву фільму, який хочеш додати\\.
+
+Якщо маєш *⭐ Filmory Plus*, то можеш натиснути
+"🤔 Не пам'ятаю назву" і я знайду фільм за твоїми спогадами\\.
+`;
+
     const keyboard = [
         [{ text: `🤔 Не пам'ятаю назву ${isPlusSymbol}`, callback_data: isPlus ? 'SEARCH_NEW_BY_DESCRIPTION' : 'PLUS_REC_CAT' }],
         [{ text: `🏠︎ На головну`, callback_data: 'GO_HOME_AND_DELETE_MESSAGE' }],

@@ -14,9 +14,6 @@ import { UserService } from '../services/UserService.js';
 import logger from '../utils/logger.js';
 import parseRecommendations from '../utils/parseRecommendations.js';
 import { plusOnlyRestriction } from './handlers/recommendationsCategories.js';
-import DailyRecommendationService from '../services/DailyRecommendationService.js';
-import { Film } from '../models/index.js';
-import mongoose from 'mongoose';
 
 // === Ініціалізація ===
 const bot = getBotInstance();

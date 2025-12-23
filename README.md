@@ -8,15 +8,21 @@ Designed with focus on clean architecture, user experience, reliability, and pro
 
 ### 🔍 Smart Movie Search
 
-* Searches films via TMDB AP
+* Searches films via TMDB API
 * Gracefully handles ambiguous titles
 * If a movie isn’t found, users can save a custom entry they typed
 
 ### 🎯 Personalized Recommendations
 
-* Uses Gemini 2.x Flash (Google GenAI)
+* Uses Gemini 2.x Flash (Google GenAI) with Model Fallback Array functionality
 * Understands film vibes, genres, emotional tone
 * Returns high-quality, human-like suggestions
+
+### ⭐ Telegram Stars Subscription
+
+* Monetization via Telegram Stars
+* Subscription with automated payments
+* More AI-requests categories and higher limits for Plus users
 
 ### 🎞 User Library
 

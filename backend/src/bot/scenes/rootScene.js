@@ -7,15 +7,18 @@ import { pingGeminiAPI } from '../handlers/pingGeminiAPI.js';
 import { handleCommandsOnText } from '../handlers/handleCommandsOnText.js';
 import { getMovieDetails, searchFilm } from '../../services/integrations/tmdbClient.js';
 import { AiRequestLog, User } from '../../models/index.js';
+import escapeReservedCharacters from '../../utils/escapeReservedCharacters.js';
+import formatDate from '../../utils/formatDate.js';
+import splitTelegramMessage from '../../utils/splitTelegramMessage.js';
 
 const scene = new Scenes.BaseScene('ROOT_SCENE_ID');
 
-// === Вхід у сцену ===
+// Enter Root scene
 scene.enter(async (ctx) => {
     logger.info(`[ROOT SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('📊 General Statistics', 'GENERAL_STATS')],
-        [Markup.button.callback('🙍‍♂️ User', 'USER_INFO')],
+        [Markup.button.callback('👥 Users', 'USERS_LIST')],
         [Markup.button.callback('🏓️ PING GEMINI AI', 'PING_GEMINI_API')],
         [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
     ]);
@@ -52,6 +55,34 @@ scene.action('GENERAL_STATS', async (ctx) => {
             [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
         ]),
     );
+});
+
+scene.action('USERS_LIST', async (ctx) => {
+    const users = await User
+        .find({})
+        .sort({ aiRequestsTotal: -1 })
+        .lean();
+    let output = `👥 Всього користувачів: ${users.length}\n\n`;
+
+    let i = 1;
+    for (const user of users) {
+        const name = user.lastName ?
+            `${user.firstName} ${user.lastName}` :
+            `${user.firstName}`;
+
+        const linkedName = `[${escapeReservedCharacters(name)}](tg://user?id=${user.telegramId})`;
+
+        output += `${i}\\. 🙍🏻‍♂️ ${linkedName} ${user.username ? `@${escapeReservedCharacters(user.username)}` : ``} ${user.telegramId}\n` +
+            `AI\\-requests: ${user.aiRequestsTotal} 👾\n` +
+            `Joined: ${escapeReservedCharacters(formatDate(user.firstSeenAt))} 🤝\n` +
+            `Last Active: ${escapeReservedCharacters(formatDate(user.lastActiveAt))} 👀\n\n`;
+        i++;
+    }
+    const messages = splitTelegramMessage(output);
+    for (const message of messages) {
+        await ctx.replyWithMarkdownV2(message);
+    }
+    return await ctx.answerCbQuery();
 });
 
 scene.action('USER_INFO', async (ctx) => {

@@ -1,4 +1,4 @@
-import { DailyRecommendation, Film } from '../models/index.js';
+import { DailyRecommendation } from '../models/index.js';
 import logger from '../utils/logger.js';
 
 /**

@@ -13,39 +13,47 @@ const compat = new FlatCompat({
     allConfig: js.configs.all,
 });
 
-export default defineConfig([globalIgnores(['**/vue-frontend/', '**/dist/', '**/public/']), {
-    extends: compat.extends('google', 'prettier'),
+export default defineConfig([
+    globalIgnores(['**/vue-frontend/', '**/dist/', '**/public/']), {
+        extends: compat.extends('google', 'prettier'),
 
-    languageOptions: {
-        globals: {
-            ...globals.browser,
-            ...globals.node,
+        languageOptions: {
+            globals: {
+                ...globals.browser,
+                ...globals.node,
+            },
+
+            ecmaVersion: 'latest',
+            sourceType: 'module',
         },
 
-        ecmaVersion: 'latest',
-        sourceType: 'module',
+        rules: {
+            'object-curly-spacing': ['error', 'always'],
+            'array-bracket-spacing': ['error', 'never'],
+            'space-in-parens': ['error', 'never'],
+            'comma-dangle': ['error', 'always-multiline'],
+
+            'max-len': ['error', {
+                code: 145,
+                ignoreUrls: true,
+            }],
+
+            indent: ['error', 4, {
+                SwitchCase: 1,
+            }],
+
+            'new-cap': 'off',
+            'require-jsdoc': 'off',
+            'valid-jsdoc': 'off',
+            'linebreak-style': 'off',
+            'no-console': 'off',
+            'prefer-const': 'error',
+        },
     },
-
-    rules: {
-        'object-curly-spacing': ['error', 'always'],
-        'array-bracket-spacing': ['error', 'never'],
-        'space-in-parens': ['error', 'never'],
-        'comma-dangle': ['error', 'always-multiline'],
-
-        'max-len': ['error', {
-            code: 145,
-            ignoreUrls: true,
-        }],
-
-        indent: ['error', 4, {
-            SwitchCase: 1,
-        }],
-
-        'new-cap': 'off',
-        'require-jsdoc': 'off',
-        'valid-jsdoc': 'off',
-        'linebreak-style': 'off',
-        'no-console': 'off',
-        'prefer-const': 'error',
+    {
+        files: ['**/models/**'],
+        rules: {
+            'no-invalid-this': 'off',
+        },
     },
-}]);
+]);

@@ -2,11 +2,10 @@ export default function splitTelegramMessage(message, maxLength = 4096) {
     const messages = [];
     let currentMessage = '';
 
-    // Split by \r\n
-    const parts = message.split('\r\n');
+    const parts = message.split('\n\n');
 
     for (const part of parts) {
-        const potentialMessage = currentMessage ? `${currentMessage}\r\n${part}` : part;
+        const potentialMessage = currentMessage ? `${currentMessage}\n\n${part}` : part;
 
         // If adding this part exceeds the max length, push the current message and start a new one
         if (potentialMessage.length > maxLength) {

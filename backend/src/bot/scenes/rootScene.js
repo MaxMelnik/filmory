@@ -6,7 +6,7 @@ import logger from '../../utils/logger.js';
 import { pingGeminiAPI } from '../handlers/pingGeminiAPI.js';
 import { handleCommandsOnText } from '../handlers/handleCommandsOnText.js';
 import { getMovieDetails, searchFilm } from '../../services/integrations/tmdbClient.js';
-import { AiRequestLog, User } from '../../models/index.js';
+import { AiRequestLog, LibraryItem, User } from '../../models/index.js';
 import escapeReservedCharacters from '../../utils/escapeReservedCharacters.js';
 import formatDate from '../../utils/formatDate.js';
 import splitTelegramMessage from '../../utils/splitTelegramMessage.js';
@@ -72,8 +72,13 @@ scene.action('USERS_LIST', async (ctx) => {
 
         const linkedName = `[${escapeReservedCharacters(name)}](tg://user?id=${user.telegramId})`;
 
+        const filmsCount = await LibraryItem
+            .find({ userId: user._id })
+            .countDocuments();
+
         output += `${i}\\. 🙍🏻‍♂️ ${linkedName} ${user.username ? `@${escapeReservedCharacters(user.username)}` : ``} ${user.telegramId}\n` +
             `AI\\-requests: ${user.aiRequestsTotal} 👾\n` +
+            `Films saved: ${filmsCount} 🎬 \n` +
             `Joined: ${escapeReservedCharacters(formatDate(user.firstSeenAt))} 🤝\n` +
             `Last Active: ${escapeReservedCharacters(formatDate(user.lastActiveAt))} 👀\n\n`;
         i++;

@@ -21,6 +21,7 @@ export async function handleAddFilm(ctx) {
         if (!film) return ctx.reply('Пошкоджене посилання. Спробуй знайти фільм вручну: /add');
 
         ctx.scene.state.film = film;
+        ctx.session.title = film.title;
 
         const keyboard = Markup.inlineKeyboard([
             [Markup.button.callback('📼 Подивитись пізніше', 'ADD_WATCH_LATER')],

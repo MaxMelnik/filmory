@@ -9,8 +9,6 @@ export async function openLibraryFilmCard(ctx) {
     const filmId = parseInt(ctx.match[1]);
     const film = await Film.findById(filmId);
 
-    console.log('film raw:', film);
-
     if (!film) {
         await ctx.reply('❌ Не вдалося знайти фільм.');
         return;

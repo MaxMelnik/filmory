@@ -143,7 +143,11 @@ bot.action(/^SELECT_ACTIVE_REC_(\d+)$/, async (ctx) => {
 bot.action(/^SAVE_ACTIVE_REC_(\d+)$/, async (ctx) => {
     logger.info(`SAVE_ACTIVE_REC_${parseInt(ctx.match[1])}`);
     const activeRecommendationIndex = parseInt(ctx.match[1]);
-    const recommendationCard = await RecommendationCardService.getByMessageId(ctx.callbackQuery?.message?.message_id);
+    const recommendationCard = await RecommendationCardService
+        .getByMessageId(
+            ctx.callbackQuery?.message?.message_id,
+            ctx.callbackQuery?.message?.chat.id,
+        );
     const recommendation = recommendationCard.films[activeRecommendationIndex];
     logger.info(recommendation);
 

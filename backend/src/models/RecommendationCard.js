@@ -12,6 +12,9 @@ const recommendationCardSchema = new mongoose.Schema(
         messageId: {
             type: Number,
         },
+        chatId: {
+            type: Number,
+        },
         heading: {
             type: String,
         },
@@ -66,5 +69,6 @@ const recommendationCardSchema = new mongoose.Schema(
     { timestamps: true, _id: false },
 );
 
+recommendationCardSchema.index({ messageId: 1, chatId: 1 }, { unique: true });
 recommendationCardSchema.plugin(AutoIncrement, { id: 'RecommendationCard' });
 export const RecommendationCard = mongoose.model('RecommendationCard', recommendationCardSchema);

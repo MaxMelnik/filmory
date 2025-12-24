@@ -88,6 +88,7 @@ export async function askGemini({
             const text = response.text?.trim();
 
             if (!text) {
+                logger.info(response);
                 throw new Error(`Empty response from model: ${currentModel}`);
             }
 

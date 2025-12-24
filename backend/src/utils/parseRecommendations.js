@@ -3,16 +3,21 @@ import RecommendationCardService from '../services/RecommendationCardService.js'
 
 export default async function parseRecommendations(ctx, heading = null, recommendations = null) {
     const messageId = ctx.session.messageId ?? ctx.callbackQuery?.message?.message_id;
+    const chatId = ctx.callbackQuery?.message?.chat.id ?? ctx.from?.id;
     ctx.session.messageId = null;
     let recommendationsCard;
-    if (!recommendations) recommendationsCard = await RecommendationCardService.getByMessageId(messageId);
+    if (!recommendations) recommendationsCard = await RecommendationCardService.getByMessageId(messageId, chatId);
     recommendationsCard ??= await RecommendationCardService.saveRecommendationCard(
         messageId,
+        chatId,
         recommendations,
         heading,
         ctx.session.promptType,
         ctx.session.promptData,
     );
+    ctx.session.promptType = null;
+    ctx.session.promptData = null;
+
     recommendations = recommendationsCard.films;
     ctx.session.recommendations = recommendations;
 

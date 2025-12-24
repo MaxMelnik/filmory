@@ -17,7 +17,10 @@ export async function recommendSimilar(ctx) {
     const filmId = parseInt(ctx.match[1]);
     const film = await Film.findById(filmId);
     const movieName = film.title;
-    logger.info(`RECOMMEND_: ${movieName}`);
+
+    ctx.session.promptType = `similar`;
+    ctx.session.promptData = movieName;
+    logger.info(`RECOMMEND_SIMILAR: ${movieName}`);
     await showWaiter(ctx, {
         message: `Шукаю фільми схожі на "${movieName}"`,
         animation: 'emoji', // "dots", "emoji", "phrases"

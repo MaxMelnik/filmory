@@ -42,6 +42,9 @@ scene.on(message('text'), async (ctx) => {
     const input = ctx.message.text.trim();
     if (await handleCommandsOnText(ctx, input)) return;
 
+    ctx.session.promptType = ctx.scene.state.recCat.replace('show_', '');
+    ctx.session.promptData = input;
+
     if (ctx.scene.state.recCat === 'show_similar') {
         logger.info(`show_similar: ${input}`);
         return await showWaiter(ctx, {
@@ -77,6 +80,7 @@ scene.on(message('text'), async (ctx) => {
 
         let telegramId = ctx.message.forward_from ? ctx.message.forward_from.id : null;
         telegramId ??= (await UserService.getByUsername(input))?.telegramId;
+        ctx.session.promptData = telegramId;
 
         const info = await bot.telegram.getMe();
         if (!telegramId) {

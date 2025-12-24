@@ -41,7 +41,7 @@ export const FILM_RECOMMENDATIONS_SCHEMA = {
                         type: 'string',
                         description: 'Короткий опис сюжету без спойлерів, 1-3 речення',
                     },
-                    why_recommended: {
+                    whyRecommended: {
                         type: 'string',
                         description: 'Чому цей фільм підходить саме цьому користувачу',
                     },

@@ -7,12 +7,14 @@ import { setRateAddFilm } from './setRateAddFilm.js';
 import { saveManual } from './saveManual.js';
 import { recommendSimilar } from './recommendSimilar.js';
 import { shareFilmLink } from './shareFilmLink.js';
+import RecommendationCardService from '../../services/RecommendationCardService.js';
 
 export default function filmCardControls(scene) {
     scene.action(/^SAVE_ACTIVE_REC_(\d+)$/, async (ctx) => {
         logger.info(`SAVE_ACTIVE_REC_${parseInt(ctx.match[1])}`);
         const activeRecommendationIndex = parseInt(ctx.match[1]);
-        const recommendation = ctx.session.recommendations[activeRecommendationIndex];
+        const recommendationCard = await RecommendationCardService.getByMessageId(ctx.callbackQuery?.message?.message_id);
+        const recommendation = recommendationCard.films[activeRecommendationIndex];
         logger.info(recommendation);
 
         ctx.answerCbQuery();

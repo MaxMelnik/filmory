@@ -14,6 +14,8 @@ import { UserService } from '../services/UserService.js';
 import logger from '../utils/logger.js';
 import parseRecommendations from '../utils/parseRecommendations.js';
 import { plusOnlyRestriction } from './handlers/recommendationsCategories.js';
+import RecommendationCardService from '../services/RecommendationCardService.js';
+import { handleFilmTitleInput } from './handlers/addFilm.js';
 
 // === Ініціалізація ===
 const bot = getBotInstance();
@@ -124,7 +126,7 @@ bot.action('GET_SUBSCRIPTION', (ctx) => {
 bot.action(/^SELECT_ACTIVE_REC_(\d+)$/, async (ctx) => {
     ctx.session.activeRecommendation = parseInt(ctx.match[1]);
 
-    const { finalText, keyboard } = parseRecommendations(ctx);
+    const { finalText, keyboard } = await parseRecommendations(ctx);
 
     ctx.answerCbQuery();
     await ctx.editMessageText(
@@ -133,9 +135,25 @@ bot.action(/^SELECT_ACTIVE_REC_(\d+)$/, async (ctx) => {
             parse_mode: 'Markdown',
             ...keyboard,
         },
-    ).catch(async () => {
-        await ctx.reply(finalText, { parse_mode: 'Markdown', ...keyboard });
+    ).catch(() => {
+        // User selected already active rec. No action required
     });
+});
+
+bot.action(/^SAVE_ACTIVE_REC_(\d+)$/, async (ctx) => {
+    logger.info(`SAVE_ACTIVE_REC_${parseInt(ctx.match[1])}`);
+    const activeRecommendationIndex = parseInt(ctx.match[1]);
+    const recommendationCard = await RecommendationCardService.getByMessageId(ctx.callbackQuery?.message?.message_id);
+    const recommendation = recommendationCard.films[activeRecommendationIndex];
+    logger.info(recommendation);
+
+    ctx.answerCbQuery();
+
+    if (!recommendation) return;
+
+    ctx.session.title = recommendation.original_title;
+    ctx.session.awaitingFilmTitle = true;
+    await handleFilmTitleInput(ctx);
 });
 
 bot.action('DELETE_THIS_MESSAGE', (ctx) => {
@@ -170,6 +188,12 @@ bot.action('GO_SUBS_AND_DELETE_MESSAGE', (ctx) => {
     ctx.answerCbQuery();
     ctx.session.editMessageText = true;
     ctx.scene.enter('SUBSCRIPTIONS_SCENE_ID');
+});
+
+bot.action('GO_HOME', (ctx) => {
+    ctx.answerCbQuery();
+    ctx.session.editMessageText = false;
+    ctx.scene.enter('START_SCENE_ID');
 });
 
 bot.action('PLUS_REC_CAT', async (ctx) => await plusOnlyRestriction(ctx));

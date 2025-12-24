@@ -34,7 +34,7 @@ export default async () => {
         year: film.year ?? dailyRecommendation.year,
         genres: details.genres,
         duration: formatRuntime(details.runtime),
-        description: dailyRecommendation.why_recommended.trim(),
+        description: dailyRecommendation.whyRecommended.trim(),
         filmId: savedFilm._id,
     });
     await postMovieToChannel(film.posterUrl, caption);

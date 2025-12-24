@@ -144,7 +144,7 @@ export async function getFilmRecommendations(movieTitle) {
       "tmdb_id": null,
       "imdb_id": null,
       "overview": "Короткий опис сюжету без спойлерів, одним реченням",
-      "why_recommended": "Коротко поясни, чому цей фільм підходить саме цьому користувачу.",
+      "whyRecommended": "Коротко поясни, чому цей фільм підходить саме цьому користувачу.",
       "mood_tags": ["настрій1", "настрій2"],
       "content_warnings": ["якщо є важливі попередження, інакше порожній масив []"]
     }
@@ -213,7 +213,7 @@ export async function getListOfFilmsRecommendations(includeFilms, excludeFilms) 
       "tmdb_id": null,
       "imdb_id": null,
       "overview": "Короткий опис сюжету без спойлерів, одним реченням",
-      "why_recommended": "Коротко поясни, чому цей фільм підходить саме цьому користувачу.",
+      "whyRecommended": "Коротко поясни, чому цей фільм підходить саме цьому користувачу.",
       "mood_tags": ["настрій1", "настрій2"],
       "content_warnings": ["якщо є важливі попередження, інакше порожній масив []"]
     }
@@ -274,7 +274,7 @@ export async function getFilmRecommendationsByMood(mood) {
       "tmdb_id": null,
       "imdb_id": null,
       "overview": "Короткий опис сюжету без спойлерів, одним реченням",
-      "why_recommended": "Коротко поясни, чому цей фільм підходить саме під цей настрій.",
+      "whyRecommended": "Коротко поясни, чому цей фільм підходить саме під цей настрій.",
       "mood_tags": ["настрій1", "настрій2"],
       "content_warnings": ["якщо є важливі попередження, інакше порожній масив []"]
     }
@@ -336,7 +336,7 @@ export async function getFilmRecommendationsByCompany(company) {
       "tmdb_id": null,
       "imdb_id": null,
       "overview": "Короткий опис сюжету без спойлерів, одним реченням",
-      "why_recommended": "Коротко поясни, чому цей фільм підходить саме для цієї компанії.",
+      "whyRecommended": "Коротко поясни, чому цей фільм підходить саме для цієї компанії.",
       "mood_tags": ["настрій1", "настрій2"],
       "content_warnings": ["якщо є важливі попередження, інакше порожній масив []"]
     }
@@ -406,7 +406,7 @@ export async function getCoopFilmRecommendations(userOneIncludeFilms, userOneExc
       "tmdb_id": null,
       "imdb_id": null,
       "overview": "Короткий опис сюжету без спойлерів, одним реченням",
-      "why_recommended": "Коротко поясни, чому цей фільм підходить обом цим користувачам.",
+      "whyRecommended": "Коротко поясни, чому цей фільм підходить обом цим користувачам.",
       "mood_tags": ["настрій1", "настрій2"],
       "content_warnings": ["якщо є важливі попередження, інакше порожній масив []"]
     }
@@ -467,7 +467,7 @@ export async function getFilmByUserDescription(company) {
       "tmdb_id": null,
       "imdb_id": null,
       "overview": "Короткий опис сюжету без спойлерів, одним реченням",
-      "why_recommended": "Коротко поясни, чому цей фільм підходить під цей опис.",
+      "whyRecommended": "Коротко поясни, чому цей фільм підходить під цей опис.",
       "mood_tags": ["настрій1", "настрій2"],
       "content_warnings": ["якщо є важливі попередження, інакше порожній масив []"]
     }
@@ -528,7 +528,7 @@ ${excludeFilms ? `Не включай фільми з переліку: [${exclu
       "tmdb_id": null,
       "imdb_id": null,
       "overview": "Короткий опис сюжету без спойлерів, одним реченням",
-      "why_recommended": "Коротко поясни, чому цей фільм підходить під цей опис.",
+      "whyRecommended": "Коротко поясни, чому цей фільм підходить під цей опис.",
       "mood_tags": ["настрій1", "настрій2"],
       "content_warnings": ["якщо є важливі попередження, інакше порожній масив []"]
     }

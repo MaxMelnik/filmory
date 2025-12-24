@@ -69,9 +69,10 @@ export async function showWaiter(ctx, {
         clearInterval(interval);
 
         // ✅ Оновлюємо повідомлення після завершення
-        ctx.session.activeRecommendation = 1
+        ctx.session.activeRecommendation = 1;
+        ctx.session.messageId = initial.message_id;
         let { finalText, keyboard } = typeof onDone === 'function' ?
-            onDone(ctx, result) :
+            await onDone(ctx, result) :
             { finalText: result };
 
         keyboard ??= Markup.inlineKeyboard([

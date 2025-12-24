@@ -6,7 +6,6 @@ import logger from '../../utils/logger.js';
 import escapeReservedCharacters from '../../utils/escapeReservedCharacters.js';
 import { showWaiter } from '../../utils/animatedWaiter.js';
 import { getFilmByUserDescription } from '../../services/integrations/geminiService.js';
-import parseRecommendations from '../../utils/parseRecommendations.js';
 import { isRequestAllowed } from '../../services/system/QuotaService.js';
 import { LibraryService } from '../../services/LibraryService.js';
 
@@ -192,6 +191,6 @@ export async function handleFilmDescriptionInput(ctx) {
         animation: 'emoji', // "dots", "emoji", "phrases"
         delay: 500,
         asyncTask: async () => await getFilmByUserDescription(description),
-        onDone: (ctx, response) => parseRecommendations(ctx, `🎬 Опису "${description}" відповідають наступні фільми:`, response),
+        onDone: async (ctx, response) => await (ctx, `🎬 Опису "${description}" відповідають наступні фільми:`, response),
     });
 }

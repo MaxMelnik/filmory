@@ -1,12 +1,24 @@
 import { Markup } from 'telegraf';
+import RecommendationCardService from '../services/RecommendationCardService.js';
 
-export default function parseRecommendations(ctx, heading = null, recommendations = null) {
-    if (!recommendations) recommendations = ctx.session.recommendations;
+export default async function parseRecommendations(ctx, heading = null, recommendations = null) {
+    const messageId = ctx.session.messageId ?? ctx.callbackQuery?.message?.message_id;
+    ctx.session.messageId = null;
+    let recommendationsCard;
+    if (!recommendations) recommendationsCard = await RecommendationCardService.getByMessageId(messageId);
+    recommendationsCard ??= await RecommendationCardService.saveRecommendationCard(
+        messageId,
+        recommendations,
+        heading,
+        ctx.session.promptType,
+        ctx.session.promptData,
+    );
+    recommendations = recommendationsCard.films;
     ctx.session.recommendations = recommendations;
 
     if (!recommendations?.length) {
         const keyboard = Markup.inlineKeyboard([
-            [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
+            [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
         ]);
 
         return {
@@ -15,8 +27,7 @@ export default function parseRecommendations(ctx, heading = null, recommendation
         };
     }
 
-    if (!heading) heading = ctx.session.heading;
-    ctx.session.heading = heading;
+    heading ??= recommendationsCard.heading;
     if (!ctx.session.activeRecommendation) ctx.session.activeRecommendation = 1;
     const activeRecommendation = ctx.session.activeRecommendation;
 
@@ -61,8 +72,8 @@ export default function parseRecommendations(ctx, heading = null, recommendation
                 activeFilmCard += `\n${rec.overview.trim()}`;
             }
 
-            if (rec.why_recommended) {
-                activeFilmCard += `\n\n_${rec.why_recommended.trim()}_`;
+            if (rec.whyRecommended) {
+                activeFilmCard += `\n\n_${rec.whyRecommended.trim()}_`;
             }
         }
 
@@ -78,7 +89,7 @@ export default function parseRecommendations(ctx, heading = null, recommendation
             `💾 Зберегти "${recommendations[activeRecommendation - 1].title}"`,
             `SAVE_ACTIVE_REC_${activeRecommendation - 1}`,
         )],
-        [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
+        [Markup.button.callback('🏠︎ На головну', 'GO_HOME')],
     ];
 
     const keyboard = Markup.inlineKeyboard([

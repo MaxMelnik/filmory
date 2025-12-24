@@ -5,6 +5,7 @@ import { Subscription } from './Subscription.js';
 import { Usage } from './Usage.js';
 import { AiRequestLog } from './AiRequestLog.js';
 import { DailyRecommendation } from './DailyRecommendation.js';
+import { RecommendationCard } from './RecommendationCard.js';
 
 export {
     User,
@@ -14,4 +15,5 @@ export {
     Usage,
     AiRequestLog,
     DailyRecommendation,
+    RecommendationCard,
 };

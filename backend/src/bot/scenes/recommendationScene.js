@@ -49,7 +49,7 @@ scene.on(message('text'), async (ctx) => {
             animation: 'emoji', // "dots", "emoji", "phrases"
             delay: 500,
             asyncTask: async () => await getFilmRecommendations(input),
-            onDone: (ctx, response) => parseRecommendations(ctx, `🎬 Фільми схожі на "${input}":`, response),
+            onDone: async (ctx, response) => await parseRecommendations(ctx, `🎬 Фільми схожі на "${input}":`, response),
         });
     }
     if (ctx.scene.state.recCat === 'show_mood') {
@@ -59,7 +59,7 @@ scene.on(message('text'), async (ctx) => {
             animation: 'emoji', // "dots", "emoji", "phrases"
             delay: 500,
             asyncTask: async () => await getFilmRecommendationsByMood(input),
-            onDone: (ctx, response) => parseRecommendations(ctx, `🎬 Фільми за настроєм "${input}":`, response),
+            onDone: async (ctx, response) => await parseRecommendations(ctx, `🎬 Фільми за настроєм "${input}":`, response),
         });
     }
     if (ctx.scene.state.recCat === 'show_company') {
@@ -69,7 +69,7 @@ scene.on(message('text'), async (ctx) => {
             animation: 'emoji', // "dots", "emoji", "phrases"
             delay: 500,
             asyncTask: async () => await getFilmRecommendationsByCompany(input),
-            onDone: (ctx, response) => parseRecommendations(ctx, `🎬 Фільми для перегляду ${input}:`, response),
+            onDone: async (ctx, response) => await parseRecommendations(ctx, `🎬 Фільми для перегляду ${input}:`, response),
         });
     }
     if (ctx.scene.state.recCat === 'show_coop') {
@@ -134,7 +134,7 @@ scene.on(message('text'), async (ctx) => {
                 userTwoIncludeFilms,
                 userTwoExcludeFilms,
             ),
-            onDone: (ctx, response) => parseRecommendations(ctx, '🎬 Я знайшов для вас фільми, які сподобаються обом:', response),
+            onDone: async (ctx, response) => await parseRecommendations(ctx, '🎬 Я знайшов для вас фільми, які сподобаються обом:', response),
         });
     }
 });

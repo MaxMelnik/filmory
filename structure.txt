@@ -1,5 +1,6 @@
 G:\project\Filmory
 ├── backend
+|  ├── eslint.config.mjs
 |  ├── package.json
 |  └── src
 |     ├── api
@@ -10,34 +11,59 @@ G:\project\Filmory
 |     |  ├── middlewares
 |     |  └── scenes
 |     ├── config
+|     |  ├── dailyRecommendationThemes.js
+|     |  ├── limits.js
+|     |  └── subscription.js
+|     ├── cron
+|     |  ├── cronPing.js
+|     |  ├── index.js
+|     |  └── postDailyRecommendation.js
 |     ├── index.js
 |     ├── models
+|     |  ├── AiRequestLog.js
+|     |  ├── DailyRecommendation.js
 |     |  ├── Film.js
 |     |  ├── index.js
 |     |  ├── LibraryItem.js
+|     |  ├── RecommendationCard.js
+|     |  ├── Subscription.js
+|     |  ├── Usage.js
 |     |  └── User.js
 |     ├── server
 |     |  ├── controllers
 |     |  └── routes
 |     ├── server.js
 |     ├── services
+|     |  ├── DailyRecommendationService.js
 |     |  ├── FilmService.js
 |     |  ├── integrations
 |     |  ├── LibraryService.js
+|     |  ├── RecommendationCardService.js
+|     |  ├── SubscriptionService.js
 |     |  ├── system
 |     |  └── UserService.js
 |     └── utils
 |        ├── animatedWaiter.js
 |        ├── escapeReservedCharacters.js
+|        ├── formatDate.js
+|        ├── formatRuntime.js
+|        ├── getTodayKey.js
 |        ├── keyboards
-|        └── templates
+|        ├── logger.js
+|        ├── makeMovieDeepLink.js
+|        ├── parseRecommendations.js
+|        ├── splitTelegramMessage.js
+|        ├── stripJsonFence.js
+|        ├── templates
+|        └── updateSearchFilmCardMessage.js
 ├── frontend
 ├── LICENSE.md
 ├── package-lock.json
 ├── package.json
+├── PRIVACY.md
 ├── README.md
 └── structure.txt
 
-directory: 532 file: 3160 symboliclink: 1
+directory: 558 file: 3239 symboliclink: 1
 
-ignored: directory (43)
+ignored: directory (59)

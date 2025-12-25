@@ -5,7 +5,7 @@
  */
 function escapeReservedCharacters(text) {
     if (!text) return '';
-    return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+    return text.toString().replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
 }
 
 

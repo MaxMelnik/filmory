@@ -47,8 +47,8 @@ export class LibraryService {
     static async getAllUserFilms(userId, view = 'watchLater') {
         const filter =
             view === 'watched' ?
-                { user: userId, status: 'watched' } :
-                { user: userId, status: 'watch_later' };
+                { userId: userId, status: 'watched' } :
+                { userId: userId, status: 'watch_later' };
 
         const items = await LibraryItem.find(filter).populate('filmId');
         return items.map((item) => item.filmId).filter(Boolean);

@@ -88,6 +88,9 @@ export async function handleAddFilm(ctx) {
 
 export async function handleFilmTitleInput(ctx) {
     const title = ctx.message?.text?.trim() ?? ctx.session.title;
+    if (ctx.message?.text) {
+        ctx.scene.state.filmIndex = 0;
+    }
 
     if (!ctx.session?.awaitingFilmTitle) return;
 

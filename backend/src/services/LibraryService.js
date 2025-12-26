@@ -1,5 +1,6 @@
 import { LibraryItem, User } from '../models/index.js';
 import randomNumber from '../utils/randomNumber.js';
+import logger from '../utils/logger.js';
 
 /**
  * LibraryService — управління бібліотекою користувача:
@@ -64,6 +65,11 @@ export class LibraryService {
                 { userId: userId, status: 'watched' } :
                 { userId: userId, status: 'watch_later' };
 
+        await User.updateOne(
+            { _id: userId },
+            { $inc: { randomRollsTotal: 1 } },
+            { upsert: true },
+        ).catch((error) => logger.warn('Failed to update random roll statistics', error));
         const items = await LibraryItem.find(filter).populate('filmId');
         return items[randomNumber(0, items.length - 1)].filmId;
     }

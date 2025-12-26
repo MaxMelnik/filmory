@@ -72,13 +72,25 @@ scene.action('USERS_LIST', async (ctx) => {
 
         const linkedName = `[${escapeReservedCharacters(name)}](tg://user?id=${user.telegramId})`;
 
-        const filmsCount = await LibraryItem
-            .find({ userId: user._id })
+        const filmsWatchedCount = await LibraryItem
+            .find({
+                userId: user._id,
+                status: 'watched',
+            })
+            .countDocuments();
+
+        const filmsWatchLaterCount = await LibraryItem
+            .find({
+                userId: user._id,
+                status: 'watch_later',
+            })
             .countDocuments();
 
         output += `${i}\\. 🙍🏻‍♂️ ${linkedName} ${user.username ? `@${escapeReservedCharacters(user.username)}` : ``} ${user.telegramId}\n` +
             `AI\\-requests: ${user.aiRequestsTotal} 👾\n` +
-            `Films saved: ${filmsCount} 🎬 \n` +
+            `Films watched: ${filmsWatchedCount} 👁 \n` +
+            `Films saved to watch later: ${filmsWatchLaterCount} 📺 \n` +
+            `Random rolls: ${user.randomRollsTotal} 🎲\n` +
             `Joined: ${escapeReservedCharacters(formatDate(user.firstSeenAt))} 🤝\n` +
             `Last Active: ${escapeReservedCharacters(formatDate(user.lastActiveAt))} 👀\n\n`;
         i++;

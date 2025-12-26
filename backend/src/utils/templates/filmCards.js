@@ -24,7 +24,7 @@ export async function createDailyRecommendation({
 
 ${escapeReservedCharacters(description)}
 
-[💡 Збережи "${escapeReservedCharacters(title)}" в Filmory!](${makeMovieDeepLink(filmId)})
+[💡 Збережи "${escapeReservedCharacters(title)}" в Filmory\\!](${makeMovieDeepLink(filmId)})
 
 Хочеш персональну підбірку – пиши в *Filmory* 👇
 @${escapeReservedCharacters(process.env.BOT_USERNAME) || ''}

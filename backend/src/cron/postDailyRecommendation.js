@@ -11,7 +11,7 @@ import logger from '../utils/logger.js';
 export default async () => {
     const excludeFilms = await DailyRecommendationService.getAllRecommendedFilms();
     const dailyRecommendation = (await getDailyRecommendation(excludeFilms.toString()))[0];
-    logger.info(`Daily recommendation found: ${dailyRecommendation}`);
+    logger.info(dailyRecommendation);
     const film = await searchFilm(dailyRecommendation.original_title ?? dailyRecommendation.title);
     const details = await getMovieDetails(film.tmdbId);
 

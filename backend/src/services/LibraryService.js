@@ -1,4 +1,5 @@
 import { LibraryItem, User } from '../models/index.js';
+import randomNumber from '../utils/randomNumber.js';
 
 /**
  * LibraryService — управління бібліотекою користувача:
@@ -44,7 +45,7 @@ export class LibraryService {
     /**
      * Отримати всі фільми користувача (без пагінації)
      */
-    static async getAllUserFilms(userId, view = 'watchLater') {
+    static async getAllUserFilms(userId, view = 'watch_later') {
         const filter =
             view === 'watched' ?
                 { userId: userId, status: 'watched' } :
@@ -52,6 +53,19 @@ export class LibraryService {
 
         const items = await LibraryItem.find(filter).populate('filmId');
         return items.map((item) => item.filmId).filter(Boolean);
+    }
+
+    /**
+     * Отримати випадковий фільм користувача
+     */
+    static async getRandomUserFilms(userId, view = 'watch_later') {
+        const filter =
+            view === 'watched' ?
+                { userId: userId, status: 'watched' } :
+                { userId: userId, status: 'watch_later' };
+
+        const items = await LibraryItem.find(filter).populate('filmId');
+        return items[randomNumber(0, items.length - 1)].filmId;
     }
 
     /**

@@ -24,7 +24,7 @@ scene.enter(async (ctx) => {
     await showLibraryPage(ctx);
 });
 
-scene.action(/^OPEN_FILM_(\d+)$/, (ctx) => openLibraryFilmCard(ctx));
+scene.action(/^OPEN_FILM_(\w+)$/, (ctx) => openLibraryFilmCard(ctx));
 
 scene.action(/^RECOMMEND_(\d+)$/, async (ctx) => recommendSimilar(ctx));
 

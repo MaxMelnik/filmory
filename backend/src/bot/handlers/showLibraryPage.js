@@ -47,7 +47,6 @@ async function showLibraryPage(ctx) {
         return;
     }
 
-    // --- Формуємо список як інлайн-клавіатуру ---
     const filmButtons = await Promise.all(
         films.map(async (f) => {
             const starred = await LibraryService.isStarred(user._id, f._id) ? '⭐️ ' : '';
@@ -58,6 +57,20 @@ async function showLibraryPage(ctx) {
             )];
         }));
 
+    const rndButtons = [
+        Markup.button.callback(
+            '🎲 Мені пощастить',
+            'OPEN_FILM_RND',
+        ),
+    ];
+
+    const fakeButtons = [
+        Markup.button.callback(
+            ' ',
+            'FAKE_BUTTON',
+        ),
+    ];
+
     const navButtons = (totalPages > 1) ? [
         Markup.button.callback('⬅', 'PREV_PAGE'),
         Markup.button.callback(`📄 ${page}/${totalPages}`, 'FAKE_BUTTON'),
@@ -67,6 +80,8 @@ async function showLibraryPage(ctx) {
     const keyboard = Markup.inlineKeyboard([
         switchButtons,
         ...filmButtons,
+        fakeButtons,
+        rndButtons,
         homeButtons,
         navButtons,
     ]);
@@ -76,7 +91,8 @@ async function showLibraryPage(ctx) {
             '📺 *Подивитись пізніше:*' :
             '👁 *Переглянуті фільми:*';
 
-    const text = `${header}\n\n📄 Сторінка ${page} з ${totalPages} · ${totalCount} фільмів`;
+    const text = `${header}\n\nНатисни *«🎲 Мені пощастить»*, щоб Filmory обрав випадковий фільм із твого списку *«На потім»*.` +
+        `\n\n📄 Сторінка ${page} з ${totalPages} · ${totalCount} фільмів`;
 
     await ctx
         .editMessageText?.(text, { parse_mode: 'Markdown', ...keyboard })

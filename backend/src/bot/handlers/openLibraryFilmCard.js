@@ -6,8 +6,10 @@ import { UserService } from '../../services/UserService.js';
 export async function openLibraryFilmCard(ctx) {
     await ctx.answerCbQuery();
     const user = await UserService.getByTelegramId(ctx.from.id);
-    const filmId = parseInt(ctx.match[1]);
-    const film = await Film.findById(filmId);
+    let filmId = parseInt(ctx.match[1]);
+
+    const film = filmId ? await Film.findById(filmId) : await LibraryService.getRandomUserFilms(user._id, 'watch_later');
+    filmId = film._id;
 
     if (!film) {
         await ctx.reply('❌ Не вдалося знайти фільм.');

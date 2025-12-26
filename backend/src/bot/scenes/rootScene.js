@@ -29,7 +29,9 @@ scene.enter(async (ctx) => {
 
 scene.action('GENERAL_STATS', async (ctx) => {
     const totalUsersCount = await User.countDocuments();
-    const totalReq = await AiRequestLog.countDocuments();
+    const totalReq = await AiRequestLog.countDocuments({
+        plan: { $ne: 'ROOT' },
+    });
 
     const [mau, req30, freeReq30, plusReq30, promoReq30, rootReq30] = await Promise.all([
         AnalyticsService.getMau(30),
@@ -43,14 +45,17 @@ scene.action('GENERAL_STATS', async (ctx) => {
     ctx.answerCbQuery();
     await ctx.reply(
         `Всього користувачів: ${totalUsersCount}\n` +
-        `Всього AI-запитів: ${totalReq}\n\n` +
+        `Всього AI-запитів: ${totalReq}\n` +
+        `\n` +
         `Статистика за 30 днів:\n` +
         `• MAU: ${mau}\n` +
-        `• AI-запитів: ${req30}\n` +
+        `• AI-запитів: ${req30 - rootReq30}\n` +
         `   – від Free: ${freeReq30}\n` +
         `   – від Plus: ${plusReq30}\n` +
         `   – від Promo: ${promoReq30}\n` +
-        `   – від Root: ${rootReq30}`,
+        `\n` +
+        `• Root:\n` +
+        `   – AI-запитів за 30 днів: ${rootReq30}\n`,
         Markup.inlineKeyboard([
             [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
         ]),

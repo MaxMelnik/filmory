@@ -16,7 +16,7 @@ export default function() {
     });
 
     if (process.env.ENVIRONMENT === 'PROD') {
-        const postDailyRecommendationCronRule  = (process.env.ENVIRONMENT === 'DEV') ? '* * * * *' : '30 17 * * *';
+        const postDailyRecommendationCronRule  = (process.env.ENVIRONMENT === 'DEV') ? '* * * * *' : '35 17 * * *';
         logger.info(`postDailyRecommendationCronRule: ${postDailyRecommendationCronRule}`);
         cron.schedule(postDailyRecommendationCronRule, async () => {
             await postDailyRecommendation(bot);

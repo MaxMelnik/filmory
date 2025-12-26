@@ -91,13 +91,13 @@ scene.action('USERS_LIST', async (ctx) => {
             })
             .countDocuments();
 
-        output += `${i}\\. 🙍🏻‍♂️ ${linkedName} ${user.username ? `@${escapeReservedCharacters(user.username)}` : ``} ${user.telegramId}\n` +
-            `AI\\-requests: ${user.aiRequestsTotal} 👾\n` +
-            `Films watched: ${filmsWatchedCount} 👁 \n` +
-            `Films saved to watch later: ${filmsWatchLaterCount} 📺 \n` +
-            `Random rolls: ${user.randomRollsTotal} 🎲\n` +
-            `Joined: ${escapeReservedCharacters(formatDate(user.firstSeenAt))} 🤝\n` +
-            `Last Active: ${escapeReservedCharacters(formatDate(user.lastActiveAt))} 👀\n\n`;
+        output += `${i}\\. *🙍🏻‍♂️ ${linkedName} ${user.username ? `@${escapeReservedCharacters(user.username)}` : ``} ${user.telegramId}*\n` +
+            `_AI\\-requests_: ${user.aiRequestsTotal ?? 0} 👾\n` +
+            `_Films watched_: ${filmsWatchedCount} 👁 \n` +
+            `_Films saved to watch later_: ${filmsWatchLaterCount} 📺 \n` +
+            `_Random rolls_: ${user.randomRollsTotal ?? 0} 🎲\n` +
+            `_Joined_: ${escapeReservedCharacters(formatDate(user.firstSeenAt))} 🤝\n` +
+            `_Last Active_: ${escapeReservedCharacters(formatDate(user.lastActiveAt))} 👀\n\n`;
         i++;
     }
     const messages = splitTelegramMessage(output);

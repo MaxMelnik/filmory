@@ -57,19 +57,19 @@ async function showLibraryPage(ctx) {
             )];
         }));
 
-    const rndButtons = [
+    const rndButtons = (films.length > 1) ? [
         Markup.button.callback(
             '🎲 Мені пощастить',
             'OPEN_FILM_RND',
         ),
-    ];
+    ] : [];
 
-    const fakeButtons = [
+    const fakeButtons = (films.length > 1) ? [
         Markup.button.callback(
             ' ',
             'FAKE_BUTTON',
         ),
-    ];
+    ] : [];
 
     const navButtons = (totalPages > 1) ? [
         Markup.button.callback('⬅', 'PREV_PAGE'),

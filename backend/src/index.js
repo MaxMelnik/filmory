@@ -9,37 +9,37 @@ dotenv.config();
 
 (async () => {
     try {
-        // 1️⃣ Запускаємо веб-сервер
+        // Starting web-server
         await startServer();
 
-        // 2️⃣ Перевіряємо Mongo перед запуском бота
+        // Check mongo
         if (mongoose.connection.readyState !== 1) {
             throw new Error('MongoDB не підключено, бот не може стартувати');
         }
 
         cron();
 
-        // 3️⃣ Запускаємо бота
+        // Launch bot
         const info = await bot.telegram.getMe();
         logger.info(`🤖 Filmory бот запущений як @${info.username}`);
         await bot.launch();
 
-        // 4️⃣ Graceful shutdown
+        // Graceful shutdown
         process.once('SIGINT', async () => {
-            logger.info('🛑 Зупиняю Filmory...');
+            logger.info('🛑 Stopping Filmory...');
             await bot.stop('SIGINT');
             await mongoose.connection.close();
             process.exit(0);
         });
 
         process.once('SIGTERM', async () => {
-            logger.info('🛑 Зупиняю Filmory...');
+            logger.info('🛑 Terminating Filmory...');
             await bot.stop('SIGTERM');
             await mongoose.connection.close();
             process.exit(0);
         });
     } catch (err) {
-        logger.error('❌ Помилка запуску Filmory:', err);
+        logger.error('❌ Failed to launch Filmory:', err);
         process.exit(1);
     }
 })();

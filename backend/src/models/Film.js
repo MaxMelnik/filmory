@@ -45,6 +45,9 @@ const filmSchema = new mongoose.Schema(
         tmdbRate: {
             type: Number,
         },
+        mediaType: {
+            type: String,
+        }
     },
     { timestamps: true, _id: false },
 );

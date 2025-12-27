@@ -1,4 +1,4 @@
-import { getMovieDetails, searchAllByMediaType } from '../../services/integrations/tmdbClient.js';
+import { getMovieDetails, getTvDetails, searchAllByMediaType } from '../../services/integrations/tmdbClient.js';
 import { Markup } from 'telegraf';
 import { FilmService } from '../../services/FilmService.js';
 import { UserService } from '../../services/UserService.js';
@@ -96,7 +96,6 @@ export async function handleFilmTitleInput(ctx) {
 
     ctx.session.title = title;
     logger.info(`Search Film by title @${ctx.from.username}: ${title}`);
-
     const films = await searchAllByMediaType(title);
     ctx.scene.state.films = films ?? [];
     ctx.scene.state.filmIndex ??= 0;
@@ -109,7 +108,9 @@ export async function handleFilmTitleInput(ctx) {
     }
     const found = films[ctx.scene.state.filmIndex];
 
-    const details = await getMovieDetails(found.tmdbId);
+    const details = (found.mediaType === 'movie') ?
+        await getMovieDetails(found.tmdbId) :
+        await getTvDetails(found.tmdbId);
 
     const film = await FilmService.upsertFromTmdb({
         tmdbId: found.tmdbId,

@@ -5,7 +5,7 @@ import { UserService } from '../../services/UserService.js';
 import logger from '../../utils/logger.js';
 import { pingGeminiAPI } from '../handlers/pingGeminiAPI.js';
 import { handleCommandsOnText } from '../handlers/handleCommandsOnText.js';
-import { getMovieDetails, searchFilm } from '../../services/integrations/tmdbClient.js';
+import { getMovieDetails, getTvDetails, searchFilm } from '../../services/integrations/tmdbClient.js';
 import { AiRequestLog, LibraryItem, User } from '../../models/index.js';
 import escapeReservedCharacters from '../../utils/escapeReservedCharacters.js';
 import formatDate from '../../utils/formatDate.js';
@@ -129,7 +129,9 @@ scene.on(message('text'), async (ctx) => {
     }
 
     const movie = await searchFilm(input);
-    const details = await getMovieDetails(movie.tmdbId);
+    const details = (movie.mediaType === 'movie') ?
+        await getMovieDetails(movie.tmdbId) :
+        await getTvDetails(movie.tmdbId);
 
     ctx.reply(details);
 });

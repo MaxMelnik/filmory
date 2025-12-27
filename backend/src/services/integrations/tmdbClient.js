@@ -37,6 +37,7 @@ export async function searchFilm(title) {
             year: first.release_date ? first.release_date.slice(0, 4) : null,
             tmdbRate: first.vote_average,
             overview: first.overview,
+            mediaType: first.media_type,
             posterUrl: first.poster_path ?
                 `https://image.tmdb.org/t/p/w500${first.poster_path}` :
                 null,

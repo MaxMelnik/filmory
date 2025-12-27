@@ -1,7 +1,7 @@
 import { Markup } from 'telegraf';
 import { FilmService } from '../../services/FilmService.js';
 import updateSearchFilmCardMessage from '../../utils/updateSearchFilmCardMessage.js';
-import { getMovieDetails } from '../../services/integrations/tmdbClient.js';
+import { getMovieDetails, getTvDetails } from '../../services/integrations/tmdbClient.js';
 import { UserService } from '../../services/UserService.js';
 import { LibraryService } from '../../services/LibraryService.js';
 
@@ -19,7 +19,9 @@ export async function openSearchFilmCard(ctx) {
         return ctx.reply('Не знайшов такого фільму на TMDB 😢', keyboard);
     }
 
-    const details = await getMovieDetails(found.tmdbId);
+    const details = (found.mediaType === 'movie') ?
+        await getMovieDetails(found.tmdbId) :
+        await getTvDetails(found.tmdbId);
 
     const film = await FilmService.upsertFromTmdb({
         tmdbId: found.tmdbId,

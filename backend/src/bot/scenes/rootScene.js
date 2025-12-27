@@ -44,6 +44,8 @@ scene.action('GENERAL_STATS', async (ctx) => {
 
     ctx.answerCbQuery();
     await ctx.reply(
+        `Filmory💡 v${process.env.npm_package_version}\n` +
+        `\n` +
         `Всього користувачів: ${totalUsersCount}\n` +
         `Всього AI-запитів: ${totalReq}\n` +
         `\n` +

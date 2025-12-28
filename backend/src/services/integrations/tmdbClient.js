@@ -51,9 +51,10 @@ export async function searchFilm(title) {
 /**
  * Search one film with poster on TMDB by title
  * @param {string} title
+ * @param {string} year
  * @returns {Promise<Object|null>}
  */
-export async function searchFilmWithPoster(title) {
+export async function searchFilmWithPoster(title, year) {
     try {
         const response = await axios.get(`${TMDB_BASE_URL}/search/movie`, {
             params: {
@@ -61,12 +62,13 @@ export async function searchFilmWithPoster(title) {
                 query: title,
                 include_adult: false,
                 language: 'uk-UA',
+                ...(year ? { year: Number(year) } : {}),
             },
         });
 
-        while (!response.data.results[0].poster_path) response.data.results.shift();
+        const results = (response.data?.results ?? []).filter(r => r?.poster_path);
 
-        const [first] = response.data.results;
+        const first = results[0];
         if (!first) return null;
 
         console.log(first);
@@ -84,7 +86,7 @@ export async function searchFilmWithPoster(title) {
                 null,
         };
     } catch (error) {
-        logger.error('❌ Помилка TMDB search:', error.message);
+        logger.error('❌ Помилка TMDB search film with poster:', error.message);
         return null;
     }
 }

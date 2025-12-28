@@ -513,7 +513,8 @@ export async function getDailyRecommendation(excludeFilms) {
     const theme = DAYS[getTodayKey()].description;
     const system = 'Ти — розумний кінокритик, який радить фільми користувачам Filmory. Тон спілкування - дружній, теплий, але експертний';
     const prompt = `
-Порадь фільм дня за наступною темою: ${theme}
+Порадь фільм дня за наступною темою: ${theme}.
+Не вигадуй неіснуючих фільмів. Переконайся, що цей фільм є на TMDB.
 ${excludeFilms ? `Не включай фільми з переліку: [${excludeFilms}], бо ти вже радив їх раніше.` : ''}
 
 Формат відповіді:

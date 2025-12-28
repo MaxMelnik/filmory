@@ -2,7 +2,7 @@ import { postMovieToChannel } from '../services/integrations/telegramMessagesSer
 import { createDailyRecommendation } from '../utils/templates/filmCards.js';
 import getTodayKey from '../utils/getTodayKey.js';
 import { getDailyRecommendation } from '../services/integrations/geminiService.js';
-import { getMovieDetails, getTvDetails, searchFilm } from '../services/integrations/tmdbClient.js';
+import { getMovieDetails, getTvDetails, searchFilmWithPoster } from '../services/integrations/tmdbClient.js';
 import formatRuntime from '../utils/formatRuntime.js';
 import { FilmService } from '../services/FilmService.js';
 import DailyRecommendationService from '../services/DailyRecommendationService.js';
@@ -12,7 +12,7 @@ export default async () => {
     const excludeFilms = await DailyRecommendationService.getAllRecommendedFilms();
     const dailyRecommendation = (await getDailyRecommendation(excludeFilms.toString()))[0];
     logger.info(dailyRecommendation);
-    const film = await searchFilm(dailyRecommendation.original_title ?? dailyRecommendation.title);
+    const film = await searchFilmWithPoster(dailyRecommendation.original_title ?? dailyRecommendation.title);
     const details = (film.mediaType === 'movie') ?
         await getMovieDetails(film.tmdbId) :
         await getTvDetails(film.tmdbId);

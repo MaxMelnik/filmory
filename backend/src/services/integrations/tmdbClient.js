@@ -49,6 +49,45 @@ export async function searchFilm(title) {
 }
 
 /**
+ * Search one film with poster on TMDB by title
+ * @param {string} title
+ * @returns {Promise<Object|null>}
+ */
+export async function searchFilmWithPoster(title) {
+    try {
+        const response = await axios.get(`${TMDB_BASE_URL}/search/movie`, {
+            params: {
+                api_key: TMDB_API_KEY,
+                query: title,
+                include_adult: false,
+                language: 'uk-UA',
+            },
+        });
+
+        while (!response.data.results[0].poster_path) response.data.results.shift();
+
+        const [first] = response.data.results;
+        if (!first) return null;
+
+        return {
+            tmdbId: first.id,
+            title: first.title || first.original_title,
+            original_title: first.original_title,
+            year: first.release_date ? first.release_date.slice(0, 4) : null,
+            tmdbRate: first.vote_average,
+            overview: first.overview,
+            mediaType: first.media_type,
+            posterUrl: first.poster_path ?
+                `https://image.tmdb.org/t/p/w500${first.poster_path}` :
+                null,
+        };
+    } catch (error) {
+        logger.error('❌ Помилка TMDB search:', error.message);
+        return null;
+    }
+}
+
+/**
  * Search all films on TMDB by title
  * @param {string} title
  * @param {string[]} allowedTypes = ['movie', 'tv']
@@ -120,7 +159,7 @@ export async function getMovieDetails(id) {
                 null,
         };
     } catch (error) {
-        logger.error('❌ Помилка TMDB details:', error.message);
+        logger.error(`❌ Failed to get TMDB movie details for ${id}:`, error.message);
         return null;
     }
 }

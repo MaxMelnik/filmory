@@ -37,7 +37,7 @@ export async function searchFilm(title) {
             year: first.release_date ? first.release_date.slice(0, 4) : null,
             tmdbRate: first.vote_average,
             overview: first.overview,
-            mediaType: first.media_type,
+            mediaType: first.media_type ?? first.type ?? 'movie',
             posterUrl: first.poster_path ?
                 `https://image.tmdb.org/t/p/w500${first.poster_path}` :
                 null,
@@ -69,6 +69,8 @@ export async function searchFilmWithPoster(title) {
         const [first] = response.data.results;
         if (!first) return null;
 
+        console.log(first);
+
         return {
             tmdbId: first.id,
             title: first.title || first.original_title,
@@ -76,7 +78,7 @@ export async function searchFilmWithPoster(title) {
             year: first.release_date ? first.release_date.slice(0, 4) : null,
             tmdbRate: first.vote_average,
             overview: first.overview,
-            mediaType: first.media_type,
+            mediaType: first.media_type ?? first.type ?? 'movie',
             posterUrl: first.poster_path ?
                 `https://image.tmdb.org/t/p/w500${first.poster_path}` :
                 null,
@@ -106,7 +108,7 @@ export async function searchAllByMediaType(title, allowedTypes = ['movie', 'tv']
         });
 
         const results = response.data.results.filter((item) =>
-            item && allowedTypes.includes(item.media_type),
+            item && allowedTypes.includes(item.media_type ?? item.type),
         );
 
         if (results?.length === 0) return null;
@@ -117,7 +119,7 @@ export async function searchAllByMediaType(title, allowedTypes = ['movie', 'tv']
             original_title: film.original_title || '',
             year: (film.release_date ? film.release_date.slice(0, 4) : null) || (film.first_air_date ? film.first_air_date.slice(0, 4) : null),
             overview: film.overview,
-            mediaType: film.media_type,
+            mediaType: film.media_type ?? film.type ?? 'movie',
             tmdbRate: film.vote_average,
             posterUrl: film.poster_path ?
                 `https://image.tmdb.org/t/p/w500${film.poster_path}` :
@@ -194,7 +196,7 @@ export async function getTvDetails(id) {
                 null,
         };
     } catch (error) {
-        logger.error('❌ Помилка TMDB details:', error.message);
+        logger.error(`❌ Failed to get TMDB tv details for ${id}:`, error.message);
         return null;
     }
 }

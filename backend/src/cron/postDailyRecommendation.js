@@ -13,9 +13,9 @@ export default async () => {
     const dailyRecommendation = (await getDailyRecommendation(excludeFilms.toString()))[0];
     logger.info(dailyRecommendation);
     const film = await searchFilmWithPoster(dailyRecommendation.original_title ?? dailyRecommendation.title);
-    const details = (film.mediaType === 'movie') ?
-        await getMovieDetails(film.tmdbId) :
-        await getTvDetails(film.tmdbId);
+    const details = (film.mediaType === 'tv') ?
+        await getTvDetails(film.tmdbId) :
+        await getMovieDetails(film.tmdbId);
 
     const savedFilm = await FilmService.upsertFromTmdb({
         tmdbId: film.tmdbId,

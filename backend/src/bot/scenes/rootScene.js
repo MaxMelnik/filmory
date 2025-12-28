@@ -10,6 +10,8 @@ import { AiRequestLog, LibraryItem, User } from '../../models/index.js';
 import escapeReservedCharacters from '../../utils/escapeReservedCharacters.js';
 import formatDate from '../../utils/formatDate.js';
 import splitTelegramMessage from '../../utils/splitTelegramMessage.js';
+import postDailyRecommendation from '../../cron/postDailyRecommendation.js';
+import getBotInstance from '../getBotInstance.js';
 
 const scene = new Scenes.BaseScene('ROOT_SCENE_ID');
 
@@ -19,6 +21,7 @@ scene.enter(async (ctx) => {
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('📊 General Statistics', 'GENERAL_STATS')],
         [Markup.button.callback('👥 Users', 'USERS_LIST')],
+        [Markup.button.callback('🚀 Post Daily Rec', 'MANUAL_POST_DAILY_REC')],
         [Markup.button.callback('🏓️ PING GEMINI AI', 'PING_GEMINI_API')],
         [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
     ]);
@@ -109,9 +112,10 @@ scene.action('USERS_LIST', async (ctx) => {
     return await ctx.answerCbQuery();
 });
 
-scene.action('USER_INFO', async (ctx) => {
-    ctx.scene.state.awaitingTelegramId = true;
-    ctx.reply('> Введіть telegramId');
+const bot = getBotInstance();
+
+scene.action('MANUAL_POST_DAILY_REC', async (ctx) => {
+    await postDailyRecommendation(bot);
 });
 
 scene.action('PING_GEMINI_API', async (ctx) => {

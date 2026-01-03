@@ -13,7 +13,7 @@ export async function handleCommandsOnText(ctx, input) {
         return true;
     }
 
-    if (input === '/root') {
+    if (input === '/root' && await UserService.isRoot(ctx.from.id)) {
         await ctx.scene.enter('ROOT_SCENE_ID');
         return true;
     }

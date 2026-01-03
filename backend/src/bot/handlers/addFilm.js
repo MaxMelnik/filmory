@@ -65,6 +65,7 @@ export async function handleAddFilm(ctx) {
 `;
 
     const keyboard = [
+        [{ text: `✍ Знайти за назвою`, callback_data: 'SEARCH_NEW_BY_TITLE_EDIT' }],
         [{ text: `🤔 Не пам'ятаю назву ${isPlusSymbol}`, callback_data: isPlus ? 'SEARCH_NEW_BY_DESCRIPTION' : 'PLUS_REC_CAT' }],
         [{ text: `🏠︎ На головну`, callback_data: 'GO_HOME_AND_DELETE_MESSAGE' }],
     ];
@@ -174,6 +175,19 @@ export async function searchNewFilmByUserDescription(ctx) {
         .editMessageText?.(text, { parse_mode: 'MarkdownV2', ...Markup.inlineKeyboard(keyboard) })
         .catch(async () => {
             await ctx.reply(text, { parse_mode: 'MarkdownV2', ...Markup.inlineKeyboard(keyboard) });
+        });
+    await ctx.answerCbQuery();
+}
+
+export async function searchNewFilmByTitleMessageUpdate(ctx) {
+    const keyboard = [
+        [{ text: '⬅ Назад', callback_data: 'GO_SEARCH_FILM_AND_DELETE_MESSAGE' }],
+    ];
+    const text = `✍ Напиши назву фільму, який хочеш додати\\.`;
+    await ctx
+        .editMessageText?.(text, { parse_mode: 'MarkdownV2', ...Markup.inlineKeyboard(keyboard) })
+        .catch((err) => {
+            logger.warn(`searchNewFilmByTitleMessageUpdate message wasn't updated: ${err.message}`);
         });
     await ctx.answerCbQuery();
 }

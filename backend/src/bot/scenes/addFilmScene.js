@@ -1,6 +1,12 @@
 import { Scenes } from 'telegraf';
 import { message } from 'telegraf/filters';
-import { handleAddFilm, handleFilmDescriptionInput, handleFilmTitleInput, searchNewFilmByUserDescription } from '../handlers/addFilm.js';
+import {
+    handleAddFilm,
+    handleFilmDescriptionInput,
+    handleFilmTitleInput,
+    searchNewFilmByTitleMessageUpdate,
+    searchNewFilmByUserDescription,
+} from '../handlers/addFilm.js';
 import { handleCommandsOnText } from '../handlers/handleCommandsOnText.js';
 import filmCardControls from '../handlers/filmCardControls.js';
 
@@ -19,6 +25,8 @@ scene.on(message('text'), async (ctx) => {
 });
 
 scene.action('SEARCH_NEW_BY_DESCRIPTION', async (ctx) => await searchNewFilmByUserDescription(ctx));
+
+scene.action('SEARCH_NEW_BY_TITLE_EDIT', async (ctx) => await searchNewFilmByTitleMessageUpdate(ctx));
 
 filmCardControls(scene);
 

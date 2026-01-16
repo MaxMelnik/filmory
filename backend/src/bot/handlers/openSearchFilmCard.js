@@ -55,7 +55,7 @@ export async function openSearchFilmCard(ctx) {
     const user = await UserService.getByTelegramId(ctx.from.id);
     const rating = await LibraryService.getRating(user._id, film._id);
     const userRating = rating ? `Твоя оцінка: ⭐ ${rating}/10\n\n` : ``;
-    const tmdbRating = film.tmdbRate ? ` Оцінка TMDB: 💙 ${film.tmdbRate}/10\n\n` : ``;
+    const tmdbRating = film.tmdbRate ? `Оцінка TMDB: 💙 ${film.tmdbRate}/10\n\n` : ``;
 
     const caption = `<b>${film.title}</b>${film.originalTitle ? ` / <i>${film.originalTitle}</i> ` : ''} (${film.year || '?'})\n\n` +
         userRating + tmdbRating +

@@ -18,7 +18,7 @@ export async function openLibraryFilmCard(ctx) {
 
     const rating = await LibraryService.getRating(user._id, filmId);
     const userRating = rating ? `Твоя оцінка: ⭐ ${rating}/10\n\n` : ``;
-    const tmdbRating = film.tmdbRate ? ` Оцінка TMDB: 💙 ${film.tmdbRate}/10\n\n` : ``;
+    const tmdbRating = film.tmdbRate ? `Оцінка TMDB: 💙 ${film.tmdbRate}/10\n\n` : ``;
 
     const caption =
         `🎬 *${film.title}* ${film.originalTitle ? ` / _${film.originalTitle}_ ` : ''}${film.year ? ` (${film.year})` : ''}\n\n` +

@@ -33,7 +33,7 @@ export async function handleAddFilm(ctx) {
 
         const rating = await LibraryService.getRating(user._id, film._id);
         const userRating = rating ? `Твоя оцінка: ⭐ ${rating}/10\n\n` : ``;
-        const tmdbRating = film.tmdbRate ? ` Оцінка TMDB: 💙 ${film.tmdbRate}/10\n\n` : ``;
+        const tmdbRating = film.tmdbRate ? `Оцінка TMDB: 💙 ${film.tmdbRate}/10\n\n` : ``;
 
         const caption = `<b>${film.title}</b>${film.originalTitle ? ` / <i>${film.originalTitle}</i> ` : ''} (${film.year || '?'})\n\n` +
             userRating + tmdbRating +
@@ -60,8 +60,7 @@ export async function handleAddFilm(ctx) {
 
     const text = `✍ Напиши назву фільму, який хочеш додати\\.
 
-Якщо маєш *⭐ Filmory Plus*, то можеш натиснути
-"🤔 Не пам'ятаю назву" і я знайду фільм за твоїми спогадами\\.
+Якщо маєш *⭐ Filmory Plus*, то можеш натиснути "🤔 Не пам'ятаю назву" і я знайду фільм за твоїми спогадами\\.
 `;
 
     const keyboard = [
@@ -145,7 +144,7 @@ export async function handleFilmTitleInput(ctx) {
     const user = await UserService.getByTelegramId(ctx.from.id);
     const rating = await LibraryService.getRating(user._id, film._id);
     const userRating = rating ? `Твоя оцінка: ⭐ ${rating}/10\n\n` : ``;
-    const tmdbRating = film.tmdbRate ? ` Оцінка TMDB: 💙 ${film.tmdbRate}/10\n\n` : ``;
+    const tmdbRating = film.tmdbRate ? `Оцінка TMDB: 💙 ${film.tmdbRate}/10\n\n` : ``;
 
     const caption = `<b>${film.title}</b>${film.originalTitle ? ` / <i>${film.originalTitle}</i> ` : ''} (${film.year || '?'})\n\n` +
         userRating + tmdbRating +

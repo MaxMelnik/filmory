@@ -1,6 +1,7 @@
 import { Markup } from 'telegraf';
 import { LibraryService } from '../../services/LibraryService.js';
 import { UserService as UsersService } from '../../services/UserService.js';
+import { getWatchedMessage, getWatchlistMessage } from '../../utils/templates/libraryMessages.js';
 
 async function showLibraryPage(ctx) {
     const { view = 'watchLater', page = 1 } = ctx.session;
@@ -91,13 +92,18 @@ async function showLibraryPage(ctx) {
             '📺 *Подивитись пізніше:*' :
             '👁 *Переглянуті фільми:*';
 
-    const text = `${header}\n\nНатисни *«🎲 Мені пощастить»*, щоб Filmory обрав випадковий фільм із твого списку *«На потім»*.` +
+    const statsMessage =
+        view === 'watchLater' ?
+            `${getWatchlistMessage(null, totalCount)}\n\n` :
+            `${getWatchedMessage(null, totalCount)}\n\n`;
+
+    const text = `${header}\n\n${statsMessage}Натисни *«🎲 Мені пощастить»*, щоб Filmory обрав випадковий фільм із твого списку *«На потім»*\\.` +
         `\n\n📄 Сторінка ${page} з ${totalPages} · ${totalCount} фільмів`;
 
     await ctx
-        .editMessageText?.(text, { parse_mode: 'Markdown', ...keyboard })
+        .editMessageText?.(text, { parse_mode: 'MarkdownV2', ...keyboard })
         .catch(async () => {
-            await ctx.reply(text, { parse_mode: 'Markdown', ...keyboard });
+            await ctx.reply(text, { parse_mode: 'MarkdownV2', ...keyboard });
         });
 }
 

@@ -21,7 +21,7 @@ export async function recommendSimilar(ctx) {
     ctx.session.promptType = `similar`;
     ctx.session.promptData = movieName;
     logger.info(`RECOMMEND_SIMILAR: ${movieName}`);
-    await showWaiter(ctx, {
+    void showWaiter(ctx, {
         message: `Шукаю фільми схожі на "${movieName}"`,
         animation: 'emoji', // "dots", "emoji", "phrases"
         delay: 500,

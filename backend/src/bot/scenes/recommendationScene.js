@@ -47,33 +47,36 @@ scene.on(message('text'), async (ctx) => {
 
     if (ctx.scene.state.recCat === 'show_similar') {
         logger.info(`show_similar: ${input}`);
-        return await showWaiter(ctx, {
+        void showWaiter(ctx, {
             message: `Шукаю фільми схожі на "${input}"`,
             animation: 'emoji', // "dots", "emoji", "phrases"
             delay: 500,
             asyncTask: async () => await getFilmRecommendations(input),
             onDone: async (ctx, response) => await parseRecommendations(ctx, `🎬 Фільми схожі на "${input}":`, response),
         });
+        return;
     }
     if (ctx.scene.state.recCat === 'show_mood') {
         logger.info(`show_mood: ${input}`);
-        return await showWaiter(ctx, {
+        void showWaiter(ctx, {
             message: `Шукаю фільми за настроєм "${input}"`,
             animation: 'emoji', // "dots", "emoji", "phrases"
             delay: 500,
             asyncTask: async () => await getFilmRecommendationsByMood(input),
             onDone: async (ctx, response) => await parseRecommendations(ctx, `🎬 Фільми за настроєм "${input}":`, response),
         });
+        return;
     }
     if (ctx.scene.state.recCat === 'show_company') {
         logger.info(`show_company: ${input}`);
-        return await showWaiter(ctx, {
+        void showWaiter(ctx, {
             message: `Шукаю фільми для перегляду ${input}`,
             animation: 'emoji', // "dots", "emoji", "phrases"
             delay: 500,
             asyncTask: async () => await getFilmRecommendationsByCompany(input),
             onDone: async (ctx, response) => await parseRecommendations(ctx, `🎬 Фільми для перегляду ${input}:`, response),
         });
+        return;
     }
     if (ctx.scene.state.recCat === 'show_coop') {
         logger.info(`show_coop: ${input}`);
@@ -128,7 +131,7 @@ scene.on(message('text'), async (ctx) => {
         logger.info(userTwoIncludeFilms);
         logger.info(userTwoExcludeFilms);
 
-        return await showWaiter(ctx, {
+        void showWaiter(ctx, {
             message: `Шукаю фільми для перегляду разом з @${userTwo.username}`,
             animation: 'emoji', // "dots", "emoji", "phrases"
             delay: 500,

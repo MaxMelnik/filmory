@@ -5,7 +5,7 @@ import logger from '../../utils/logger.js';
 export async function pingGeminiAPI(ctx) {
     logger.info(`[PING GEMINI] @${ctx.from.username || ctx.from.id}`);
 
-    await showWaiter(ctx, {
+    void showWaiter(ctx, {
         message: `Шукаю фільми на основі твоїх вподобань`,
         animation: 'emoji', // "dots", "emoji", "phrases"
         delay: 500,

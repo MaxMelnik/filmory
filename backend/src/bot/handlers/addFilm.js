@@ -203,7 +203,7 @@ export async function handleFilmDescriptionInput(ctx) {
     ];
     if (!await isRequestAllowed(ctx, goBackKeyboard, getPlusKeyboard)) return;
 
-    return await showWaiter(ctx, {
+    void showWaiter(ctx, {
         message: `Шукаю фільми за описом "${description}"`,
         animation: 'emoji', // "dots", "emoji", "phrases"
         delay: 500,

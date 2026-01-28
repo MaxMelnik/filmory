@@ -59,7 +59,7 @@ export async function showPersonalRecommendations(ctx) {
 
     ctx.answerCbQuery();
 
-    await showWaiter(ctx, {
+    void showWaiter(ctx, {
         message: `Шукаю фільми на основі твоїх вподобань`,
         animation: 'emoji', // "dots", "emoji", "phrases"
         delay: 500,

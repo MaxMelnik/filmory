@@ -13,14 +13,15 @@ import splitTelegramMessage from '../../utils/splitTelegramMessage.js';
 import postDailyRecommendation from '../../cron/postDailyRecommendation.js';
 import getBotInstance from '../getBotInstance.js';
 
+// Root scene
 const scene = new Scenes.BaseScene('ROOT_SCENE_ID');
 
-// Enter Root scene
 scene.enter(async (ctx) => {
     logger.info(`[ROOT SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('📊 General Statistics', 'GENERAL_STATS')],
         [Markup.button.callback('👥 Users', 'USERS_LIST')],
+        [Markup.button.callback('📧 Send Spam', 'SEND_SPAM')],
         [Markup.button.callback('🚀 Post Daily Rec', 'MANUAL_POST_DAILY_REC')],
         [Markup.button.callback('🏓️ PING GEMINI AI', 'PING_GEMINI_API')],
         [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
@@ -121,6 +122,8 @@ scene.action('MANUAL_POST_DAILY_REC', async (ctx) => {
 scene.action('PING_GEMINI_API', async (ctx) => {
     await pingGeminiAPI(ctx);
 });
+
+scene.action('SEND_SPAM', async (ctx) => ctx.scene.enter('SEND_SPAM_SCENE_ID'));
 
 scene.on(message('text'), async (ctx) => {
     const input = ctx.message.text.trim();

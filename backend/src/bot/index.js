@@ -9,6 +9,7 @@ import libraryScene from './scenes/libraryScene.js';
 import recommendationScene from './scenes/recommendationScene.js';
 import subscriptionsScene from './scenes/subscriptionsScene.js';
 import rootScene from './scenes/rootScene.js';
+import sendSpamScene from './scenes/sendSpamScene.js';
 import { activityMiddleware } from './middlewares/activityMiddleware.js';
 import { UserService } from '../services/UserService.js';
 import logger from '../utils/logger.js';
@@ -28,6 +29,7 @@ const stage = new Scenes.Stage([
     recommendationScene,
     subscriptionsScene,
     rootScene,
+    sendSpamScene,
 ]);
 
 bot.use(session());
@@ -193,6 +195,13 @@ bot.action('GO_SUBS_AND_DELETE_MESSAGE', (ctx) => {
     ctx.session.editMessageText = true;
     ctx.scene.enter('SUBSCRIPTIONS_SCENE_ID');
 });
+
+bot.action('GO_RECS', (ctx) => {
+    ctx.answerCbQuery();
+    ctx.session.editMessageText = false;
+    ctx.scene.enter('RECOMMENDATION_SCENE_ID');
+});
+
 
 bot.action('GO_HOME', (ctx) => {
     ctx.answerCbQuery();

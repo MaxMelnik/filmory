@@ -8,6 +8,7 @@ import { showWaiter } from '../../utils/animatedWaiter.js';
 import { getFilmByUserDescription } from '../../services/integrations/geminiService.js';
 import { isRequestAllowed } from '../../services/system/QuotaService.js';
 import { LibraryService } from '../../services/LibraryService.js';
+import parseRecommendations from '../../utils/parseRecommendations.js';
 
 export async function handleAddFilm(ctx) {
     logger.info(`[ADD FILM SCENE ENTERED] @${ctx.from.username || ctx.from.id}`);
@@ -208,6 +209,6 @@ export async function handleFilmDescriptionInput(ctx) {
         animation: 'emoji', // "dots", "emoji", "phrases"
         delay: 500,
         asyncTask: async () => await getFilmByUserDescription(description),
-        onDone: async (ctx, response) => await (ctx, `🎬 Опису "${description}" відповідають наступні фільми:`, response),
+        onDone: async (ctx, response) => await parseRecommendations(ctx, `🎬 Опису "${description}" відповідають наступні фільми:`, response),
     });
 }

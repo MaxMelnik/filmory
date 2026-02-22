@@ -11,6 +11,7 @@ import { UserService } from '../../services/UserService.js';
 import logger from '../../utils/logger.js';
 import { shareFilmLink } from '../handlers/shareFilmLink.js';
 import filmCardControls from '../handlers/filmCardControls.js';
+import { nextOrder } from '../../utils/keyboards/orderButton.js';
 
 const scene = new Scenes.BaseScene('LIBRARY_SCENE_ID');
 
@@ -21,6 +22,17 @@ scene.enter(async (ctx) => {
     ctx.session.view = 'watchLater';
     ctx.session.page = 1;
     ctx.session.totalPages = null;
+    await showLibraryPage(ctx);
+});
+
+scene.action(/^lib:order:next:(watchLater|watched):([a-z_]+)$/, async (ctx) => {
+    ctx.session.view = ctx.match[1];
+    const currentOrder = ctx.match[2];
+    ctx.session.order = nextOrder(ctx.session.view, currentOrder);
+    ctx.session.page = 1;
+    ctx.session.totalPages = null;
+    await ctx.answerCbQuery();
+    logger.info(`[LIBRARY SCENE ORDER] @${ctx.from.username || ctx.from.id}: ${ctx.session.order}`);
     await showLibraryPage(ctx);
 });
 

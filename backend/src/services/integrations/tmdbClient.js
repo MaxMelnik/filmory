@@ -71,7 +71,7 @@ export async function searchFilmWithPoster(title, year) {
         const first = results[0];
         if (!first) return null;
 
-        console.log(first);
+        logger.info(first);
 
         return {
             tmdbId: first.id,

@@ -2,17 +2,18 @@ import { Markup } from 'telegraf';
 import { LibraryService } from '../../services/LibraryService.js';
 import { UserService as UsersService } from '../../services/UserService.js';
 import { getWatchedMessage, getWatchlistMessage } from '../../utils/templates/libraryMessages.js';
+import { buildSortRow } from '../../utils/keyboards/orderButton.js';
 
 async function showLibraryPage(ctx) {
     const { view = 'watchLater', page = 1 } = ctx.session;
     const limit = 5;
+    const order = ctx.session.order;
 
     const { films, totalPages, totalCount } =
-        await LibraryService.getUserFilmsPaginated(ctx.from.id, view, page, limit);
+        await LibraryService.getUserFilmsPaginated(ctx.from.id, view, page, limit, order);
     const user = await UsersService.getByTelegramId(ctx.from.id);
 
     ctx.session.totalPages = totalPages;
-
 
     const switchButtons = [
         Markup.button.callback(
@@ -48,6 +49,8 @@ async function showLibraryPage(ctx) {
         return;
     }
 
+    const orderButtons = buildSortRow(view, order);
+
     const filmButtons = await Promise.all(
         films.map(async (f) => {
             const starred = await LibraryService.isStarred(user._id, f._id) ? '⭐️ ' : '';
@@ -79,6 +82,7 @@ async function showLibraryPage(ctx) {
     ] : [];
 
     const keyboard = Markup.inlineKeyboard([
+        orderButtons,
         switchButtons,
         ...filmButtons,
         fakeButtons,

@@ -13,34 +13,113 @@ export class LibraryService {
      * @param {'watchLater'|'watched'} view — тип списку
      * @param {number} page — номер сторінки
      * @param {number} limit — кількість фільмів на сторінку
+     * @param {'recent'|'oldest'|'rating_high'|'rating_low'|'title_az'|'title_za'|'year_new'|'year_old'} order  — порядок сортування
      */
-    static async getUserFilmsPaginated(telegramId, view = 'watchLater', page = 1, limit = 5) {
-        const user = await User.findOne({ telegramId });
-        const filter =
-            view === 'watched' ?
-                { userId: user._id, status: 'watched' } :
-                { userId: user._id, status: 'watch_later' };
+    static async getUserFilmsPaginated(
+        telegramId,
+        view = 'watchLater',
+        page = 1,
+        limit = 5,
+        order = 'recent',
+    ) {
+        const user = await User.findOne({ telegramId }).lean();
+        if (!user) {
+            return { films: [], totalCount: 0, totalPages: 1, page: 1, order };
+        }
 
-        const totalCount = await LibraryItem.countDocuments(filter);
+        const match =
+            view === 'watched'
+                ? { userId: user._id, status: 'watched' }
+                : { userId: user._id, status: 'watch_later' };
+
+        const totalCount = await LibraryItem.countDocuments(match);
         const totalPages = Math.max(1, Math.ceil(totalCount / limit));
-        const skip = (page - 1) * limit;
+        const safePage = Math.min(Math.max(1, page), totalPages);
+        const skip = (safePage - 1) * limit;
 
-        const items = await LibraryItem.find(filter)
-            .sort({ updatedAt: -1 })
-            .skip(skip)
-            .limit(limit)
-            .populate('filmId'); // підтягує назву, рік тощо з Film
+        // 1) Визначаємо, чи order вимагає Film-полів (title/year)
+        const needsFilmJoin = ['title_az', 'title_za', 'year_new', 'year_old'].includes(order);
 
-        const films = items
-            .filter((item) => item.filmId)
-            .map((item) => ({
-                _id: item.filmId._id,
-                title: item.filmId.title,
-                year: item.filmId.year,
-                status: item.status,
-            }));
+        // 2) Мапа сортування для обох стратегій
+        const sortMapFind = {
+            recent: { updatedAt: -1 },
+            oldest: { updatedAt: 1 },
+            rating_high: { rating: -1, updatedAt: -1 },
+            rating_low: { rating: 1, updatedAt: -1 },
+        };
 
-        return { films, totalCount, totalPages };
+        const sortMapAgg = {
+            recent: { updatedAt: -1 },
+            oldest: { updatedAt: 1 },
+            rating_high: { rating: -1, updatedAt: -1 },
+            rating_low: { rating: 1, updatedAt: -1 },
+
+            title_az: { 'film.title': 1, updatedAt: -1 },
+            title_za: { 'film.title': -1, updatedAt: -1 },
+            year_new: { 'film.year': -1, updatedAt: -1 },
+            year_old: { 'film.year': 1, updatedAt: -1 },
+        };
+
+        if (!needsFilmJoin) {
+            // ===== Шлях А: швидкий find + populate =====
+            const sort = sortMapFind[order] ?? sortMapFind.recent;
+
+            const items = await LibraryItem.find(match)
+                .sort(sort)
+                .skip(skip)
+                .limit(limit)
+                .populate('filmId');
+
+            const films = items
+                .filter((item) => item.filmId)
+                .map((item) => ({
+                    _id: item.filmId._id,
+                    title: item.filmId.title,
+                    year: item.filmId.year,
+                    status: item.status,
+                    rating: item.rating,
+                }));
+
+            return { films, totalCount, totalPages, page: safePage, order };
+        }
+
+        // ===== Шлях Б: aggregate + lookup для title/year =====
+        const sort = sortMapAgg[order] ?? sortMapAgg.recent;
+
+        const rows = await LibraryItem.aggregate([
+            { $match: match },
+            {
+                $lookup: {
+                    from: 'films', // ⚠️ перевір назву колекції Film у Mongo
+                    localField: 'filmId',
+                    foreignField: '_id',
+                    as: 'film',
+                },
+            },
+            { $unwind: '$film' },
+            { $sort: sort },
+            { $skip: skip },
+            { $limit: limit },
+            {
+                $project: {
+                    filmId: '$film._id',
+                    title: '$film.title',
+                    year: '$film.year',
+                    status: 1,
+                    rating: 1,
+                },
+            },
+        ]);
+
+        const films = rows.map((r) => ({
+            _id: r.filmId,
+            title: r.title,
+            year: r.year,
+            status: r.status,
+            rating: r.rating,
+        }));
+
+        return { films, totalCount, totalPages, page: safePage, order };
     }
 
     /**

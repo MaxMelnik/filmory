@@ -3,6 +3,7 @@ import getBotInstance from '../getBotInstance.js';
 import generateProgressBar from '../../utils/generateProgressBar.js';
 import { User } from '../../models/index.js';
 import logger from '../../utils/logger.js';
+import { UserService } from '../../services/UserService.js';
 
 const bot = getBotInstance();
 
@@ -28,6 +29,7 @@ scene.enter(async (ctx) => {
     const usersCount = ctx.session.usersArray?.length ?? `всім ${await User.countDocuments()}`;
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('🥺 Plzb, return', 'SEND_RETURN_MAILING')],
+        [Markup.button.callback('🎁 Promo gift', 'SEND_PROMO_GIFT')],
         [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
     ]);
     await ctx.reply(
@@ -103,6 +105,35 @@ scene.action('SEND_RETURN_MAILING', async (ctx) => {
     ctx.answerCbQuery();
 });
 
+scene.action('SEND_PROMO_GIFT', async (ctx) => {
+    if (!ctx.scene.session.isSpamAllowed) return ctx.scene.enter('START_SCENE_ID');
+    // ctx.session.usersArray = [await UserService.getByTelegramId('396424453')];
+    ctx.session.usersArray = [await UserService.getByTelegramId('6180459605')];
+
+    const text = `🎉 Happy Birthday!
+
+Сьогодні ти — головний герой дня 🎬
+Тому Filmory дарує тобі маленький бонус:
+
+🍿 Plus підписку!
+
+Схожий ти на мавпу, пахнеш точно як вона!`;
+
+    ctx.scene.session.text = text;
+
+    // Log the received text
+    logger.info(`Text:\n\n ${text}`);
+
+    await ctx.reply('Буде розіслано наступне повідомлення:');
+
+    const submitKeyboard = Markup.inlineKeyboard([
+        [Markup.button.callback('✅ Підтвердити відправку', `SUBMIT_SENDING`)],
+        [Markup.button.callback('🏠︎ На головну', 'GO_HOME_AND_CLEAR_KEYBOARD')],
+    ]);
+    ctx.reply(text, submitKeyboard);
+    ctx.answerCbQuery();
+});
+
 scene.action('SUBMIT_SENDING', async (ctx) => {
     logger.info(`SUBMIT_SENDING:` + ctx.scene.session.text + ctx.scene.session.fileId + ctx.scene.session.description);
     ctx.scene.session.isSpamAllowed = false;
@@ -127,8 +158,9 @@ scene.action('SUBMIT_SENDING', async (ctx) => {
                     user.telegramId,
                     text,
                     Markup.inlineKeyboard([
-                        [Markup.button.url('📽 Канал із фільмами', 'https://t.me/film_memory_channel')],
-                        [Markup.button.callback('👾 Підібрати фільм', 'GO_RECS')],
+                        [Markup.button.callback('⭐ Дякую!', 'GO_RECS')],
+                        // [Markup.button.url('📽 Канал із фільмами', 'https://t.me/film_memory_channel')],
+                        // [Markup.button.callback('👾 Підібрати фільм', 'GO_RECS')],
                     ]),
                 );
                 successful++;

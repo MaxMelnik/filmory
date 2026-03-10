@@ -63,7 +63,7 @@ async function showLibraryPage(ctx) {
 
     const rndButtons = (films.length > 1) ? [
         Markup.button.callback(
-            '🎲 Мені пощастить',
+            '🎲 Обрати зі списку',
             'OPEN_FILM_RND',
         ),
     ] : [];
@@ -82,11 +82,11 @@ async function showLibraryPage(ctx) {
     ] : [];
 
     const keyboard = Markup.inlineKeyboard([
+        rndButtons,
         orderButtons,
         switchButtons,
         ...filmButtons,
         fakeButtons,
-        rndButtons,
         homeButtons,
         navButtons,
     ]);

@@ -10,7 +10,7 @@ import logger from '../utils/logger.js';
 
 export default async () => {
     const excludeFilms = await DailyRecommendationService.getAllRecommendedFilms();
-    const dailyRecommendation = (await getDailyRecommendation(excludeFilms.toString()))[0];
+    const dailyRecommendation = (await getDailyRecommendation(excludeFilms))[0];
     logger.info(dailyRecommendation);
     const film = await searchFilmWithPoster(dailyRecommendation.original_title ?? dailyRecommendation.title, dailyRecommendation.year);
     const details = (film.mediaType === 'tv') ?

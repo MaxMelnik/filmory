@@ -14,7 +14,7 @@ export async function createDailyRecommendation({
     filmId,
     postUrl,
 }) {
-    const caption = `${DAYS[day].emoji} ${DAYS[day].description}
+    const caption = `${DAYS[day].emoji} ${DAYS[day].theme}
 
 *🎬 ${escapeReservedCharacters(title)}*${originalTitle ? ` / _${escapeReservedCharacters(originalTitle)}_` : ''} \\(${year}\\)
 🎭 Жанр: ${genres.toString().toLowerCase().replaceAll(',', ', ').trim()}

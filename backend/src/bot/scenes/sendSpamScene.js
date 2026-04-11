@@ -108,16 +108,13 @@ scene.action('SEND_RETURN_MAILING', async (ctx) => {
 scene.action('SEND_PROMO_GIFT', async (ctx) => {
     if (!ctx.scene.session.isSpamAllowed) return ctx.scene.enter('START_SCENE_ID');
     // ctx.session.usersArray = [await UserService.getByTelegramId('396424453')];
-    ctx.session.usersArray = [await UserService.getByTelegramId('6180459605')];
 
     const text = `🎉 Happy Birthday!
 
 Сьогодні ти — головний герой дня 🎬
 Тому Filmory дарує тобі маленький бонус:
 
-🍿 Plus підписку!
-
-Схожий ти на мавпу, пахнеш точно як вона!`;
+🍿 Plus підписку!`;
 
     ctx.scene.session.text = text;
 
